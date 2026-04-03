@@ -27,7 +27,7 @@ const products = [
     accent: "#f59e0b",
     accentGlow: "rgba(245,158,11,0.15)",
     status: "MVP",
-    href: "/bsgateway/getting-started",
+    href: "https://gateway.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 12h4l3-9 3 18 3-9h4"/>
@@ -41,7 +41,7 @@ const products = [
     accent: "#3b82f6",
     accentGlow: "rgba(59,130,246,0.15)",
     status: "Coming Soon",
-    href: "/bsnexus/getting-started",
+    href: "https://nexus.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
@@ -56,7 +56,7 @@ const products = [
     accent: "#f43f5e",
     accentGlow: "rgba(244,63,94,0.15)",
     status: "Coming Soon",
-    href: "/bsupervisor/getting-started",
+    href: "https://supervisor.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -70,7 +70,7 @@ const products = [
     accent: "#10b981",
     accentGlow: "rgba(16,185,129,0.15)",
     status: "Coming Later",
-    href: "/bsage/getting-started",
+    href: "https://sage.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 20 2 20 2s-1.7 5.3-4 9.5C14 15 11 20 11 20z"/>
@@ -186,7 +186,7 @@ export default function BSVibeLanding() {
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <a href="#products" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>제품</a>
           <a href="/bsgateway/getting-started" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>문서</a>
-          <a href="/bsgateway/getting-started" style={{
+          <a href="https://gateway.bsvibe.dev" style={{
             padding: "6px 16px",
             borderRadius: 8,
             backgroundColor: "rgba(99,102,241,0.10)",
@@ -589,7 +589,7 @@ export default function BSVibeLanding() {
           <a href="/bsgateway/getting-started" className="nav-link" style={{ fontSize: "0.8125rem" }}>문서</a>
           <a href="/privacy" className="nav-link" style={{ fontSize: "0.8125rem" }}>개인정보처리방침</a>
           <a href="/terms" className="nav-link" style={{ fontSize: "0.8125rem" }}>이용약관</a>
-          <a href="https://github.com/blas1n" className="nav-link" style={{ fontSize: "0.8125rem" }} target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/BSVibe" className="nav-link" style={{ fontSize: "0.8125rem" }} target="_blank" rel="noopener noreferrer">GitHub</a>
           <span style={{ fontSize: "0.8125rem", color: "#5a5f7d" }}>contact@bsvibe.dev</span>
         </div>
       </footer>

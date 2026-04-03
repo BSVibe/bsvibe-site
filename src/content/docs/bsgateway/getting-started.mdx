@@ -1,6 +1,6 @@
 ---
 title: 시작하기
-description: BSGateway를 설치하고 첫 번째 라우팅 규칙을 설정합니다.
+description: BSGateway에 가입하고 첫 번째 API 호출을 합니다.
 ---
 
 BSGateway는 LLM API 요청의 복잡도를 분석해 가장 비용 효율적인 모델로 자동 라우팅하는 프록시입니다.
@@ -13,48 +13,34 @@ BSGateway는 LLM API 요청의 복잡도를 분석해 가장 비용 효율적인
 
 ## 빠른 시작
 
-### 1. 환경 설정
+### 1. 계정 생성
 
-```bash
-git clone https://github.com/blas1n/BSGateway.git
-cd BSGateway
-```
+[gateway.bsvibe.dev](https://gateway.bsvibe.dev)에서 BSVibe 계정으로 로그인합니다.
 
-### 2. 설정 파일 작성
+### 2. 모델 등록
 
-`gateway.yaml`에 사용할 모델과 라우팅 규칙을 정의합니다:
+대시보드 **Models** 페이지에서 사용할 LLM 모델을 추가합니다:
 
-```yaml
-models:
-  - id: claude-sonnet
-    provider: anthropic
-    api_key: ${ANTHROPIC_API_KEY}
-  - id: gpt-4o-mini
-    provider: openai
-    api_key: ${OPENAI_API_KEY}
+1. **Add Model** 클릭
+2. Provider 선택 (Anthropic, OpenAI, Ollama 등)
+3. API 키 입력 — AES-256-GCM으로 암호화되어 저장됩니다
+4. 모델 ID 설정 (예: `claude-sonnet`, `gpt-4o-mini`)
 
-routing:
-  default_model: gpt-4o-mini
-  rules:
-    - pattern: "*/complex/*"
-      model: claude-sonnet
-```
+### 3. API 키 발급
 
-### 3. 실행
+대시보드 **API Keys** 페이지에서 BSGateway API 키를 생성합니다.
 
-```bash
-docker compose up -d
-```
+> API 키는 생성 시 한 번만 표시됩니다. 안전한 곳에 보관하세요.
 
 ### 4. API 호출
 
-기존 OpenAI SDK 코드에서 base URL만 변경하면 됩니다:
+기존 OpenAI SDK 코드에서 base URL과 API 키만 변경하면 됩니다:
 
 ```python
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://localhost:4000/v1",
+    base_url="https://gateway.bsvibe.dev/v1",
     api_key="your-bsgateway-api-key",
 )
 
@@ -64,8 +50,11 @@ response = client.chat.completions.create(
 )
 ```
 
+`model="auto"`로 요청하면 분류기가 복잡도를 판단해 최적 모델을 선택합니다.
+특정 모델을 지정하려면 등록한 모델 ID를 사용하세요.
+
 ## 다음 단계
 
 - [핵심 개념](/bsgateway/concepts) — 라우팅 계층과 분류기 이해하기
 - [라우팅 규칙](/bsgateway/features/routing) — 세부 라우팅 규칙 설정
-- [설정](/bsgateway/configuration) — 전체 설정 옵션 레퍼런스
+- [설정](/bsgateway/configuration) — 대시보드 설정 가이드

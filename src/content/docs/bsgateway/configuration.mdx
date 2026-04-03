@@ -1,123 +1,73 @@
 ---
 title: 설정
-description: BSGateway의 전체 설정 옵션 레퍼런스입니다.
+description: BSGateway 대시보드에서 모델, 라우팅, API 키를 설정합니다.
 ---
 
-## gateway.yaml
+## 모델 관리
 
-BSGateway의 모든 설정은 `gateway.yaml` 단일 파일에서 관리됩니다.
+대시보드 **Models** 페이지에서 LLM 모델을 관리합니다.
 
-### 모델 설정
+### 모델 추가
 
-```yaml
-models:
-  - id: claude-sonnet           # 고유 모델 ID
-    provider: anthropic          # 제공자 (anthropic, openai, ollama)
-    api_key: ${ANTHROPIC_API_KEY} # 환경변수 참조
-    max_tokens: 4096             # 최대 출력 토큰 (선택)
+| 필드 | 설명 |
+|------|------|
+| Provider | 모델 제공자 (Anthropic, OpenAI, Ollama 등) |
+| Model ID | 요청 시 사용할 모델 식별자 |
+| API Key | Provider API 키 (AES-256-GCM 암호화 저장) |
+| Max Tokens | 최대 출력 토큰 (선택) |
 
-  - id: gpt-4o-mini
-    provider: openai
-    api_key: ${OPENAI_API_KEY}
+### Alias 설정
 
-  - id: local-llama
-    provider: ollama
-    api_base: http://localhost:11434
-```
+자주 쓰는 모델에 짧은 별명을 부여할 수 있습니다:
 
-### 라우팅 설정
+| Alias | Target Model |
+|-------|-------------|
+| `fast` | gpt-4o-mini |
+| `smart` | claude-sonnet |
 
-```yaml
-routing:
-  default_model: gpt-4o-mini    # 기본 모델
+## 라우팅 규칙
 
-  aliases:
-    fast: gpt-4o-mini
-    smart: claude-sonnet
+대시보드 **Rules** 페이지에서 라우팅 규칙을 관리합니다.
 
-  rules:
-    - pattern: "code/*"
-      model: claude-sonnet
-      priority: 10
+### 규칙 추가
 
-  auto:
-    classifier: static          # static | llm | ml
-    complexity_map:
-      simple: gpt-4o-mini
-      moderate: claude-sonnet
-      complex: claude-sonnet
-```
+1. **Add Rule** 클릭
+2. Pattern 입력 (glob 문법 지원)
+3. 대상 모델 선택
+4. 우선순위 설정 (높을수록 먼저 평가)
 
-### 데이터베이스
+### Auto 라우팅
 
-```yaml
-database:
-  url: ${DATABASE_URL}          # PostgreSQL 연결 문자열
-```
+`model: "auto"`로 요청하면 분류기가 복잡도를 판단합니다:
 
-### Redis
+| 분류 전략 | 설명 |
+|----------|------|
+| Static | 키워드/패턴 기반 휴리스틱 |
+| LLM | 로컬 LLM 기반 분류 |
+| ML | 학습된 모델 기반 분류 |
 
-```yaml
-redis:
-  url: ${REDIS_URL}             # Redis 연결 문자열
-```
+분류기 전략과 복잡도별 모델 매핑은 **Settings** 페이지에서 설정합니다.
 
-### 보안
+## API 키 관리
 
-```yaml
-security:
-  encryption_key: ${ENCRYPTION_KEY}  # AES-256-GCM 키 (32바이트 base64)
-  cors_allowed_origins:
-    - https://gateway.bsvibe.dev
-    - http://localhost:3300
-```
+대시보드 **API Keys** 페이지에서 키를 생성하고 관리합니다.
 
-## 환경변수
+### 키 속성
 
-| 변수 | 필수 | 설명 |
-|------|------|------|
-| `DATABASE_URL` | O | PostgreSQL 연결 문자열 |
-| `REDIS_URL` | O | Redis 연결 문자열 |
-| `ENCRYPTION_KEY` | O | API 키 암호화 키 |
-| `ANTHROPIC_API_KEY` | - | Anthropic API 키 |
-| `OPENAI_API_KEY` | - | OpenAI API 키 |
-| `BSVIBE_AUTH_URL` | - | 인증 서버 URL (기본: https://auth.bsvibe.dev) |
+| 속성 | 설명 |
+|------|------|
+| 이름 | 키를 식별하는 라벨 |
+| Rate Limit | 분당 최대 요청 수 |
+| 만료일 | 키 자동 만료 날짜 (선택) |
 
-## Docker 배포
+## CORS 설정
 
-```yaml
-# deploy/docker-compose.yml
-services:
-  gateway:
-    build: .
-    ports:
-      - "4000:4000"
-    env_file: .env
-    volumes:
-      - ./gateway.yaml:/app/gateway.yaml:ro
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
+**Settings** 페이지에서 허용할 도메인을 설정합니다. 프론트엔드에서 직접 호출하는 경우 도메인을 추가해야 합니다.
 
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: bsgateway
-      POSTGRES_USER: bsgateway
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bsgateway"]
-      interval: 5s
-      retries: 5
+## API 엔드포인트
 
-  redis:
-    image: redis:7-alpine
-    command: redis-server --appendonly yes
-
-volumes:
-  pgdata:
-```
+| 엔드포인트 | 설명 |
+|-----------|------|
+| `https://gateway.bsvibe.dev/v1/chat/completions` | OpenAI 호환 채팅 API |
+| `https://gateway.bsvibe.dev/v1/models` | 등록된 모델 목록 |
+| `https://gateway.bsvibe.dev/health` | 서비스 상태 확인 |
