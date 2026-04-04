@@ -3,34 +3,170 @@ title: Core Concepts
 description: Understand BSage's plugins, skills, and Knowledge Graph.
 ---
 
+BSage is built around four core concepts: **Plugins**, **Skills**, **Knowledge Graph**, and **2nd Brain**.
+
 ## Plugins vs Skills
 
-BSage offers two extension mechanisms:
+BSage offers two extension mechanisms with distinct purposes.
+
+### Comparison
 
 | | Plugin | Skill |
 |--|--------|-------|
-| Implementation | Python code | Markdown (LLM pipeline) |
-| Purpose | External system integration | Text processing/analysis |
-| Examples | Telegram bot, Email ingestion | Summarization, translation, risk analysis |
+| **Implementation** | Python code | Markdown (LLM pipeline) |
+| **Purpose** | Data I/O with external systems | Text processing and analysis |
+| **Runs on** | BSage server (background) | LLM (on demand) |
+| **State** | Always running (event-driven) | Invoked when needed |
+| **Credentials** | Required (API keys, tokens, etc.) | Not required |
+| **Customization** | Configuration parameters | Prompt editing |
+| **Examples** | Telegram bot, Email ingestion, S3 upload | Summarization, translation, risk analysis, sentiment analysis |
 
-### Plugin Categories
+### Plugin Details
 
-- **Input**: Collect information from external sources (Telegram, Slack, RSS, etc.)
-- **Process**: Transform information (summarization, classification, tagging)
-- **Output**: Deliver results (notifications, file storage, S3 upload)
+Plugins are **bridges connecting external systems to BSage**, organized into three categories:
+
+#### Input Plugins
+
+Collect information from external sources into BSage.
+
+| Plugin | How It Works | Trigger |
+|--------|-------------|---------|
+| **Telegram** | Collects messages received by a Telegram bot | Instant on message receipt |
+| **Slack** | Monitors messages in designated Slack channels | Instant on message receipt |
+| **Discord** | Collects messages via a Discord bot | Instant on message receipt |
+| **Email** | Receives email via IMAP | Polling on new mail |
+| **RSS** | Subscribes to RSS/Atom feeds for new articles | Polling on feed update |
+
+#### Process Plugins
+
+Transform and analyze collected information.
+
+| Plugin | Function | Trigger |
+|--------|----------|---------|
+| **Summarizer** | LLM-based automatic summarization | On new knowledge ingestion |
+| **Tagger** | Automatic tag and category assignment | On new knowledge ingestion |
+| **DangerAnalyzer** | Automatic risk and sensitive information detection | On new knowledge ingestion |
+
+#### Output Plugins
+
+Export BSage knowledge to external systems.
+
+| Plugin | Function | Output Format |
+|--------|----------|---------------|
+| **S3** | Upload files to Amazon S3 | Original files |
+| **Vault** | Auto-create/update notes in Obsidian Vault | Markdown |
+
+### Skill Details
+
+Skills are **LLM pipelines defined in Markdown**. They consist of prompt chains that take text input and produce processed output.
+
+| Aspect | Description |
+|--------|-------------|
+| **Definition** | Markdown files describing prompts, input/output formats, and chain order |
+| **Execution** | LLM runs the skill when invoked by user request or plugin pipeline |
+| **Chaining** | Multiple skills can be chained sequentially for complex processing |
+| **Example** | Summarize skill -> Translate skill -> Tag skill in sequence |
+
+### Combining Plugins and Skills
+
+Plugins and skills are most powerful when used together:
+
+```
+[Input Plugin] → [Process Plugin/Skill] → [Output Plugin]
+```
+
+Example pipeline:
+1. **Telegram** (Input) receives a paper link
+2. **Summarizer** (Process) auto-summarizes the paper
+3. **Tagger** (Process) auto-tags the field and keywords
+4. **Vault** (Output) auto-creates an Obsidian note
 
 ## Knowledge Graph
 
-All collected knowledge is connected in a graph structure:
+BSage's Knowledge Graph connects all collected knowledge in a **graph structure**, enabling you to explore relationships beyond simple search.
 
-- **Nodes**: Individual knowledge items
-- **Edges**: Relationships between knowledge (reference, related, contradicts, etc.)
-- **Vector Store**: Embedding storage for semantic search
+### Graph Components
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| **Node** | An individual knowledge item | "PostgreSQL JSONB Indexing Guide" |
+| **Edge** | A relationship between nodes | Reference, related, contradicts, extends, summarizes |
+| **Property** | Node metadata | Tags, category, creation date, source |
+
+### Edge Types
+
+Relationships between knowledge items are classified as:
+
+| Edge Type | Meaning | Example |
+|-----------|---------|---------|
+| **references** | A cites/references B | A paper citing another paper |
+| **related_to** | A and B cover the same topic | Two PostgreSQL-related notes |
+| **contradicts** | A conflicts with B's content | Opposing technical claims |
+| **extends** | A expands on or supplements B | Adding information to an existing note |
+| **summarizes** | A is a summary of B | Summary generated by the Summarizer |
+
+### Vector Store
+
+The Knowledge Graph includes a built-in **Vector Store** for semantic search:
+
+| Feature | Description |
+|---------|-------------|
+| **Embedding generation** | Vector embeddings are automatically created for all knowledge items |
+| **Semantic search** | Search by meaning, not just keywords (e.g., "DB performance tuning" matches a JSONB indexing note) |
+| **Similarity-based linking** | Knowledge with high embedding similarity is automatically connected via "related" edges |
+| **Search ranking** | Cosine similarity ranking surfaces the most relevant results first |
+
+### Graph Visualization
+
+The Knowledge Graph page provides:
+
+- **Interactive graph**: Click, drag, and zoom to explore nodes
+- **Clustering**: Related nodes are automatically grouped
+- **Path exploration**: Visually trace the relationship path between any two nodes
+- **Time filter**: Display only knowledge created within a specific period
+- **Tag filter**: Highlight knowledge with specific tags
 
 ## 2nd Brain Structure
 
-BSage organizes knowledge into three areas:
+BSage manages knowledge across three areas, inspired by the **Digital Garden** methodology.
 
-1. **Seeds**: Newly ingested raw information
-2. **Garden**: Organized and connected knowledge
-3. **Actions**: Actionable items derived from knowledge
+### Seeds
+
+| Aspect | Description |
+|--------|-------------|
+| **Definition** | Newly ingested raw information, not yet refined |
+| **Input methods** | Chat input, plugin collection, manual entry |
+| **Auto-processing** | Tagger auto-tags, Summarizer generates summaries |
+| **Status** | Awaiting review |
+
+### Garden
+
+| Aspect | Description |
+|--------|-------------|
+| **Definition** | Organized and verified knowledge, connected to other items |
+| **Promotion criteria** | User reviews and approves Seeds / automatic quality threshold met |
+| **Characteristics** | Connected to other knowledge via edges in the Knowledge Graph |
+| **Use** | Primary target for semantic search |
+
+### Actions
+
+| Aspect | Description |
+|--------|-------------|
+| **Definition** | Actionable items derived from knowledge (to-dos, ideas, projects) |
+| **Creation** | User-created or BSage-recommended |
+| **Status tracking** | TODO -> IN_PROGRESS -> DONE |
+| **Linking** | Automatically linked to the knowledge that prompted the Action |
+
+### Knowledge Flow
+
+```
+External sources → [Input Plugin] → Seeds → [Process/Skill] → Garden → Actions
+                                      ↕                         ↕
+                                Knowledge Graph           Knowledge Graph
+```
+
+1. Information is collected from external sources (Telegram, Email, RSS, etc.).
+2. Saved as **Seeds** with automatic tagging and summarization.
+3. Promoted to **Garden** after user review or meeting automatic quality criteria.
+4. Actionable items derived from Garden knowledge become **Actions**.
+5. Nodes and edges are added to the Knowledge Graph at every stage.

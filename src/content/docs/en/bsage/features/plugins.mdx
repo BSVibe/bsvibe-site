@@ -3,35 +3,215 @@ title: Plugins
 description: Configure and manage BSage plugins.
 ---
 
-## Available Plugins
+## Overview
 
-BSage provides 18 plugins.
+BSage provides **18 plugins** to integrate with a wide range of external services. Plugins are organized into three categories: Input (collection), Process (transformation), and Output (delivery).
 
-### Input Plugins
+![BSage Dashboard Plugin Manager](/images/screenshots/bsage-dashboard.png)
 
-| Plugin | Description |
-|--------|-------------|
-| Telegram | Receive messages via Telegram bot |
-| Slack | Monitor Slack channels |
-| Discord | Discord bot integration |
-| Email | Receive emails via IMAP |
-| RSS | Subscribe to RSS/Atom feeds |
+## Full Plugin List
 
-### Process Plugins
+### Input Plugins (7)
 
-| Plugin | Description |
-|--------|-------------|
-| Summarizer | LLM-powered automatic summarization |
-| Tagger | Automatic tag assignment |
-| DangerAnalyzer | Automatic risk detection |
+Collect information from external sources into BSage.
 
-### Output Plugins
+| # | Plugin | Description | Required Credential | Collection Method |
+|---|--------|-------------|---------------------|-------------------|
+| 1 | **Telegram** | Collect messages, files, and links via a Telegram bot | Bot Token | Real-time (Webhook) |
+| 2 | **Slack** | Monitor and collect messages from designated Slack channels | Bot Token, Signing Secret | Real-time (Events API) |
+| 3 | **Discord** | Collect channel messages via a Discord bot | Bot Token | Real-time (Gateway) |
+| 4 | **Email** | Receive and collect email via IMAP | IMAP server, email, password | Polling (1 min interval) |
+| 5 | **RSS** | Subscribe to RSS/Atom feeds and collect new articles | None (just the feed URL) | Polling (configurable) |
+| 6 | **Web Clipper** | Scrape web pages and extract body content | None | Manual (URL input) |
+| 7 | **Calendar** | Sync Google Calendar events | Google OAuth | Polling (5 min interval) |
 
-| Plugin | Description |
-|--------|-------------|
-| S3 | Upload files to Amazon S3 |
-| Vault | Obsidian Vault integration |
+### Process Plugins (6)
 
-## Plugin Configuration
+Transform, analyze, and enrich collected information.
 
-Enable each plugin and configure its credentials on the **Plugin Manager** page in the dashboard.
+| # | Plugin | Description | Required Credential | Trigger |
+|---|--------|-------------|---------------------|---------|
+| 8 | **Summarizer** | LLM-powered automatic summarization | None (uses BSage LLM) | On new knowledge |
+| 9 | **Tagger** | Automatic category and tag assignment | None (uses BSage LLM) | On new knowledge |
+| 10 | **DangerAnalyzer** | Automatic risk, sensitive info, and bias detection | None (uses BSage LLM) | On new knowledge |
+| 11 | **Translator** | Auto-translate multilingual text to a target language | None (uses BSage LLM) | Manual or automatic |
+| 12 | **Deduplicator** | Detect similar/duplicate knowledge and suggest merges | None | On new knowledge |
+| 13 | **Enricher** | Search external sources to supplement knowledge | None (uses BSage search) | Manual or automatic |
+
+### Output Plugins (5)
+
+Export BSage knowledge to external systems.
+
+| # | Plugin | Description | Required Credential | Output Format |
+|---|--------|-------------|---------------------|---------------|
+| 14 | **S3** | Upload files to Amazon S3 | AWS Access Key, Secret Key, Bucket | Original files |
+| 15 | **Vault** | Auto-create/update notes in Obsidian Vault | Vault path configuration | Markdown |
+| 16 | **Notion** | Sync knowledge to Notion pages/databases | Notion Integration Token | Notion blocks |
+| 17 | **Webhook** | Send knowledge data via HTTP POST to a configured URL | Webhook URL | JSON |
+| 18 | **Export** | Bulk export knowledge as downloadable files | None | Markdown, JSON, CSV |
+
+## Plugin Setup Guide
+
+### Using the Plugin Manager
+
+1. Click **Plugin Manager** in the left menu.
+2. Find the plugin you want to configure.
+3. Toggle **Enable** on.
+4. Fill in the required information in the settings panel.
+5. Click **Test Connection** to verify.
+6. Click **Save**.
+
+### Credential Setup Details
+
+#### Telegram
+
+| Setting | Value | How to Get It |
+|---------|-------|---------------|
+| **Bot Token** | `123456789:ABCdef...` | Create a bot via `/newbot` command with [@BotFather](https://t.me/BotFather) on Telegram |
+
+Setup steps:
+1. Start a conversation with @BotFather on Telegram.
+2. Use the `/newbot` command and set a bot name.
+3. Copy the issued Bot Token.
+4. Paste it into the Telegram plugin's Bot Token field in the BSage Plugin Manager.
+5. After saving, send a message to your bot -- BSage collects it automatically.
+
+#### Slack
+
+| Setting | Value | How to Get It |
+|---------|-------|---------------|
+| **Bot Token** | `xoxb-...` | Create an app at [Slack API](https://api.slack.com/apps) and issue a Bot Token |
+| **Signing Secret** | `abc123...` | Found in the Slack App's Basic Information |
+| **Channel** | `#general` | Select the Slack channel to monitor |
+
+Setup steps:
+1. Click **Create New App** at [api.slack.com/apps](https://api.slack.com/apps).
+2. Select **From scratch** and specify the app name and workspace.
+3. Under **OAuth & Permissions**, add the `channels:history` and `channels:read` scopes.
+4. Click **Install to Workspace** and authorize.
+5. Copy the Bot User OAuth Token and enter it in BSage.
+6. Copy the Signing Secret from **Basic Information** and enter it.
+
+#### Discord
+
+| Setting | Value | How to Get It |
+|---------|-------|---------------|
+| **Bot Token** | `MTk...` | Create a bot at the [Discord Developer Portal](https://discord.com/developers/applications) |
+
+Setup steps:
+1. Click **New Application** on the Discord Developer Portal.
+2. Under the **Bot** menu, click **Add Bot**.
+3. Copy the Token and enter it in BSage.
+4. Under **OAuth2 > URL Generator**, select the `bot` scope and `Read Messages` permission.
+5. Use the generated URL to invite the bot to your server.
+
+#### Email
+
+| Setting | Value | Example |
+|---------|-------|---------|
+| **IMAP server** | Your email provider's IMAP address | `imap.gmail.com` |
+| **Port** | IMAP port (SSL) | `993` |
+| **Email** | Email address to receive from | `user@gmail.com` |
+| **Password** | Email password or app password | (app password recommended) |
+| **Folder** | Mail folder to monitor | `INBOX` |
+
+:::caution[Gmail Users]
+Gmail blocks IMAP access with regular passwords. You must generate an **app password**:
+1. Go to Google Account > Security > Enable 2-Step Verification
+2. Generate an app password (for Mail)
+3. Enter the 16-character password in BSage
+:::
+
+#### RSS
+
+| Setting | Value | Example |
+|---------|-------|---------|
+| **Feed URL** | RSS/Atom feed address | `https://blog.example.com/feed.xml` |
+| **Polling interval** | How often to check for new articles | `30 minutes` (default) |
+
+RSS requires no credentials -- just enter the feed URL. You can register multiple feeds.
+
+#### S3
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| **Access Key ID** | `AKIA...` | AWS IAM Access Key |
+| **Secret Access Key** | `wJalr...` | AWS IAM Secret Key |
+| **Bucket** | `my-bsage-bucket` | S3 bucket name |
+| **Region** | `ap-northeast-2` | AWS region |
+| **Path prefix** | `bsage/` | Upload path prefix (optional) |
+
+#### Notion
+
+| Setting | Value | How to Get It |
+|---------|-------|---------------|
+| **Integration Token** | `secret_...` | Create at [Notion Integrations](https://www.notion.so/my-integrations) |
+| **Database ID** | `abc123...` | ID of the Notion database to sync with |
+
+Setup steps:
+1. Click **New integration** at [notion.so/my-integrations](https://www.notion.so/my-integrations).
+2. Copy the Integration Token and enter it in BSage.
+3. Open the target Notion page/database and add the integration via the Share menu.
+4. Copy the Database ID from the page URL and enter it.
+
+#### Vault (Obsidian)
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| **Vault name** | `MyVault` | Obsidian Vault name |
+| **Save path** | `BSage/` | Folder path within the Vault |
+| **Template** | (optional) | Template to use when creating notes |
+
+#### Webhook
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| **URL** | `https://api.example.com/webhook` | Target URL for HTTP POST |
+| **Headers** | `Authorization: Bearer ...` | Additional HTTP headers (optional) |
+| **Events** | (select) | Event types to send (new knowledge, tag changes, etc.) |
+
+## Plugin Pipelines
+
+Combine multiple plugins to build automation pipelines.
+
+### Pipeline Examples
+
+**Example 1: News Monitoring**
+```
+RSS (collect) → Summarizer (summarize) → Tagger (tag) → Notion (store)
+```
+New articles from RSS feeds are automatically summarized, tagged, and saved to a Notion database.
+
+**Example 2: Team Communication Archive**
+```
+Slack (collect) → Deduplicator (deduplicate) → Tagger (tag) → Vault (save to Obsidian)
+```
+Important Slack conversations are collected, deduplicated, tagged, and stored as Obsidian notes.
+
+**Example 3: Email Intelligence**
+```
+Email (collect) → DangerAnalyzer (risk analysis) → Summarizer (summarize) → Webhook (alert)
+```
+Incoming emails are analyzed for risk, summarized, and an alert is sent via Webhook.
+
+## Plugin Status Monitoring
+
+Monitor each plugin's status in real time from the Plugin Manager:
+
+| Status | Meaning | Display |
+|--------|---------|---------|
+| **Active** | Running normally | Green badge |
+| **Error** | Connection error or expired credential | Red badge + error message |
+| **Disabled** | Disabled by user | Gray badge |
+| **Rate Limited** | API rate limit reached | Yellow badge |
+
+Each plugin card shows the last sync time and number of processed items.
+
+## Plugin Security
+
+BSage keeps plugin credentials safe:
+
+- All credentials are stored **encrypted**.
+- Credentials are masked in the dashboard (`sk-...****`).
+- Deleting a plugin also deletes its credentials.
+- Each plugin follows the principle of least privilege, requesting only the API scopes it needs.

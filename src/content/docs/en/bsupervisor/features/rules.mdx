@@ -3,21 +3,148 @@ title: Rule Management
 description: Create and manage audit rules.
 ---
 
-## Built-in Rules
+## Overview
 
-BSupervisor comes with 8 built-in safety rules. Each rule can be enabled or disabled individually.
-
-## Creating Custom Rules
-
-Add new rules on the **Rules** page in the dashboard:
+BSupervisor's rule system evaluates AI agent behavior in real time to detect security threats, policy violations, and anomalies. It includes 8 built-in rules, and you can create custom rules to match your organization's needs.
 
 ![Rule Management Page](/images/screenshots/bsupervisor-rules.png)
 
-1. Write a rule name and description
-2. Set matching conditions (glob patterns)
-3. Choose a severity level (info / warning / critical)
-4. Configure a notification channel (Telegram / Slack)
+## Built-in Rules (8)
+
+These 8 safety rules are automatically enabled for all accounts. Each can be individually enabled/disabled and its thresholds can be adjusted.
+
+| # | Rule | Severity | Default State | Description |
+|---|------|----------|---------------|-------------|
+| 1 | SQL Injection detection | Critical | Enabled | Detects `UNION SELECT`, `DROP TABLE`, `; --` and other SQL injection patterns |
+| 2 | Prompt Injection detection | Critical | Enabled | Detects `Ignore previous instructions`, `System: override` and other prompt manipulation |
+| 3 | PII leak prevention | Critical | Enabled | Detects personal information (SSN, credit card numbers, emails, phone numbers) being sent externally |
+| 4 | Excessive resource usage | Warning | Enabled | Detects CPU, memory, and network usage exceeding configured thresholds |
+| 5 | Unauthorized external API calls | Warning | Enabled | Detects calls to URLs not on the allowlist |
+| 6 | Sensitive file access | Critical | Enabled | Detects access to `.env`, `*.pem`, `*.key`, `*credentials*`, `*secret*` paths |
+| 7 | Abnormal token usage | Warning | Enabled | Detects token usage 300%+ above the 7-day moving average |
+| 8 | Repetitive error patterns | Info | Enabled | Detects 10+ identical errors within a 5-minute window |
+
+### Modifying Built-in Rules
+
+To adjust thresholds and alert settings for built-in rules:
+
+1. Click the rule row on the **Rules** page.
+2. In the detail panel, modify:
+   - **Threshold**: Detection threshold (e.g., token usage 300% -> 500%)
+   - **Alert channel**: Channels to notify when this rule is violated
+   - **Active state**: Enable/disable toggle
+3. Click **Save**.
+
+:::note
+Built-in rules cannot be deleted, only disabled. Rule names and detection patterns cannot be modified.
+:::
+
+## Creating Custom Rules
+
+Create audit rules that match your organization's security policies.
+
+### Creation Process
+
+#### Step 1: Enter Basic Information
+
+1. Click the **+ New Rule** button in the top right of the **Rules** page.
+2. Fill in the basic information:
+
+| Field | Required | Description | Example |
+|-------|----------|-------------|---------|
+| **Rule name** | Yes | A concise name for the rule | "Production DB access restriction" |
+| **Description** | No | Purpose and behavior of the rule | "Detects direct access attempts to the production database" |
+| **Category** | Yes | Event category the rule applies to | `api_call`, `file_access`, `code_execution` |
+
+#### Step 2: Set Matching Conditions
+
+Define which event fields to inspect and what patterns to look for.
+
+| Condition Type | Description | Example |
+|----------------|-------------|---------|
+| **Glob pattern** | Match file paths or URLs with wildcards | `*.env`, `*/production/*` |
+| **Regex** | Match text content with regular expressions | `\b\d{6}-\d{7}\b` (Korean SSN) |
+| **Threshold** | Trigger when a numeric field exceeds a value | Tokens > 50,000 |
+| **Frequency** | Trigger based on event count within a time window | Same API 10+ times in 1 minute |
+| **List** | Match against allow/block lists | Blocked domain list |
+
+Multiple conditions can be combined with **AND** or **OR**.
+
+#### Step 3: Choose Severity
+
+| Severity | Use Case | Default Alert | Dashboard Display |
+|----------|----------|---------------|-------------------|
+| **Critical** | Security threats needing immediate response | All channels immediately | Red badge |
+| **Warning** | Anomalies needing attention | Configured channels | Yellow badge |
+| **Info** | Informational, pattern monitoring | Dashboard only | Blue badge |
+
+#### Step 4: Configure Alert Channels
+
+Select which channels to notify when this rule is violated.
+
+| Channel | Required Info | Alert Content |
+|---------|---------------|---------------|
+| **Telegram** | Bot Token, Chat ID | Rule name, severity, violation details, timestamp |
+| **Slack** | Webhook URL | Rule name, severity, violation details, related event link |
+| **Email** | Email address | Detailed report format (with event context) |
+
+:::tip
+For **Critical** rules, we recommend configuring at least one real-time channel (Telegram or Slack).
+:::
+
+#### Step 5: Save and Activate
+
+1. Review all settings.
+2. Click **Save** to store the rule.
+3. The saved rule is immediately active and applies to newly collected events.
+
+## Managing Rules
+
+### Rule List View
+
+The Rules page displays the following for each rule:
+
+| Column | Description |
+|--------|-------------|
+| **Name** | Rule name |
+| **Type** | Built-in / Custom |
+| **Severity** | Critical / Warning / Info |
+| **Status** | Enabled / Disabled |
+| **Violations** | Number of violations in the past 30 days |
+| **Last violation** | Timestamp of the most recent violation |
+
+### Editing Rules
+
+1. Click the rule row to edit.
+2. Modify the desired fields in the detail panel.
+3. Click **Save**.
+4. Changes take effect immediately.
+
+### Disabling/Deleting Rules
+
+- **Disable**: Toggle the rule's status off. Settings are preserved and can be re-enabled anytime.
+- **Delete**: Only custom rules can be deleted. Deleted rules cannot be recovered.
 
 ## Rule Evaluation Order
 
-Rules are evaluated in priority order. The action of the first matching rule is executed.
+When an event is collected, rules are evaluated as follows:
+
+1. All active rules are sorted by severity (Critical > Warning > Info).
+2. Within the same severity, built-in rules are evaluated first.
+3. Each rule's matching conditions are checked against the event.
+4. **All matching rules execute their actions** (evaluation does not stop at the first match).
+5. Violation results are sent to the dashboard and alert channels.
+
+:::note
+A single event can match multiple rules simultaneously. For example, sending `.env` file contents to an external API would trigger both "Sensitive file access" and "PII leak prevention" rules.
+:::
+
+## Violation History
+
+View the full history of rule violations on the **Reports > Violations** page:
+
+- Date/time range filter
+- Severity filter
+- Rule filter
+- Agent filter
+- CSV export

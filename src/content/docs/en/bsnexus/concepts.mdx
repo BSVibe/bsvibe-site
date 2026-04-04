@@ -3,32 +3,105 @@ title: Core Concepts
 description: Understand BSNexus architecture and key components.
 ---
 
+BSNexus is built around four core components: **Architect**, **Task State Machine**, **Executor**, and **Kanban Board**. This page explains how each one works.
+
 ## Architect
 
-The Architect is an AI conversational interface that transforms your ideas into structured projects.
+The Architect is an AI conversational interface that transforms your ideas into **structured projects**.
 
-Describe what you want to build in natural language, and the Architect will:
-1. Analyze requirements and ask clarifying questions
-2. Generate the project structure and task list
-3. Assign an appropriate Executor to each task
+![Architect conversation](/images/screenshots/bsnexus-architect.png)
+
+### How the Architect Works
+
+Describe what you want to build in natural language, and the Architect performs the following steps:
+
+| Step | Description | Example |
+|------|-------------|---------|
+| **1. Requirement analysis** | Extracts key features, tech stack, and constraints from your input | "React + FastAPI" -> frontend/backend split |
+| **2. Clarifying questions** | Asks follow-up questions to resolve ambiguity | "Do you prefer JWT or session-based auth?" |
+| **3. Project structure design** | Defines directory structure, module layout, and tech stack | `src/api/`, `src/components/`, `src/models/` |
+| **4. Task breakdown** | Splits the project into independent work units | "DB schema design", "Auth API", "Dashboard UI" |
+| **5. Dependency setup** | Analyzes inter-task dependencies to determine execution order | "DB schema -> Auth API -> Dashboard UI" |
+| **6. Executor assignment** | Assigns the right execution agent to each task | Claude Code Executor -> code generation tasks |
+
+### Effective Conversation Patterns
+
+To get the most out of the Architect:
+
+- **Initial description**: Explain the overall purpose and core features.
+- **Iterative refinement**: Answer the Architect's questions to refine requirements.
+- **Task editing**: Review generated tasks and request modifications.
+- **Adding features**: You can add new requirements even while the project is in progress.
 
 ## Task State Machine
 
-Every task goes through the following states:
+Every task follows a defined state flow. Each state represents the current stage of a task's lifecycle.
+
+### State Transition Diagram
 
 ```
 PENDING → ASSIGNED → IN_PROGRESS → IN_REVIEW → COMPLETED
-                                       ↓
-                                    FAILED → PENDING (retry)
+                         ↓
+                      FAILED → PENDING (automatic retry)
 ```
+
+### State Details
+
+| State | Meaning | Trigger | Kanban Column |
+|-------|---------|---------|---------------|
+| **PENDING** | Waiting. Enters the queue once dependencies are resolved | Task creation / retry | Backlog |
+| **ASSIGNED** | Executor assigned. Ready to run | Dependencies complete + Executor available | Backlog |
+| **IN_PROGRESS** | Executor is working | Executor starts work | In Progress |
+| **IN_REVIEW** | Awaiting result review | Executor reports completion | Review |
+| **COMPLETED** | Done | Review passed | Done |
+| **FAILED** | Work failed. May return to PENDING based on retry policy | Error / timeout | - |
+
+### Automatic Retry Policy
+
+When a task enters the FAILED state:
+1. The failure reason is logged.
+2. If the retry count is below the maximum (default: 3), the task automatically returns to PENDING.
+3. If the maximum is exceeded, it stays FAILED and the user is notified.
+4. Users can also manually edit the task and retry.
+
+### Dependency Management
+
+Inter-task dependencies are managed as a **DAG (Directed Acyclic Graph)**:
+- A task transitions to ASSIGNED only when all its dependencies are COMPLETED.
+- Circular dependencies are automatically detected and prevented at the Architect stage.
+- The dependency graph is visually displayed on the Kanban board.
 
 ## Executor
 
-An Executor is an agent that performs the actual work. Any execution environment can be connected by implementing the ExecutorProtocol.
+An Executor is an **AI agent that performs the actual work**. Once assigned a task, it autonomously generates code, modifies files, runs tests, and more.
 
-Built-in Executors:
-- **Claude Code Executor**: Code generation and modification using the Claude Code CLI
+### Built-in Executors
+
+| Executor | Role | Highlights |
+|----------|------|------------|
+| **Claude Code Executor** | Code generation, modification, refactoring, test writing | Based on the Claude Code CLI, supports multi-file edits |
+
+### Executor Workflow
+
+1. **Receive task**: Picks up an ASSIGNED task.
+2. **Understand context**: Analyzes the project structure, dependency outputs, and requirements.
+3. **Perform work**: Writes code, creates/modifies files.
+4. **Report result**: Submits output and transitions the task to IN_REVIEW.
+5. **Handle failure**: Logs a detailed error and transitions to FAILED if something goes wrong.
+
+### ExecutorProtocol
+
+BSNexus is designed to support diverse execution environments through the ExecutorProtocol interface. Additional Executors will be supported in the future.
 
 ## Kanban Board
 
-Monitor the progress of all tasks visually on a real-time WebSocket-based Kanban board.
+A real-time WebSocket-based Kanban board lets you visually track and manage all task progress.
+
+### Key Features
+
+- **Real-time updates**: Task state changes are reflected instantly via WebSocket.
+- **Dependency visualization**: Dependencies between tasks are shown as connecting lines.
+- **Filtering**: Filter tasks by Executor, state, or tag.
+- **Manual control**: Drag and drop task cards to manually change their state if needed.
+
+See the [Kanban Board guide](/bsnexus/features/kanban) for detailed usage instructions.

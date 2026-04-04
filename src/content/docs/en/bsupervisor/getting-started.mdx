@@ -3,38 +3,96 @@ title: Getting Started
 description: Sign up for BSupervisor and start auditing your AI agents.
 ---
 
-BSupervisor is a safety layer that monitors and audits AI agent behavior in real time.
+BSupervisor is a **real-time safety layer** that monitors and audits AI agent behavior. It collects every action as an event, evaluates them against predefined rules to detect threats, and tracks LLM usage costs.
 
 ## What BSupervisor Does
 
-- **Real-time rule evaluation**: 8 built-in safety rules (SQL injection, PII leak, etc.)
-- **Custom rules**: Create audit rules tailored to your organization
-- **Cost tracking**: Monitor LLM costs per agent and per model
-- **Daily reports**: Automatically generated audit reports
+| Feature | Description |
+|---------|-------------|
+| **Real-time rule evaluation** | Automatically detects threats with 8 built-in safety rules |
+| **Custom rules** | Create audit rules that match your organization's security policies |
+| **Cost tracking** | Monitor LLM API costs per agent and per model with anomaly detection |
+| **Daily reports** | Automated reports covering rule violations, cost trends, and anomalies |
+| **Alert integrations** | Instant notifications via Telegram, Slack, or email |
 
 ## Quick Start
 
-### 1. Create an Account
+### Step 1: Create an Account and Sign In
 
-Sign in with your BSVibe account at [supervisor.bsvibe.dev](https://supervisor.bsvibe.dev).
+1. Go to [supervisor.bsvibe.dev](https://supervisor.bsvibe.dev) in your browser.
+2. Click the **Sign in with BSVibe** button.
+   - If you don't have a BSVibe account yet, sign up at [auth.bsvibe.dev](https://auth.bsvibe.dev).
+3. After signing in, you'll see the dashboard.
 
-![BSupervisor Dashboard](/images/screenshots/bsupervisor-dashboard.png)
+![BSupervisor Dashboard — View event counts, rule violations, and cost trends at a glance.](/images/screenshots/bsupervisor-dashboard.png)
 
-### 2. Connect Your Agents
+The dashboard displays:
+- **Event Count**: Total events collected (today / this week / this month)
+- **Rule Violations**: Violation count and severity distribution
+- **Cost Overview**: LLM cost chart per agent
+- **Recent Alerts**: Latest alert list
+
+### Step 2: Connect Your Agents
 
 On the **Settings** page, connect the AI agent platforms you want to monitor:
-- BSNexus (automatic integration within the BSVibe ecosystem)
-- OpenAI / Anthropic (API key based)
-- Custom agents (Webhook)
 
-### 3. Review Rules
+| Integration Method | How to Set Up | Supported Platforms |
+|--------------------|---------------|---------------------|
+| **BSVibe auto-integration** | Automatically connected when using BSNexus | BSNexus |
+| **API key based** | Enter the platform's API key | OpenAI, Anthropic |
+| **Webhook** | Set the BSupervisor-provided Webhook URL in your agent | Custom agents |
 
-On the **Rules** page, 8 built-in safety rules are enabled by default. You can add new rules or disable existing ones as needed.
+Integration steps:
+1. Click **Settings > Integrations**.
+2. Click the **Connect** button for the platform you want to integrate.
+3. Enter the required credentials (API keys, etc.).
+4. Click **Test Connection** to verify the connection.
+5. Click **Save** to store the settings.
 
-### 4. Monitor the Dashboard
+### Step 3: Review Built-in Rules
 
-View event counts, rule violations, and cost trends in real time on the **Dashboard**.
+Navigate to the **Rules** page to see the 8 built-in safety rules, which are enabled by default:
+
+![Rule Management Page](/images/screenshots/bsupervisor-rules.png)
+
+| # | Rule | Severity | Description |
+|---|------|----------|-------------|
+| 1 | **SQL Injection detection** | Critical | Detects SQL injection patterns in queries |
+| 2 | **Prompt Injection detection** | Critical | Detects prompt manipulation attempts |
+| 3 | **PII leak prevention** | Critical | Detects personal information (names, emails, phone numbers) being sent externally |
+| 4 | **Excessive resource usage** | Warning | Detects CPU, memory, and network usage exceeding thresholds |
+| 5 | **Unauthorized external API calls** | Warning | Detects calls to URLs not on the allowlist |
+| 6 | **Sensitive file access** | Critical | Detects access to `.env`, certificates, key files, and other sensitive files |
+| 7 | **Abnormal token usage** | Warning | Detects abnormally high token usage compared to the average |
+| 8 | **Repetitive error patterns** | Info | Detects repeated identical errors within a time window |
+
+Each rule can be individually enabled/disabled, and its thresholds and notification channels can be customized.
+
+### Step 4: Set Up Alert Channels
+
+To receive instant notifications when rules are violated:
+
+1. Click **Settings > Notifications**.
+2. Add notification channels:
+   - **Telegram**: Enter a Bot Token and Chat ID.
+   - **Slack**: Enter a Slack Webhook URL.
+   - **Email**: Enter the notification email address.
+3. Configure alert policies by severity:
+   - **Critical**: Instant alert on all channels
+   - **Warning**: Alert on selected channels
+   - **Info**: Dashboard only (no alert by default, configurable)
+
+### Step 5: Monitor the Dashboard
+
+Once set up, monitor the following on the **Dashboard** in real time:
+
+- **Event timeline**: Agent events sorted chronologically
+- **Violation chart**: Daily/weekly violation trend graphs
+- **Cost trends**: LLM cost charts per agent and per model
+
+![BSupervisor Cost Tracking](/images/screenshots/bsupervisor-costs.png)
 
 ## Next Steps
 
-- [Core Concepts](/bsupervisor/concepts) — Understand the rule engine and event collection
+- [Core Concepts](/bsupervisor/concepts) — Understand event collection, the rule engine, and cost tracking architecture
+- [Rule Management](/bsupervisor/features/rules) — Detailed guide to creating and managing custom rules
