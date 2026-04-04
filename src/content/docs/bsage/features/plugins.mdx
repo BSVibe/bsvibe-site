@@ -3,37 +3,217 @@ title: 플러그인
 description: BSage 플러그인을 설정하고 관리합니다.
 ---
 
-## 사용 가능한 플러그인
+## 개요
 
-BSage는 18개의 플러그인을 제공합니다.
+BSage는 **18개의 플러그인**을 제공하여 다양한 외부 서비스와 연동합니다. 플러그인은 Input(수집), Process(가공), Output(출력) 세 카테고리로 분류됩니다.
 
-### Input 플러그인
+![BSage 대시보드의 Plugin Manager](/images/screenshots/bsage-dashboard.png)
 
-| 플러그인 | 설명 |
-|---------|------|
-| Telegram | Telegram 봇으로 메시지 수신 |
-| Slack | Slack 채널 모니터링 |
-| Discord | Discord 봇 연동 |
-| Email | IMAP 이메일 수신 |
-| RSS | RSS/Atom 피드 구독 |
+## 전체 플러그인 목록
 
-### Process 플러그인
+### Input 플러그인 (7개)
 
-| 플러그인 | 설명 |
-|---------|------|
-| Summarizer | LLM 기반 자동 요약 |
-| Tagger | 자동 태그 부여 |
-| DangerAnalyzer | 위험 요소 자동 탐지 |
+외부에서 BSage로 정보를 수집하는 플러그인입니다.
 
-### Output 플러그인
+| # | 플러그인 | 설명 | 필요한 Credential | 수집 방식 |
+|---|---------|------|-------------------|-----------|
+| 1 | **Telegram** | Telegram 봇을 통해 메시지, 파일, 링크를 수집 | Bot Token | 실시간 (Webhook) |
+| 2 | **Slack** | 지정된 Slack 채널의 메시지를 모니터링하여 수집 | Bot Token, Signing Secret | 실시간 (Events API) |
+| 3 | **Discord** | Discord 봇을 통해 채널 메시지를 수집 | Bot Token | 실시간 (Gateway) |
+| 4 | **Email** | IMAP 프로토콜로 이메일을 수신하여 수집 | IMAP 서버, 이메일, 비밀번호 | 폴링 (1분 간격) |
+| 5 | **RSS** | RSS/Atom 피드를 구독하여 새 글을 수집 | 없음 (피드 URL만 필요) | 폴링 (설정 가능) |
+| 6 | **Web Clipper** | 웹 페이지를 스크랩하여 본문을 추출 | 없음 | 수동 (URL 입력) |
+| 7 | **Calendar** | Google Calendar 일정을 동기화 | Google OAuth | 폴링 (5분 간격) |
 
-| 플러그인 | 설명 |
-|---------|------|
-| S3 | Amazon S3 파일 업로드 |
-| Vault | Obsidian Vault 연동 |
+### Process 플러그인 (6개)
 
-## 플러그인 설정
+수집된 정보를 가공, 분석, 변환하는 플러그인입니다.
 
-대시보드의 **Plugin Manager** 페이지에서 각 플러그인을 활성화하고 credential을 설정합니다.
+| # | 플러그인 | 설명 | 필요한 Credential | 적용 시점 |
+|---|---------|------|-------------------|-----------|
+| 8 | **Summarizer** | LLM 기반으로 긴 텍스트를 자동 요약 | 없음 (BSage LLM 사용) | 새 지식 수집 시 |
+| 9 | **Tagger** | 내용을 분석하여 카테고리와 태그를 자동 부여 | 없음 (BSage LLM 사용) | 새 지식 수집 시 |
+| 10 | **DangerAnalyzer** | 위험 요소, 민감 정보, 편향을 자동 탐지 | 없음 (BSage LLM 사용) | 새 지식 수집 시 |
+| 11 | **Translator** | 다국어 텍스트를 지정 언어로 자동 번역 | 없음 (BSage LLM 사용) | 수동 또는 자동 |
+| 12 | **Deduplicator** | 유사/중복 지식을 자동 탐지하여 병합 제안 | 없음 | 새 지식 수집 시 |
+| 13 | **Enricher** | 외부 소스에서 관련 정보를 검색하여 지식을 보강 | 없음 (BSage 검색 사용) | 수동 또는 자동 |
 
-> **[스크린샷]** 대시보드 → Plugin Manager 페이지 화면
+### Output 플러그인 (5개)
+
+BSage의 지식을 외부 시스템으로 내보내는 플러그인입니다.
+
+| # | 플러그인 | 설명 | 필요한 Credential | 출력 형식 |
+|---|---------|------|-------------------|-----------|
+| 14 | **S3** | Amazon S3 버킷으로 파일을 업로드 | AWS Access Key, Secret Key, Bucket | 원본 파일 |
+| 15 | **Vault** | Obsidian Vault로 노트를 자동 생성/업데이트 | Vault 경로 설정 | Markdown |
+| 16 | **Notion** | Notion 페이지/데이터베이스로 지식을 동기화 | Notion Integration Token | Notion 블록 |
+| 17 | **Webhook** | 설정된 URL로 지식 데이터를 HTTP POST 전송 | Webhook URL | JSON |
+| 18 | **Export** | 지식을 파일로 내보내기 (일괄 다운로드) | 없음 | Markdown, JSON, CSV |
+
+## 플러그인 설정 가이드
+
+### Plugin Manager 사용법
+
+1. 좌측 메뉴에서 **Plugin Manager**를 클릭합니다.
+2. 플러그인 목록에서 설정할 플러그인을 찾습니다.
+3. **Enable** 토글을 활성화합니다.
+4. 설정 패널이 열리면 필요한 정보를 입력합니다.
+5. **Test Connection**으로 연결을 확인합니다.
+6. **Save**를 클릭하여 저장합니다.
+
+### Credential 설정 상세
+
+각 플러그인별 credential 설정 방법입니다.
+
+#### Telegram
+
+| 설정 항목 | 입력 값 | 획득 방법 |
+|-----------|---------|-----------|
+| **Bot Token** | `123456789:ABCdef...` | Telegram [@BotFather](https://t.me/BotFather)에서 `/newbot` 명령으로 생성 |
+
+설정 절차:
+1. Telegram에서 @BotFather와 대화를 시작합니다.
+2. `/newbot` 명령을 입력하고 봇 이름을 설정합니다.
+3. 발급된 Bot Token을 복사합니다.
+4. BSage Plugin Manager에서 Telegram 플러그인의 Bot Token 필드에 붙여넣기합니다.
+5. Save 후, 생성된 봇에게 메시지를 보내면 BSage에 자동으로 수집됩니다.
+
+#### Slack
+
+| 설정 항목 | 입력 값 | 획득 방법 |
+|-----------|---------|-----------|
+| **Bot Token** | `xoxb-...` | [Slack API](https://api.slack.com/apps)에서 앱 생성 후 Bot Token 발급 |
+| **Signing Secret** | `abc123...` | Slack App의 Basic Information에서 확인 |
+| **채널** | `#general` | 모니터링할 Slack 채널 선택 |
+
+설정 절차:
+1. [api.slack.com/apps](https://api.slack.com/apps)에서 **Create New App**을 클릭합니다.
+2. **From scratch**를 선택하고 앱 이름과 워크스페이스를 지정합니다.
+3. **OAuth & Permissions**에서 `channels:history`, `channels:read` 스코프를 추가합니다.
+4. **Install to Workspace**를 클릭하고 권한을 승인합니다.
+5. Bot User OAuth Token을 복사하여 BSage에 입력합니다.
+6. **Basic Information**에서 Signing Secret을 복사하여 입력합니다.
+
+#### Discord
+
+| 설정 항목 | 입력 값 | 획득 방법 |
+|-----------|---------|-----------|
+| **Bot Token** | `MTk...` | [Discord Developer Portal](https://discord.com/developers/applications)에서 봇 생성 |
+
+설정 절차:
+1. Discord Developer Portal에서 **New Application**을 클릭합니다.
+2. **Bot** 메뉴에서 **Add Bot**을 클릭합니다.
+3. Token을 복사하여 BSage에 입력합니다.
+4. **OAuth2 > URL Generator**에서 `bot` 스코프와 `Read Messages` 권한을 선택합니다.
+5. 생성된 URL로 봇을 서버에 초대합니다.
+
+#### Email
+
+| 설정 항목 | 입력 값 | 예시 |
+|-----------|---------|------|
+| **IMAP 서버** | 이메일 제공자의 IMAP 주소 | `imap.gmail.com` |
+| **포트** | IMAP 포트 (SSL) | `993` |
+| **이메일** | 수신할 이메일 주소 | `user@gmail.com` |
+| **비밀번호** | 이메일 비밀번호 또는 앱 비밀번호 | (앱 비밀번호 권장) |
+| **폴더** | 모니터링할 메일 폴더 | `INBOX` |
+
+:::caution[Gmail 사용 시]
+Gmail은 일반 비밀번호로 IMAP 접근이 차단됩니다. **앱 비밀번호**를 생성하여 사용해야 합니다:
+1. Google 계정 > 보안 > 2단계 인증 활성화
+2. 앱 비밀번호 생성 (Mail 용도)
+3. 생성된 16자리 비밀번호를 BSage에 입력
+:::
+
+#### RSS
+
+| 설정 항목 | 입력 값 | 예시 |
+|-----------|---------|------|
+| **피드 URL** | RSS/Atom 피드 주소 | `https://blog.example.com/feed.xml` |
+| **폴링 간격** | 새 글 확인 주기 | `30분` (기본값) |
+
+RSS 플러그인은 credential이 필요 없으며, 피드 URL만 입력하면 됩니다. 여러 개의 피드를 등록할 수 있습니다.
+
+#### S3
+
+| 설정 항목 | 입력 값 | 설명 |
+|-----------|---------|------|
+| **Access Key ID** | `AKIA...` | AWS IAM Access Key |
+| **Secret Access Key** | `wJalr...` | AWS IAM Secret Key |
+| **Bucket** | `my-bsage-bucket` | S3 버킷 이름 |
+| **Region** | `ap-northeast-2` | AWS 리전 |
+| **경로 prefix** | `bsage/` | 업로드 경로 prefix (선택) |
+
+#### Notion
+
+| 설정 항목 | 입력 값 | 획득 방법 |
+|-----------|---------|-----------|
+| **Integration Token** | `secret_...` | [Notion Integrations](https://www.notion.so/my-integrations)에서 생성 |
+| **Database ID** | `abc123...` | 연동할 Notion 데이터베이스의 ID |
+
+설정 절차:
+1. [notion.so/my-integrations](https://www.notion.so/my-integrations)에서 **New integration**을 클릭합니다.
+2. Integration Token을 복사하여 BSage에 입력합니다.
+3. Notion에서 연동할 페이지/데이터베이스를 열고, Share 메뉴에서 생성한 Integration을 추가합니다.
+4. 페이지 URL에서 Database ID를 복사하여 입력합니다.
+
+#### Vault (Obsidian)
+
+| 설정 항목 | 입력 값 | 설명 |
+|-----------|---------|------|
+| **Vault 이름** | `MyVault` | Obsidian Vault 이름 |
+| **저장 경로** | `BSage/` | Vault 내 저장 폴더 경로 |
+| **템플릿** | 선택 | 노트 생성 시 사용할 템플릿 |
+
+#### Webhook
+
+| 설정 항목 | 입력 값 | 설명 |
+|-----------|---------|------|
+| **URL** | `https://api.example.com/webhook` | HTTP POST 대상 URL |
+| **Headers** | `Authorization: Bearer ...` | 추가 HTTP 헤더 (선택) |
+| **이벤트** | 선택 | 전송할 이벤트 유형 (새 지식, 태그 변경 등) |
+
+## 플러그인 파이프라인
+
+여러 플러그인을 조합하여 자동화 파이프라인을 구성할 수 있습니다.
+
+### 파이프라인 예시
+
+**예시 1: 뉴스 모니터링 파이프라인**
+```
+RSS (수집) → Summarizer (요약) → Tagger (태깅) → Notion (저장)
+```
+RSS 피드에서 새 기사를 수집하면, 자동으로 요약하고 태그를 부여한 후, Notion 데이터베이스에 저장합니다.
+
+**예시 2: 팀 커뮤니케이션 아카이브**
+```
+Slack (수집) → Deduplicator (중복 제거) → Tagger (태깅) → Vault (Obsidian 저장)
+```
+Slack 채널의 중요 대화를 자동으로 수집, 중복을 제거하고, 태그를 부여한 후 Obsidian에 노트로 저장합니다.
+
+**예시 3: 이메일 인텔리전스**
+```
+Email (수집) → DangerAnalyzer (위험 분석) → Summarizer (요약) → Webhook (알림)
+```
+수신 이메일에서 위험 요소를 분석하고, 요약본을 생성한 후, Webhook으로 알림을 보냅니다.
+
+## 플러그인 상태 모니터링
+
+Plugin Manager에서 각 플러그인의 상태를 실시간으로 확인할 수 있습니다:
+
+| 상태 | 의미 | 표시 |
+|------|------|------|
+| **Active** | 정상 동작 중 | 녹색 뱃지 |
+| **Error** | 연결 오류 또는 credential 만료 | 빨간색 뱃지 + 에러 메시지 |
+| **Disabled** | 사용자가 비활성화 | 회색 뱃지 |
+| **Rate Limited** | API 호출 제한에 도달 | 노란색 뱃지 |
+
+각 플러그인 카드에는 마지막 동기화 시각과 처리한 항목 수가 표시됩니다.
+
+## 플러그인 보안
+
+BSage는 플러그인 credential을 안전하게 관리합니다:
+
+- 모든 credential은 **암호화**되어 저장됩니다.
+- credential은 대시보드에서 마스킹 처리되어 표시됩니다 (`sk-...****`).
+- 플러그인 삭제 시 credential도 함께 삭제됩니다.
+- 각 플러그인은 최소 권한 원칙에 따라 필요한 API 스코프만 요청합니다.
