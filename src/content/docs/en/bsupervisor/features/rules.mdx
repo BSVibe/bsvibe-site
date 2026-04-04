@@ -1,0 +1,21 @@
+---
+title: Rule Management
+description: Create and manage audit rules.
+---
+
+## Built-in Rules
+
+BSupervisor comes with 8 built-in safety rules. Each rule can be enabled or disabled individually.
+
+## Creating Custom Rules
+
+Add new rules on the **Rules** page in the dashboard:
+
+1. Write a rule name and description
+2. Set matching conditions (glob patterns)
+3. Choose a severity level (info / warning / critical)
+4. Configure a notification channel (Telegram / Slack)
+
+## Rule Evaluation Order
+
+Rules are evaluated in priority order. The action of the first matching rule is executed.

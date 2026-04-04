@@ -1,0 +1,36 @@
+---
+title: Core Concepts
+description: Understand BSage's plugins, skills, and Knowledge Graph.
+---
+
+## Plugins vs Skills
+
+BSage offers two extension mechanisms:
+
+| | Plugin | Skill |
+|--|--------|-------|
+| Implementation | Python code | Markdown (LLM pipeline) |
+| Purpose | External system integration | Text processing/analysis |
+| Examples | Telegram bot, Email ingestion | Summarization, translation, risk analysis |
+
+### Plugin Categories
+
+- **Input**: Collect information from external sources (Telegram, Slack, RSS, etc.)
+- **Process**: Transform information (summarization, classification, tagging)
+- **Output**: Deliver results (notifications, file storage, S3 upload)
+
+## Knowledge Graph
+
+All collected knowledge is connected in a graph structure:
+
+- **Nodes**: Individual knowledge items
+- **Edges**: Relationships between knowledge (reference, related, contradicts, etc.)
+- **Vector Store**: Embedding storage for semantic search
+
+## 2nd Brain Structure
+
+BSage organizes knowledge into three areas:
+
+1. **Seeds**: Newly ingested raw information
+2. **Garden**: Organized and connected knowledge
+3. **Actions**: Actionable items derived from knowledge

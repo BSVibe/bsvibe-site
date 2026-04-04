@@ -1,35 +1,17 @@
 /*
  * BSVibe Starlight Theme Override
- * Dark theme with Plus Jakarta Sans + product accent colors
+ * Dark-first with Plus Jakarta Sans + product accent colors
+ * Supports both dark and light themes
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ─── Starlight CSS Custom Properties ─── */
+/* ─── Common (both themes) ─── */
 :root {
-  /* Typography */
   --sl-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* Dark theme colors (override Starlight defaults) */
-  --sl-color-accent-low: #1e1b4b;
-  --sl-color-accent: #6366f1;
-  --sl-color-accent-high: #c7d2fe;
-
-  --sl-color-white: #f2f3f7;
-  --sl-color-gray-1: #e4e6ee;
-  --sl-color-gray-2: #a8adc6;
-  --sl-color-gray-3: #8187a8;
-  --sl-color-gray-4: #5a5f7d;
-  --sl-color-gray-5: #2a2d42;
-  --sl-color-gray-6: #181926;
-  --sl-color-black: #0a0b0f;
-
-  --sl-color-bg-nav: rgba(10, 11, 15, 0.85);
-  --sl-color-bg-sidebar: #111218;
-
-  /* Text size */
   --sl-text-sm: 0.875rem;
   --sl-text-base: 1rem;
   --sl-text-lg: 1.125rem;
@@ -39,8 +21,8 @@
   --sl-text-4xl: 2.25rem;
 }
 
-/* Force dark mode */
-:root[data-theme='light'] {
+/* ─── Dark Theme (default) ─── */
+:root[data-theme='dark'] {
   --sl-color-accent-low: #1e1b4b;
   --sl-color-accent: #6366f1;
   --sl-color-accent-high: #c7d2fe;
@@ -58,23 +40,47 @@
   --sl-color-bg-sidebar: #111218;
 }
 
-/* ─── Navigation backdrop blur ─── */
+/* ─── Light Theme ─── */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #e0e7ff;
+  --sl-color-accent: #4f46e5;
+  --sl-color-accent-high: #312e81;
+
+  --sl-color-white: #111218;
+  --sl-color-gray-1: #2a2d42;
+  --sl-color-gray-2: #5a5f7d;
+  --sl-color-gray-3: #8187a8;
+  --sl-color-gray-4: #a8adc6;
+  --sl-color-gray-5: #e4e6ee;
+  --sl-color-gray-6: #f2f3f7;
+  --sl-color-black: #ffffff;
+
+  --sl-color-bg-nav: rgba(255, 255, 255, 0.85);
+  --sl-color-bg-sidebar: #f8f9fc;
+}
+
+/* ─── Navigation ─── */
 header.header {
   backdrop-filter: blur(12px);
 }
 
-/* ─── Sidebar active link accent ─── */
+/* ─── Sidebar ─── */
 nav.sidebar a[aria-current='page'] {
   font-weight: 600;
 }
 
 /* ─── Code blocks ─── */
-pre {
+:root[data-theme='dark'] pre {
   border: 1px solid #2a2d42 !important;
   background-color: #111218 !important;
 }
 
-/* ─── Product section accent overrides ─── */
+:root[data-theme='light'] pre {
+  border: 1px solid #e4e6ee !important;
+  background-color: #f8f9fc !important;
+}
+
+/* ─── Product accent overrides ─── */
 [data-product='bsgateway'] {
   --sl-color-accent-low: #451a03;
   --sl-color-accent: #f59e0b;

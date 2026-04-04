@@ -1,0 +1,46 @@
+---
+title: Core Concepts
+description: Understand BSupervisor's event collection, rule engine, and cost tracking.
+---
+
+## Event Collection
+
+BSupervisor collects all AI agent actions as events:
+
+- API calls (request/response)
+- File system access
+- External service communication
+- Code execution results
+
+Target: **p99 < 50ms** collection latency.
+
+## Rule Engine
+
+### Built-in Rules (8)
+
+BSupervisor automatically detects the following threats:
+
+1. SQL injection attempts
+2. Prompt injection attempts
+3. PII (personally identifiable information) leaks
+4. Excessive resource usage
+5. Unauthorized external API calls
+6. Sensitive file access
+7. Abnormal token usage
+8. Repetitive error patterns
+
+### Custom Rules
+
+Add rules tailored to your organization from the dashboard.
+
+## Cost Tracking
+
+Track LLM costs per agent and per model, with anomaly detection.
+
+## Daily Reports
+
+Automatically generated daily audit reports include:
+- Rule violation summary
+- Cost trends
+- Anomaly detection alerts
+- Recommended actions

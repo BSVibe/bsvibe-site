@@ -1,0 +1,30 @@
+---
+title: Usage Analytics
+description: Track and analyze LLM usage and costs.
+---
+
+## Dashboard
+
+Monitor real-time usage in the BSGateway dashboard.
+
+### Key Metrics
+
+- **Total Requests**: Total API calls within the selected period
+- **Total Tokens**: Sum of input and output tokens
+- **Estimated Cost**: Cost calculated based on per-model pricing
+- **Average Response Time**: Latency per model
+
+### Filters
+
+- Period: Today / 7 days / 30 days / Custom
+- By API key
+- By model
+- By routing type (passthrough / alias / pattern / auto)
+
+## Cost Optimization Insights
+
+The dashboard automatically identifies opportunities to reduce costs:
+
+- Cases where simple requests were routed to expensive models
+- Infrequently used models (consider disabling)
+- Peak usage time patterns

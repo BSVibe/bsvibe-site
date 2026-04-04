@@ -1,0 +1,73 @@
+---
+title: Core Concepts
+description: Understand BSGateway's routing layers, classifier, and API key management.
+---
+
+## Routing Layers
+
+BSGateway processes requests through a 4-layer routing pipeline:
+
+```
+Request → Passthrough → Alias → Pattern → Auto → Model Call
+```
+
+### 1. Passthrough
+
+If the request matches a registered model ID exactly, it is forwarded directly to that model.
+
+```
+Request: model="claude-sonnet" → Forwarded directly to claude-sonnet
+```
+
+### 2. Alias
+
+Models can be referenced through aliases.
+
+```yaml
+aliases:
+  fast: gpt-4o-mini
+  smart: claude-sonnet
+```
+
+### 3. Pattern
+
+Routes requests based on content using glob patterns.
+
+```yaml
+rules:
+  - pattern: "code/*"
+    model: claude-sonnet
+  - pattern: "translate/*"
+    model: gpt-4o-mini
+```
+
+### 4. Auto
+
+The classifier analyzes request complexity and automatically selects the optimal model.
+
+## Classifier
+
+The classifier determines request complexity as one of `simple`, `moderate`, or `complex`:
+
+| Strategy | Description | Speed | Accuracy |
+|----------|-------------|-------|----------|
+| `static` | Keyword/pattern-based heuristics | Fast | Moderate |
+| `llm` | Local LLM (Ollama) based | Medium | High |
+| `ml` | Trained sklearn model | Fast | High |
+
+## API Key Management
+
+BSGateway supports multi-tenant API keys:
+
+- **API key creation**: Issue project-specific API keys from the dashboard
+- **Usage tracking**: Track request count, token count, and cost per key
+- **Rate Limiting**: Redis-based request throttling
+- **AES-256-GCM encryption**: API keys are stored encrypted
+
+## Cost Tracking
+
+Token usage and cost for every request are recorded:
+
+- Cost aggregation by model
+- Usage reports by day/week/month
+- Visual analytics in the dashboard

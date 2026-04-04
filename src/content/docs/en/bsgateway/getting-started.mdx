@@ -1,0 +1,60 @@
+---
+title: Getting Started
+description: Sign up for BSGateway and make your first API call.
+---
+
+BSGateway is a proxy that analyzes the complexity of LLM API requests and automatically routes them to the most cost-effective model.
+
+## What BSGateway Does
+
+- **Request complexity analysis**: Simple questions go to cheaper models, complex tasks go to high-performance models
+- **Cost optimization**: Reduce LLM costs while maintaining the same quality
+- **OpenAI-compatible API**: Just swap the endpoint — no code changes needed
+
+## Quick Start
+
+### 1. Create an Account
+
+Sign in with your BSVibe account at [gateway.bsvibe.dev](https://gateway.bsvibe.dev).
+
+### 2. Register Models
+
+Add the LLM models you want to use on the **Models** page in the dashboard:
+
+1. Click **Add Model**
+2. Select a provider (Anthropic, OpenAI, Ollama, etc.)
+3. Enter your API key — it is stored encrypted with AES-256-GCM
+4. Set a model ID (e.g., `claude-sonnet`, `gpt-4o-mini`)
+
+### 3. Generate an API Key
+
+Create a BSGateway API key on the **API Keys** page in the dashboard.
+
+> The API key is shown only once when created. Store it in a safe place.
+
+### 4. Make an API Call
+
+Just change the base URL and API key in your existing OpenAI SDK code:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://gateway.bsvibe.dev/v1",
+    api_key="your-bsgateway-api-key",
+)
+
+response = client.chat.completions.create(
+    model="auto",  # BSGateway automatically selects the best model
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+```
+
+When you send a request with `model="auto"`, the classifier evaluates the complexity and picks the optimal model.
+To target a specific model, use the model ID you registered.
+
+## Next Steps
+
+- [Core Concepts](/bsgateway/concepts) — Understand routing layers and the classifier
+- [Routing Rules](/bsgateway/features/routing) — Configure detailed routing rules
+- [Configuration](/bsgateway/configuration) — Dashboard configuration guide

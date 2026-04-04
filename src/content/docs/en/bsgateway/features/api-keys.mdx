@@ -1,0 +1,44 @@
+---
+title: API Key Management
+description: Create and manage BSGateway API keys.
+---
+
+## Creating an API Key
+
+Issue a new API key on the **API Keys** page in the dashboard.
+
+### Key Properties
+
+| Property | Description |
+|----------|-------------|
+| Name | A label to identify the key (e.g., "Production", "Development") |
+| Project | The project/tenant the key belongs to |
+| Rate Limit | Maximum requests per minute |
+| Expiration | Auto-expiration date (optional) |
+
+### Security
+
+- API keys are stored encrypted with **AES-256-GCM**
+- Keys are shown only once at creation — store them in a safe place
+- If you suspect a key has been compromised, **Revoke** it immediately and issue a new one
+
+## Usage Monitoring
+
+Check per-key usage on the **Usage Analytics** page:
+
+- Request count (daily/weekly/monthly)
+- Token usage (input/output)
+- Cost estimates
+- Model distribution
+
+## Rate Limiting
+
+Sliding window rate limiting backed by Redis is applied:
+
+```yaml
+rate_limit:
+  requests_per_minute: 60
+  tokens_per_minute: 100000
+```
+
+When the limit is exceeded, a `429 Too Many Requests` response is returned.

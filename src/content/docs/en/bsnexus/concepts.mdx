@@ -1,0 +1,34 @@
+---
+title: Core Concepts
+description: Understand BSNexus architecture and key components.
+---
+
+## Architect
+
+The Architect is an AI conversational interface that transforms your ideas into structured projects.
+
+Describe what you want to build in natural language, and the Architect will:
+1. Analyze requirements and ask clarifying questions
+2. Generate the project structure and task list
+3. Assign an appropriate Executor to each task
+
+## Task State Machine
+
+Every task goes through the following states:
+
+```
+PENDING → ASSIGNED → IN_PROGRESS → IN_REVIEW → COMPLETED
+                                       ↓
+                                    FAILED → PENDING (retry)
+```
+
+## Executor
+
+An Executor is an agent that performs the actual work. Any execution environment can be connected by implementing the ExecutorProtocol.
+
+Built-in Executors:
+- **Claude Code Executor**: Code generation and modification using the Claude Code CLI
+
+## Kanban Board
+
+Monitor the progress of all tasks visually on a real-time WebSocket-based Kanban board.

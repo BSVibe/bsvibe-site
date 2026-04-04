@@ -1,0 +1,40 @@
+---
+title: BSVibe Docs
+description: BSVibe product documentation hub
+template: splash
+hero:
+  title: BSVibe Docs
+  tagline: Product guides for the AI software ecosystem
+  actions:
+    - text: Get Started with BSGateway
+      link: /bsgateway/getting-started
+      icon: right-arrow
+    - text: Get Started with BSNexus
+      link: /bsnexus/getting-started
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="BSGateway" icon="rocket">
+    Cost-optimized LLM routing proxy.
+    Analyzes request complexity and automatically selects the best model.
+    [Get Started →](/bsgateway/getting-started)
+  </Card>
+  <Card title="BSNexus" icon="puzzle">
+    AI agent orchestration platform.
+    Describe your idea and AI builds it in parallel.
+    [Get Started →](/bsnexus/getting-started)
+  </Card>
+  <Card title="BSupervisor" icon="approve-check-circle">
+    AI behavior auditing system.
+    Monitors AI actions in real time to ensure safety.
+    [Get Started →](/bsupervisor/getting-started)
+  </Card>
+  <Card title="BSage" icon="open-book">
+    Ontology-based knowledge management.
+    Automatically remembers and connects information for you.
+    [Get Started →](/bsage/getting-started)
+  </Card>
+</CardGrid>

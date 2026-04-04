@@ -1,0 +1,69 @@
+---
+title: Routing Rules
+description: Configure and manage BSGateway routing rules.
+---
+
+## Configuring Routing Rules
+
+Define routing rules in the dashboard.
+
+### Passthrough Models
+
+All models registered in the dashboard are automatically eligible for passthrough:
+
+```yaml
+models:
+  - id: claude-sonnet
+    provider: anthropic
+  - id: gpt-4o-mini
+    provider: openai
+```
+
+### Alias Rules
+
+Assign short aliases to frequently used models:
+
+```yaml
+aliases:
+  fast: gpt-4o-mini
+  smart: claude-sonnet
+  code: claude-sonnet
+```
+
+### Pattern Rules
+
+Select a model based on request metadata or content:
+
+```yaml
+rules:
+  - pattern: "code/*"
+    model: claude-sonnet
+    priority: 10
+  - pattern: "translate/*"
+    model: gpt-4o-mini
+    priority: 5
+```
+
+- Rules with a higher `priority` are evaluated first
+- Glob pattern syntax is supported
+
+### Auto Routing
+
+When you send a request with `model: "auto"`, the classifier determines the complexity:
+
+```yaml
+auto:
+  classifier: static  # static | llm | ml
+  complexity_map:
+    simple: gpt-4o-mini
+    moderate: claude-sonnet
+    complex: claude-opus
+```
+
+## Managing Rules in the Dashboard
+
+You can visually manage routing rules on the **Rules** page in the web dashboard:
+
+1. Add, edit, or delete rules
+2. Drag and drop to reorder priorities
+3. Use the **Routing Simulator** to test which model would be selected for a given request

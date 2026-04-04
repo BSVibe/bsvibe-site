@@ -1,0 +1,73 @@
+---
+title: Configuration
+description: Configure models, routing, and API keys in the BSGateway dashboard.
+---
+
+## Model Management
+
+Manage your LLM models on the **Models** page in the dashboard.
+
+### Adding a Model
+
+| Field | Description |
+|-------|-------------|
+| Provider | Model provider (Anthropic, OpenAI, Ollama, etc.) |
+| Model ID | Identifier used when making requests |
+| API Key | Provider API key (stored with AES-256-GCM encryption) |
+| Max Tokens | Maximum output tokens (optional) |
+
+### Alias Settings
+
+Assign short aliases to frequently used models:
+
+| Alias | Target Model |
+|-------|-------------|
+| `fast` | gpt-4o-mini |
+| `smart` | claude-sonnet |
+
+## Routing Rules
+
+Manage routing rules on the **Rules** page in the dashboard.
+
+### Adding a Rule
+
+1. Click **Add Rule**
+2. Enter a pattern (glob syntax supported)
+3. Select the target model
+4. Set priority (higher values are evaluated first)
+
+### Auto Routing
+
+When you send a request with `model: "auto"`, the classifier determines the complexity:
+
+| Classification Strategy | Description |
+|------------------------|-------------|
+| Static | Keyword/pattern-based heuristics |
+| LLM | Local LLM-based classification |
+| ML | Trained model-based classification |
+
+Configure the classifier strategy and complexity-to-model mapping on the **Settings** page.
+
+## API Key Management
+
+Create and manage keys on the **API Keys** page in the dashboard.
+
+### Key Properties
+
+| Property | Description |
+|----------|-------------|
+| Name | A label to identify the key |
+| Rate Limit | Maximum requests per minute |
+| Expiration | Auto-expiration date (optional) |
+
+## CORS Settings
+
+Set allowed domains on the **Settings** page. You need to add your domain if you are calling the API directly from a frontend.
+
+## API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `https://gateway.bsvibe.dev/v1/chat/completions` | OpenAI-compatible chat API |
+| `https://gateway.bsvibe.dev/v1/models` | List registered models |
+| `https://gateway.bsvibe.dev/health` | Service health check |
