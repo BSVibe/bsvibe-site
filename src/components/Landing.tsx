@@ -1,16 +1,61 @@
 import { useState, useEffect } from "react";
 
+type Locale = "ko" | "en";
+
+const t = {
+  ko: {
+    nav: { products: "제품", docs: "문서", getStarted: "시작하기", login: "로그인" },
+    menu: "메뉴",
+    hero: {
+      badge: "AI, 새로운 감각",
+      h1: "만들고, 지키고, 기억한다.",
+      h1Gradient: "나머지는 알아서.",
+      subtitle: "따로 써도 충분하고, 같이 쓰면 놀랍습니다.",
+      cta: "둘러보기",
+      ctaSecondary: "계정 만들기",
+    },
+    productsHeading: "서로 다른 제품. 하나의 경험.",
+    vision: "하나의 계정, 하나의 경험. 경계 없이, 자연스럽게.",
+    footer: { docs: "문서", privacy: "개인정보처리방침", terms: "이용약관" },
+    products: {
+      BSGateway: { desc: "어떤 모델이 좋을지, 고민하지 않아도 됩니다.", detail: "스마트 라우팅" },
+      BSNexus: { desc: "아이디어만 던지면, 알아서 만들어집니다.", detail: "프로젝트 매니저" },
+      BSupervisor: { desc: "잠든 사이에도, 묵묵히 지켜보고 있습니다.", detail: "안전 모니터링" },
+      BSage: { desc: "정리하지 않아도, 기억하고 연결해 줍니다.", detail: "당신보다 당신을 잘 아는 비서" },
+    },
+  },
+  en: {
+    nav: { products: "Products", docs: "Docs", getStarted: "Get Started", login: "Log in" },
+    menu: "Menu",
+    hero: {
+      badge: "AI, a new sense",
+      h1: "Build. Guard. Remember.",
+      h1Gradient: "The rest is automatic.",
+      subtitle: "Great on their own. Remarkable together.",
+      cta: "Explore",
+      ctaSecondary: "Create Account",
+    },
+    productsHeading: "Different products. One experience.",
+    vision: "One account, one experience. No boundaries, just flow.",
+    footer: { docs: "Docs", privacy: "Privacy Policy", terms: "Terms of Service" },
+    products: {
+      BSGateway: { desc: "Stop choosing models. The right one is picked for you.", detail: "Smart Routing" },
+      BSNexus: { desc: "Throw an idea in, and it builds itself.", detail: "Project Manager" },
+      BSupervisor: { desc: "Watching quietly, even while you sleep.", detail: "Safety Monitoring" },
+      BSage: { desc: "Remembers and connects — no organizing needed.", detail: "The assistant that knows you better than you" },
+    },
+  },
+} as const;
+
 function BSLogo({ size = 24 }: { size?: number; color?: string }) {
   return (
     <img src="/images/bsvibe-logo.png" alt="BSVibe" width={size} height={size} style={{ borderRadius: size > 20 ? 4 : 2 }} />
   );
 }
 
-const products = [
+const productsMeta = [
   {
-    name: "BSGateway",
-    desc: "어떤 모델이 좋을지, 고민하지 않아도 됩니다.",
-    detail: "스마트 라우팅",
+    name: "BSGateway" as const,
     accent: "#f59e0b",
     accentGlow: "rgba(245,158,11,0.15)",
     status: "MVP",
@@ -22,9 +67,7 @@ const products = [
     ),
   },
   {
-    name: "BSNexus",
-    desc: "아이디어만 던지면, 알아서 만들어집니다.",
-    detail: "프로젝트 매니저",
+    name: "BSNexus" as const,
     accent: "#3b82f6",
     accentGlow: "rgba(59,130,246,0.15)",
     status: "Coming Soon",
@@ -37,9 +80,7 @@ const products = [
     ),
   },
   {
-    name: "BSupervisor",
-    desc: "잠든 사이에도, 묵묵히 지켜보고 있습니다.",
-    detail: "안전 모니터링",
+    name: "BSupervisor" as const,
     accent: "#f43f5e",
     accentGlow: "rgba(244,63,94,0.15)",
     status: "Coming Soon",
@@ -51,9 +92,7 @@ const products = [
     ),
   },
   {
-    name: "BSage",
-    desc: "정리하지 않아도, 기억하고 연결해 줍니다.",
-    detail: "당신보다 당신을 잘 아는 비서",
+    name: "BSage" as const,
     accent: "#10b981",
     accentGlow: "rgba(16,185,129,0.15)",
     status: "Coming Later",
@@ -67,7 +106,9 @@ const products = [
   },
 ];
 
-export default function BSVibeLanding() {
+export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
+  const l = t[locale];
+  const docsBase = locale === "en" ? "/en" : "";
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -171,8 +212,8 @@ export default function BSVibeLanding() {
         </a>
 
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          <a href="#products" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>제품</a>
-          <a href="/bsgateway/getting-started" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>문서</a>
+          <a href="#products" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.products}</a>
+          <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.docs}</a>
           <a href="https://auth.bsvibe.dev/signup" style={{
             padding: "6px 16px",
             borderRadius: 8,
@@ -182,9 +223,9 @@ export default function BSVibeLanding() {
             fontWeight: 600,
             textDecoration: "none",
           }}>
-            시작하기
+            {l.nav.getStarted}
           </a>
-          <a href="https://auth.bsvibe.dev/login" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>로그인</a>
+          <a href="https://auth.bsvibe.dev/login" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.login}</a>
         </div>
 
         {/* Mobile hamburger */}
@@ -198,7 +239,7 @@ export default function BSVibeLanding() {
             cursor: "pointer",
             padding: 8,
           }}
-          aria-label="메뉴"
+          aria-label={l.menu}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {menuOpen
@@ -225,8 +266,8 @@ export default function BSVibeLanding() {
           flexDirection: "column",
           gap: 16,
         }}>
-          <a href="#products" className="nav-link" onClick={() => setMenuOpen(false)} style={{ fontSize: "0.875rem" }}>제품</a>
-          <a href="/bsgateway/getting-started" className="nav-link" style={{ fontSize: "0.875rem" }}>문서</a>
+          <a href="#products" className="nav-link" onClick={() => setMenuOpen(false)} style={{ fontSize: "0.875rem" }}>{l.nav.products}</a>
+          <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.875rem" }}>{l.nav.docs}</a>
         </div>
       )}
 
@@ -283,7 +324,7 @@ export default function BSVibeLanding() {
               letterSpacing: "-0.01em",
             }}>
               <BSLogo size={14} color="#818cf8" />
-              AI, 새로운 감각
+              {l.hero.badge}
             </span>
           </div>
 
@@ -296,14 +337,14 @@ export default function BSVibeLanding() {
             letterSpacing: "-0.035em",
             margin: "0 0 20px",
           }}>
-            만들고, 지키고, 기억한다.{" "}
+            {l.hero.h1}{" "}
             <br />
             <span style={{
               background: "linear-gradient(135deg, #818cf8, #6366f1, #4f46e5)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}>
-              나머지는 알아서.
+              {l.hero.h1Gradient}
             </span>
           </h1>
 
@@ -316,7 +357,7 @@ export default function BSVibeLanding() {
             maxWidth: 520,
             letterSpacing: "-0.01em",
           }}>
-            따로 써도 충분하고, 같이 쓰면 놀랍습니다.
+            {l.hero.subtitle}
           </p>
 
           <div className={loaded ? "fade-up" : ""} style={{
@@ -337,7 +378,7 @@ export default function BSVibeLanding() {
               boxShadow: "0 0 20px rgba(99,102,241,0.25)",
               letterSpacing: "-0.01em",
             }}>
-              둘러보기
+              {l.hero.cta}
             </a>
             <a href="https://auth.bsvibe.dev/signup" className="cta-secondary" style={{
               display: "inline-block",
@@ -349,7 +390,7 @@ export default function BSVibeLanding() {
               fontWeight: 600,
               letterSpacing: "-0.01em",
             }}>
-              계정 만들기
+              {l.hero.ctaSecondary}
             </a>
           </div>
         </div>
@@ -392,7 +433,7 @@ export default function BSVibeLanding() {
             margin: "0 0 10px",
             letterSpacing: "-0.025em",
           }}>
-            서로 다른 제품. 하나의 경험.
+            {l.productsHeading}
           </h2>
         </div>
 
@@ -403,7 +444,9 @@ export default function BSVibeLanding() {
           maxWidth: 800,
           margin: "0 auto",
         }}>
-          {products.map((p, i) => (
+          {productsMeta.map((p, i) => {
+            const pt = l.products[p.name];
+            return (
             <a
               key={p.name}
               href={p.href}
@@ -481,7 +524,7 @@ export default function BSVibeLanding() {
                   fontFamily: "'JetBrains Mono', monospace",
                   letterSpacing: "-0.01em",
                 }}>
-                  {p.detail}
+                  {pt.detail}
                 </div>
 
                 <p style={{
@@ -490,11 +533,12 @@ export default function BSVibeLanding() {
                   margin: 0,
                   lineHeight: 1.6,
                 }}>
-                  {p.desc}
+                  {pt.desc}
                 </p>
               </div>
             </a>
-          ))}
+            );
+          })}
         </div>
 
         <div style={{
@@ -532,8 +576,7 @@ export default function BSVibeLanding() {
             letterSpacing: "-0.01em",
           }}>
             <span style={{ color: "#6366f1", fontSize: "1.5em", lineHeight: 0, verticalAlign: "middle" }}>"</span>
-            {" "}하나의 계정, 하나의 경험.
-            경계 없이, 자연스럽게.{" "}
+            {" "}{l.vision}{" "}
             <span style={{ color: "#6366f1", fontSize: "1.5em", lineHeight: 0, verticalAlign: "middle" }}>"</span>
           </blockquote>
         </div>
@@ -561,9 +604,9 @@ export default function BSVibeLanding() {
           </span>
         </div>
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-          <a href="/bsgateway/getting-started" className="nav-link" style={{ fontSize: "0.8125rem" }}>문서</a>
-          <a href="/privacy" className="nav-link" style={{ fontSize: "0.8125rem" }}>개인정보처리방침</a>
-          <a href="/terms" className="nav-link" style={{ fontSize: "0.8125rem" }}>이용약관</a>
+          <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.8125rem" }}>{l.footer.docs}</a>
+          <a href="/privacy" className="nav-link" style={{ fontSize: "0.8125rem" }}>{l.footer.privacy}</a>
+          <a href="/terms" className="nav-link" style={{ fontSize: "0.8125rem" }}>{l.footer.terms}</a>
           <a href="https://github.com/BSVibe" className="nav-link" style={{ fontSize: "0.8125rem" }} target="_blank" rel="noopener noreferrer">GitHub</a>
           <a href="mailto:contact@bsvibe.dev" className="nav-link" style={{ fontSize: "0.8125rem" }}>contact@bsvibe.dev</a>
         </div>
