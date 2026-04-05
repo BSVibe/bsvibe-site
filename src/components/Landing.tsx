@@ -106,6 +106,11 @@ const productsMeta = [
   },
 ];
 
+const locales: { code: Locale; label: string; path: string }[] = [
+  { code: "ko", label: "KO", path: "/" },
+  { code: "en", label: "EN", path: "/en/" },
+];
+
 interface UserInfo { email: string }
 
 function getUser(): UserInfo | null {
@@ -120,8 +125,6 @@ function getUser(): UserInfo | null {
 
 export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
   const l = t[locale];
-  const altLocale = locale === "ko" ? "en" : "ko";
-  const altPath = locale === "ko" ? "/en/" : "/";
   const docsBase = locale === "en" ? "/en" : "";
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -230,7 +233,19 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <a href="#products" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.products}</a>
           <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.docs}</a>
-          <a href={altPath} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500, textTransform: "uppercase" }}>{altLocale}</a>
+          <div style={{ display: "inline-flex", borderRadius: 6, border: "1px solid #2a2d42", overflow: "hidden" }}>
+            {locales.map((loc) => (
+              <a key={loc.code} href={loc.path} style={{
+                padding: "3px 10px",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                textDecoration: "none",
+                color: locale === loc.code ? "#f2f3f7" : "#5a5f7d",
+                backgroundColor: locale === loc.code ? "rgba(99,102,241,0.15)" : "transparent",
+                transition: "all 0.15s",
+              }}>{loc.label}</a>
+            ))}
+          </div>
           {user ? (
             <>
               <span style={{ fontSize: "0.8125rem", color: "#818cf8", fontWeight: 500 }}>{user.email}</span>
@@ -296,7 +311,18 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
         }}>
           <a href="#products" className="nav-link" onClick={() => setMenuOpen(false)} style={{ fontSize: "0.875rem" }}>{l.nav.products}</a>
           <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.875rem" }}>{l.nav.docs}</a>
-          <a href={altPath} className="nav-link" style={{ fontSize: "0.875rem", textTransform: "uppercase" }}>{altLocale}</a>
+          <div style={{ display: "inline-flex", borderRadius: 6, border: "1px solid #2a2d42", overflow: "hidden", alignSelf: "flex-start" }}>
+            {locales.map((loc) => (
+              <a key={loc.code} href={loc.path} style={{
+                padding: "4px 12px",
+                fontSize: "0.8125rem",
+                fontWeight: 600,
+                textDecoration: "none",
+                color: locale === loc.code ? "#f2f3f7" : "#5a5f7d",
+                backgroundColor: locale === loc.code ? "rgba(99,102,241,0.15)" : "transparent",
+              }}>{loc.label}</a>
+            ))}
+          </div>
           {user ? (
             <span style={{ fontSize: "0.875rem", color: "#818cf8" }}>{user.email}</span>
           ) : (
