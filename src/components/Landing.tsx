@@ -106,14 +106,30 @@ const productsMeta = [
   },
 ];
 
+interface UserInfo { email: string }
+
+function getUser(): UserInfo | null {
+  try {
+    const raw = localStorage.getItem("bsvibe_user");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed.expiresAt && Date.now() / 1000 >= parsed.expiresAt - 30) return null;
+    return { email: parsed.email };
+  } catch { return null; }
+}
+
 export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
   const l = t[locale];
+  const altLocale = locale === "ko" ? "en" : "ko";
+  const altPath = locale === "ko" ? "/en/" : "/";
   const docsBase = locale === "en" ? "/en" : "";
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
+    setUser(getUser());
     return () => clearTimeout(t);
   }, []);
 
@@ -214,18 +230,30 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <a href="#products" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.products}</a>
           <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.docs}</a>
-          <a href="https://auth.bsvibe.dev/signup?redirect_uri=https%3A%2F%2Fbsvibe.dev" style={{
-            padding: "6px 16px",
-            borderRadius: 8,
-            backgroundColor: "rgba(99,102,241,0.10)",
-            color: "#818cf8",
-            fontSize: "0.8125rem",
-            fontWeight: 600,
-            textDecoration: "none",
-          }}>
-            {l.nav.getStarted}
-          </a>
-          <a href="https://auth.bsvibe.dev/login?redirect_uri=https%3A%2F%2Fbsvibe.dev" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.login}</a>
+          <a href={altPath} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500, textTransform: "uppercase" }}>{altLocale}</a>
+          {user ? (
+            <>
+              <span style={{ fontSize: "0.8125rem", color: "#818cf8", fontWeight: 500 }}>{user.email}</span>
+              <button onClick={() => { localStorage.removeItem("bsvibe_user"); setUser(null); }} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500, background: "none", border: "none", cursor: "pointer", color: "#8187a8" }}>
+                {locale === "ko" ? "로그아웃" : "Log out"}
+              </button>
+            </>
+          ) : (
+            <>
+              <a href="https://auth.bsvibe.dev/signup?redirect_uri=https%3A%2F%2Fbsvibe.dev" style={{
+                padding: "6px 16px",
+                borderRadius: 8,
+                backgroundColor: "rgba(99,102,241,0.10)",
+                color: "#818cf8",
+                fontSize: "0.8125rem",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}>
+                {l.nav.getStarted}
+              </a>
+              <a href="https://auth.bsvibe.dev/login?redirect_uri=https%3A%2F%2Fbsvibe.dev" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.login}</a>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -268,6 +296,12 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
         }}>
           <a href="#products" className="nav-link" onClick={() => setMenuOpen(false)} style={{ fontSize: "0.875rem" }}>{l.nav.products}</a>
           <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.875rem" }}>{l.nav.docs}</a>
+          <a href={altPath} className="nav-link" style={{ fontSize: "0.875rem", textTransform: "uppercase" }}>{altLocale}</a>
+          {user ? (
+            <span style={{ fontSize: "0.875rem", color: "#818cf8" }}>{user.email}</span>
+          ) : (
+            <a href="https://auth.bsvibe.dev/login?redirect_uri=https%3A%2F%2Fbsvibe.dev" className="nav-link" style={{ fontSize: "0.875rem" }}>{l.nav.login}</a>
+          )}
         </div>
       )}
 
