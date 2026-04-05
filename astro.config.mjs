@@ -11,6 +11,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'BSVibe',
+      favicon: '/images/bsvibe-symbol.svg',
       defaultLocale: 'root',
       locales: {
         root: { label: '한국어', lang: 'ko' },
