@@ -6,13 +6,15 @@ interface Props {
   detail: string;
   desc: string;
   index: number;
+  locale?: 'ko' | 'en';
 }
 
-const { product, detail, desc, index } = Astro.props;
+const { product, detail, desc, index, locale = 'ko' } = Astro.props;
 const p = product;
+const prefix = locale === 'en' ? '/en' : '';
 ---
 
-<a href={p.href} class="product-card fade-up" style={`animation-delay: ${0.8 + index * 0.12}s;`}>
+<a href={`${prefix}/products/${p.slug}`} class="product-card fade-up" style={`animation-delay: ${0.8 + index * 0.12}s;`}>
   <div class="card-glow" style={`background: radial-gradient(circle, ${p.accentGlow}, transparent 70%);`} />
   <div class="card-inner">
     <div class="card-header">

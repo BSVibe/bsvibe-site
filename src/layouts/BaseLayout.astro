@@ -35,6 +35,23 @@ const lang = locale === 'en' ? 'en' : 'ko';
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "BSVibe",
+      "url": "https://bsvibe.dev",
+      "logo": "https://bsvibe.dev/images/bsvibe-logo.png",
+      "description": locale === 'en'
+        ? "AI software ecosystem. Build, guard, remember."
+        : "AI 소프트웨어 생태계. 만들고, 지키고, 기억한다.",
+      "sameAs": ["https://github.com/BSVibe"],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "contact@bsvibe.dev",
+        "contactType": "customer service",
+      },
+    })} />
   </head>
   <body>
     <slot />

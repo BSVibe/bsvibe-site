@@ -1,0 +1,46 @@
+---
+import ProductLayout from '@/layouts/ProductLayout.astro';
+---
+
+<ProductLayout
+  title="BSGateway — 스마트 LLM 라우팅"
+  description="어떤 모델이 좋을지, 고민하지 않아도 됩니다."
+  locale="ko"
+  product="BSGateway"
+  accent="#f59e0b"
+  appUrl="https://gateway.bsvibe.dev"
+>
+  <h1>BSGateway</h1>
+  <p class="product-tagline">어떤 모델이 좋을지, 고민하지 않아도 됩니다. 비용, 성능, 가용성을 자동으로 판단해 최적의 LLM으로 라우팅합니다.</p>
+
+  <h2>핵심 기능</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>스마트 라우팅</h3>
+      <p>요청의 특성을 분석해 GPT-4, Claude, Gemini 등 최적의 모델을 자동 선택합니다.</p>
+    </div>
+    <div class="feature-card">
+      <h3>비용 최적화</h3>
+      <p>단순 작업에는 경량 모델, 복잡한 작업에는 고급 모델. 토큰당 비용을 최대 90% 절감합니다.</p>
+    </div>
+    <div class="feature-card">
+      <h3>폴백 체인</h3>
+      <p>프로바이더 장애 시 자동으로 대체 모델로 전환. 다운타임 없이 안정적인 서비스를 제공합니다.</p>
+    </div>
+    <div class="feature-card">
+      <h3>사용량 분석</h3>
+      <p>모델별, 작업별, 시간대별 사용량과 비용을 실시간으로 추적합니다.</p>
+    </div>
+  </div>
+
+  <h2>OpenAI 호환 API</h2>
+  <p>기존 코드를 한 줄도 바꾸지 않고 시작할 수 있습니다. base URL만 변경하면 BSGateway가 나머지를 처리합니다.</p>
+
+  <h2>사용 사례</h2>
+  <ul>
+    <li><strong>스타트업</strong> — 한정된 예산으로 최대 성능. 자동 비용 최적화로 LLM 비용 관리</li>
+    <li><strong>에이전시</strong> — 다양한 클라이언트, 다양한 요구. 프로젝트별 라우팅 정책 설정</li>
+    <li><strong>엔터프라이즈</strong> — 멀티 프로바이더 전략. 벤더 종속 없는 유연한 인프라</li>
+  </ul>
+</ProductLayout>
