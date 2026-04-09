@@ -49,6 +49,15 @@ create table if not exists public.prices (
 create index if not exists idx_prices_product_id on public.prices(product_id);
 create index if not exists idx_prices_active on public.prices(is_active) where is_active = true;
 
+-- Unique constraint for idempotent seed inserts (one row per product+tier)
+do $$ begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'prices_product_tier_unique'
+  ) then
+    alter table public.prices add constraint prices_product_tier_unique unique (product_id, tier);
+  end if;
+end $$;
+
 -- ========== subscriptions ==========
 -- User subscriptions
 create table if not exists public.subscriptions (
@@ -179,7 +188,8 @@ values
    '["1,000 audit logs/mo", "Basic rules", "Community support"]'::jsonb, 1),
   ('bsage', 'free', 'Free', '개인 지식 관리', 0, 0, 'month',
    '["노트 500개", "기본 검색", "커뮤니티 지원"]'::jsonb,
-   '["500 notes", "Basic search", "Community support"]'::jsonb, 1);
+   '["500 notes", "Basic search", "Community support"]'::jsonb, 1)
+on conflict (product_id, tier) do nothing;
 
 -- Pro tier (TBD pricing — admin will set amounts later)
 insert into public.prices (product_id, tier, display_name, description, amount_krw, amount_usd_cents, billing_period, features, features_en, is_highlighted, display_order)
@@ -195,7 +205,8 @@ values
    '["Unlimited audits", "Custom rules", "Real-time alerts", "Priority support"]'::jsonb, true, 2),
   ('bsage', 'pro', 'Pro', '고급 지식 연결', null, null, 'month',
    '["무제한 노트", "온톨로지 연결", "AI 요약", "우선 지원"]'::jsonb,
-   '["Unlimited notes", "Ontology linking", "AI summaries", "Priority support"]'::jsonb, true, 2);
+   '["Unlimited notes", "Ontology linking", "AI summaries", "Priority support"]'::jsonb, true, 2)
+on conflict (product_id, tier) do nothing;
 
 -- Enterprise tier (contact only)
 insert into public.prices (product_id, tier, display_name, description, billing_period, features, features_en, is_contact_only, display_order)
@@ -211,4 +222,5 @@ values
    '["Compliance reports", "SOC2 support", "Dedicated manager", "Custom policies"]'::jsonb, true, 3),
   ('bsage', 'enterprise', 'Enterprise', '조직 지식 플랫폼', 'month',
    '["팀 지식 공유", "접근 제어", "전담 매니저", "API 통합"]'::jsonb,
-   '["Team sharing", "Access control", "Dedicated manager", "API integration"]'::jsonb, true, 3);
+   '["Team sharing", "Access control", "Dedicated manager", "API integration"]'::jsonb, true, 3)
+on conflict (product_id, tier) do nothing;
