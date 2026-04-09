@@ -1,0 +1,69 @@
+---
+title: "LLM 라우팅이 왜 필요한가"
+description: "GPT-4, Claude, Gemini — 모델은 많고 최적 선택은 어렵습니다. BSGateway가 해결하는 문제를 설명합니다."
+date: 2026-04-09
+author: "BSVibe Team"
+tags: ["bsgateway", "technical"]
+locale: "ko"
+---
+
+# LLM 라우팅이 왜 필요한가
+
+2026년, 사용 가능한 LLM은 셀 수 없이 많습니다. GPT-4o, Claude Opus, Gemini Ultra, Llama 3, Mistral Large — 각각 강점이 다릅니다.
+
+## 모델 선택의 딜레마
+
+코딩 작업에는 Claude가 뛰어나고, 긴 문서 요약에는 Gemini가 효율적이며, 빠른 응답이 필요하면 GPT-4o-mini가 적합합니다. 하지만 매번 최적의 모델을 수동으로 선택하는 건 현실적이지 않습니다.
+
+더 큰 문제는 **비용**입니다. 단순한 분류 작업에 최고급 모델을 사용하면 토큰당 비용이 10배 차이납니다.
+
+## BSGateway의 접근
+
+BSGateway는 세 가지 관점에서 라우팅을 결정합니다:
+
+### 1. 작업 유형 기반 라우팅
+
+요청의 특성을 분석해 적합한 모델을 선택합니다. 코드 생성, 요약, 번역, 분류 등 작업 유형에 따라 최적의 모델이 다릅니다.
+
+### 2. 비용 최적화
+
+예산 제한 내에서 가능한 최고 품질의 응답을 제공합니다. "이 작업은 GPT-4o-mini로 충분하다"는 판단을 자동으로 내립니다.
+
+### 3. 폴백 체인
+
+특정 프로바이더가 다운되면 자동으로 대체 모델로 전환합니다. 사용자는 장애를 인지하지 못합니다.
+
+## 실제 시나리오
+
+```
+사용자 요청: "이 코드를 리뷰해줘"
+├─ BSGateway 분석: 코드 리뷰 → Claude Opus 4 추천
+├─ 예산 확인: Pro 플랜, 여유 있음
+├─ Claude API 상태: 정상
+└─ 결과: Claude Opus 4로 라우팅
+```
+
+```
+사용자 요청: "이 이메일을 한국어로 번역해줘"
+├─ BSGateway 분석: 번역 → GPT-4o-mini 충분
+├─ 예산 확인: 비용 효율적 선택
+├─ GPT API 상태: 정상
+└─ 결과: GPT-4o-mini로 라우팅 (비용 90% 절감)
+```
+
+## 코드 한 줄도 바꾸지 않고
+
+BSGateway는 OpenAI 호환 API를 제공합니다. 기존 코드의 base URL만 변경하면 됩니다:
+
+```python
+# Before
+client = OpenAI(api_key="sk-...")
+
+# After
+client = OpenAI(
+    api_key="bsg-...",
+    base_url="https://api-gateway.bsvibe.dev/v1"
+)
+```
+
+나머지는 BSGateway가 알아서 합니다.

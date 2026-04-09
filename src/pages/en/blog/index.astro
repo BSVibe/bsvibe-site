@@ -1,0 +1,151 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.locale === 'en'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<MainLayout title="Blog — BSVibe" description="Stories about BSVibe's technology, products, and AI" locale="en">
+  <div class="blog-listing">
+    <div class="blog-header-row">
+      <div>
+        <h1>Blog</h1>
+        <p class="blog-subtitle">Stories about technology, products, and AI.</p>
+      </div>
+      <a href="/en/blog/rss.xml" class="rss-link" title="RSS Feed">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="6.18" cy="17.82" r="2.18"/><path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83C19.56 11.33 12.67 4.44 4 4.44z"/><path d="M4 10.1v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/></svg>
+        RSS
+      </a>
+    </div>
+
+    <div class="posts">
+      {posts.length === 0 ? (
+        <p class="empty">No posts yet.</p>
+      ) : (
+        posts.map(post => (
+          <article class="post-card">
+            <div class="post-meta">
+              <time>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(post.data.date)}</time>
+              {post.data.tags.length > 0 && (
+                <div class="post-tags">
+                  {post.data.tags.map(tag => <a href={`/en/blog/tags/${tag}`} class="tag">{tag}</a>)}
+                </div>
+              )}
+            </div>
+            <a href={`/en/blog/${post.id}`} class="post-link">
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </a>
+          </article>
+        ))
+      )}
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .blog-listing {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 24px 120px;
+  }
+  .blog-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .rss-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #5a5f7d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #2a2d42;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .rss-link:hover {
+    color: #f59e0b;
+    border-color: rgba(245,158,11,0.3);
+  }
+  h1 {
+    color: #f2f3f7;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .blog-subtitle {
+    color: #8187a8;
+    font-size: 1rem;
+    margin-bottom: 48px;
+  }
+  .posts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .empty {
+    color: #5a5f7d;
+    font-size: 0.9375rem;
+  }
+  .post-card {
+    display: block;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #2a2d42;
+    background-color: #111218;
+    transition: all 0.2s ease;
+  }
+  .post-card:hover {
+    border-color: rgba(99,102,241,0.3);
+    transform: translateY(-2px);
+  }
+  .post-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .post-meta time {
+    color: #5a5f7d;
+    font-size: 0.8125rem;
+  }
+  .post-tags {
+    display: flex;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #818cf8;
+    padding: 1px 8px;
+    border-radius: 9999px;
+    background-color: rgba(99,102,241,0.08);
+  }
+  .post-card h2 {
+    color: #f2f3f7;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .post-card p {
+    color: #8187a8;
+    font-size: 0.9375rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+</style>

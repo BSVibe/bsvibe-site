@@ -2,11 +2,14 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
+import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   site: 'https://bsvibe.dev',
+  adapter: vercel(),
 
   integrations: [
     starlight({
@@ -74,14 +77,26 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: '가이드',
+          translations: { en: 'Guides' },
+          items: [
+            { label: 'Auth 마이그레이션', slug: 'auth-migration-guide', translations: { en: 'Auth Migration' } },
+            { label: '결제 시스템 설정', slug: 'payment-setup-guide', translations: { en: 'Payment Setup' } },
+          ],
+        },
       ],
       customCss: ['./src/styles/custom.css'],
     }),
     react(),
+    mdx(),
     sitemap(),
   ],
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      allowedHosts: ['bsserver'],
+    },
   },
 });

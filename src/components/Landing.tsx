@@ -58,7 +58,7 @@ const productsMeta = [
     name: "BSGateway" as const,
     accent: "#f59e0b",
     accentGlow: "rgba(245,158,11,0.15)",
-    status: "MVP",
+
     href: "https://gateway.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -70,7 +70,7 @@ const productsMeta = [
     name: "BSNexus" as const,
     accent: "#3b82f6",
     accentGlow: "rgba(59,130,246,0.15)",
-    status: "Coming Soon",
+
     href: "https://nexus.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -83,7 +83,7 @@ const productsMeta = [
     name: "BSupervisor" as const,
     accent: "#f43f5e",
     accentGlow: "rgba(244,63,94,0.15)",
-    status: "Coming Soon",
+
     href: "https://supervisor.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -95,7 +95,7 @@ const productsMeta = [
     name: "BSage" as const,
     accent: "#10b981",
     accentGlow: "rgba(16,185,129,0.15)",
-    status: "Coming Later",
+
     href: "https://sage.bsvibe.dev",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -113,58 +113,43 @@ const locales: { code: Locale; label: string; path: string }[] = [
 
 interface UserInfo { email: string }
 
-function getUser(): UserInfo | null {
+async function fetchUser(): Promise<UserInfo | null> {
   try {
-    const raw = localStorage.getItem("bsvibe_user");
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (parsed.expiresAt && Date.now() / 1000 >= parsed.expiresAt - 30) return null;
-    return { email: parsed.email };
-  } catch { return null; }
+    const res = await fetch("/api/auth/session", { credentials: "same-origin" });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.user ? { email: data.user.email } : null;
+  } catch {
+    return null;
+  }
 }
 
 export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
   const l = t[locale];
   const docsBase = locale === "en" ? "/en" : "";
+  const blogBase = locale === "en" ? "/en" : "";
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
 
+  function goAuth(mode: "signup" | "login") {
+    const cb = encodeURIComponent(window.location.origin + "/auth/callback");
+    window.location.href = `https://auth.bsvibe.dev/${mode}?redirect_uri=${cb}`;
+  }
+
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
-
-    // Handle auth callback — parse tokens from hash fragment
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const params = new URLSearchParams(hash);
-      const accessToken = params.get("access_token");
-      const refreshToken = params.get("refresh_token");
-      if (accessToken && refreshToken) {
-        try {
-          const parts = accessToken.split(".");
-          let base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-          const pad = base64.length % 4;
-          if (pad) base64 += "=".repeat(4 - pad);
-          const payload = JSON.parse(atob(base64));
-          const user = {
-            id: payload.sub,
-            email: payload.email,
-            tenantId: payload.app_metadata?.tenant_id ?? "",
-            role: payload.app_metadata?.role ?? "member",
-            accessToken,
-            refreshToken,
-            expiresAt: payload.exp,
-          };
-          localStorage.setItem("bsvibe_user", JSON.stringify(user));
-          history.replaceState(null, "", window.location.pathname + window.location.search);
-        } catch { /* ignore parse errors */ }
-      }
-    }
-
-    setUser(getUser());
+    fetchUser().then(setUser);
     return () => clearTimeout(t);
   }, []);
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
+    } catch { /* ignore */ }
+    setUser(null);
+  }
 
   return (
     <div style={{ overflow: "hidden" }}>
@@ -263,6 +248,8 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <a href="#products" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.products}</a>
           <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.docs}</a>
+          <a href={`${docsBase === "" ? "" : "/en"}/blog`} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{locale === "ko" ? "블로그" : "Blog"}</a>
+          <a href={`${docsBase === "" ? "" : "/en"}/pricing`} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{locale === "ko" ? "가격" : "Pricing"}</a>
           <div style={{ position: "relative" }}>
             <button onClick={() => setLangOpen(!langOpen)} style={{
               display: "flex", alignItems: "center", gap: 4,
@@ -293,26 +280,24 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
           </div>
           {user ? (
             <>
-              <span style={{ fontSize: "0.8125rem", color: "#818cf8", fontWeight: 500 }}>{user.email}</span>
-              <button onClick={() => { localStorage.removeItem("bsvibe_user"); setUser(null); }} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500, background: "none", border: "none", cursor: "pointer", color: "#8187a8" }}>
+              <a href={`${docsBase}/account`} style={{ fontSize: "0.8125rem", color: "#818cf8", fontWeight: 500, textDecoration: "none" }}>{user.email}</a>
+              <button onClick={handleLogout} className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500, background: "none", border: "none", cursor: "pointer", color: "#8187a8" }}>
                 {locale === "ko" ? "로그아웃" : "Log out"}
               </button>
             </>
           ) : (
-            <>
-              <a href="https://auth.bsvibe.dev/signup?redirect_uri=https%3A%2F%2Fbsvibe.dev" style={{
-                padding: "6px 16px",
-                borderRadius: 8,
-                backgroundColor: "rgba(99,102,241,0.10)",
-                color: "#818cf8",
-                fontSize: "0.8125rem",
-                fontWeight: 600,
-                textDecoration: "none",
-              }}>
-                {l.nav.getStarted}
-              </a>
-              <a href="https://auth.bsvibe.dev/login?redirect_uri=https%3A%2F%2Fbsvibe.dev" className="nav-link" style={{ fontSize: "0.8125rem", fontWeight: 500 }}>{l.nav.login}</a>
-            </>
+            <button onClick={() => goAuth("signup")} style={{
+              padding: "6px 16px",
+              borderRadius: 8,
+              backgroundColor: "rgba(99,102,241,0.10)",
+              color: "#818cf8",
+              fontSize: "0.8125rem",
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+            }}>
+              {l.nav.getStarted}
+            </button>
           )}
         </div>
 
@@ -356,6 +341,8 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
         }}>
           <a href="#products" className="nav-link" onClick={() => setMenuOpen(false)} style={{ fontSize: "0.875rem" }}>{l.nav.products}</a>
           <a href={`${docsBase}/bsgateway/getting-started`} className="nav-link" style={{ fontSize: "0.875rem" }}>{l.nav.docs}</a>
+          <a href={`${docsBase === "" ? "" : "/en"}/blog`} className="nav-link" style={{ fontSize: "0.875rem" }}>{locale === "ko" ? "블로그" : "Blog"}</a>
+          <a href={`${docsBase === "" ? "" : "/en"}/pricing`} className="nav-link" style={{ fontSize: "0.875rem" }}>{locale === "ko" ? "가격" : "Pricing"}</a>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <span style={{ fontSize: "0.875rem", color: "#5a5f7d" }}>{locales.find((loc) => loc.code === locale)?.label}</span>
             {locales.filter((loc) => loc.code !== locale).map((loc) => (
@@ -363,9 +350,9 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
             ))}
           </div>
           {user ? (
-            <span style={{ fontSize: "0.875rem", color: "#818cf8" }}>{user.email}</span>
+            <a href={`${docsBase === "" ? "" : "/en"}/account`} style={{ fontSize: "0.875rem", color: "#818cf8", textDecoration: "none" }}>{user.email}</a>
           ) : (
-            <a href="https://auth.bsvibe.dev/login?redirect_uri=https%3A%2F%2Fbsvibe.dev" className="nav-link" style={{ fontSize: "0.875rem" }}>{l.nav.login}</a>
+            <button onClick={() => goAuth("signup")} className="nav-link" style={{ fontSize: "0.875rem", background: "none", border: "none", cursor: "pointer", color: "#8187a8" }}>{l.nav.getStarted}</button>
           )}
         </div>
       )}
@@ -479,7 +466,7 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
             }}>
               {l.hero.cta}
             </a>
-            <a href="https://auth.bsvibe.dev/signup?redirect_uri=https%3A%2F%2Fbsvibe.dev" className="cta-secondary" style={{
+            <button onClick={() => goAuth("signup")} className="cta-secondary" style={{
               display: "inline-block",
               padding: "13px 28px",
               borderRadius: 10,
@@ -488,9 +475,11 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
               fontSize: "0.9375rem",
               fontWeight: 600,
               letterSpacing: "-0.01em",
+              background: "none",
+              cursor: "pointer",
             }}>
               {l.hero.ctaSecondary}
-            </a>
+            </button>
           </div>
         </div>
 
@@ -592,17 +581,6 @@ export default function BSVibeLanding({ locale = "ko" }: { locale?: Locale }) {
                   }}>
                     {p.icon}
                   </div>
-                  <span style={{
-                    fontSize: "0.6875rem",
-                    fontWeight: 600,
-                    color: "#5a5f7d",
-                    padding: "3px 10px",
-                    borderRadius: 9999,
-                    backgroundColor: "#181926",
-                    border: "1px solid #2a2d42",
-                  }}>
-                    {p.status}
-                  </span>
                 </div>
 
                 <h3 style={{
