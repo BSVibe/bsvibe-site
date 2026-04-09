@@ -43,6 +43,12 @@ const currentPath = Astro.url.pathname;
         <img src="/images/bsvibe-logo.png" alt="BSVibe" width="22" height="22" style="border-radius: 4px;" />
         <span class="logo-text">BSVibe</span>
       </a>
+      <nav class="top-nav">
+        <a href={prefix || '/'} class="top-nav-link">{locale === 'en' ? 'Home' : '홈'}</a>
+        <a href={`${prefix}/blog`} class="top-nav-link">{locale === 'en' ? 'Blog' : '블로그'}</a>
+        <a href={`${prefix}/pricing`} class="top-nav-link">{locale === 'en' ? 'Pricing' : '가격'}</a>
+        <a href={`${prefix}/bsgateway/getting-started`} class="top-nav-link">{locale === 'en' ? 'Docs' : '문서'}</a>
+      </nav>
       <div class="header-right">
         <span class="user-email">{user?.email}</span>
         <a href="/api/auth/session" class="logout-link" data-logout>
@@ -111,6 +117,25 @@ const currentPath = Astro.url.pathname;
     font-weight: 700;
     color: #f2f3f7;
     letter-spacing: -0.02em;
+  }
+  .top-nav {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    justify-content: center;
+  }
+  .top-nav-link {
+    font-size: 0.8125rem;
+    color: #8187a8;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+  .top-nav-link:hover {
+    color: #f2f3f7;
+  }
+  @media (max-width: 768px) {
+    .top-nav { display: none; }
   }
   .header-right {
     display: flex;

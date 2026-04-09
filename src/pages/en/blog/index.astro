@@ -24,7 +24,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.loc
         <p class="empty">No posts yet.</p>
       ) : (
         posts.map(post => (
-          <a href={`/en/blog/${post.id}`} class="post-card">
+          <article class="post-card">
             <div class="post-meta">
               <time>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(post.data.date)}</time>
               {post.data.tags.length > 0 && (
@@ -33,9 +33,11 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.loc
                 </div>
               )}
             </div>
-            <h2>{post.data.title}</h2>
-            <p>{post.data.description}</p>
-          </a>
+            <a href={`/en/blog/${post.id}`} class="post-link">
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </a>
+          </article>
         ))
       )}
     </div>
@@ -100,12 +102,16 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.loc
     border-radius: 12px;
     border: 1px solid #2a2d42;
     background-color: #111218;
-    text-decoration: none;
     transition: all 0.2s ease;
   }
   .post-card:hover {
     border-color: rgba(99,102,241,0.3);
     transform: translateY(-2px);
+  }
+  .post-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
   }
   .post-meta {
     display: flex;

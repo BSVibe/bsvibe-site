@@ -2,6 +2,11 @@ const AUTH_URL = import.meta.env.AUTH_URL || 'https://auth.bsvibe.dev';
 const COOKIE_NAME = 'bsvibe_session';
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 days
 
+// Production deployments are HTTPS, local dev (bsserver:4321) is HTTP.
+// `Secure` cookie attribute would block cookies on HTTP.
+const IS_DEV = import.meta.env.DEV;
+const SECURE_FLAG = IS_DEV ? '' : ' Secure;';
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -61,7 +66,7 @@ export async function validateSession(cookieHeader: string | null): Promise<{
 
     // Rotate cookie if new refresh token provided
     const newCookie = data.refresh_token
-      ? `${COOKIE_NAME}=${data.refresh_token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${COOKIE_MAX_AGE}`
+      ? `${COOKIE_NAME}=${data.refresh_token}; HttpOnly;${SECURE_FLAG} SameSite=Lax; Path=/; Max-Age=${COOKIE_MAX_AGE}`
       : undefined;
 
     return { user, newCookie };
@@ -71,9 +76,9 @@ export async function validateSession(cookieHeader: string | null): Promise<{
 }
 
 export function createSessionCookie(refreshToken: string): string {
-  return `${COOKIE_NAME}=${refreshToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${COOKIE_MAX_AGE}`;
+  return `${COOKIE_NAME}=${refreshToken}; HttpOnly;${SECURE_FLAG} SameSite=Lax; Path=/; Max-Age=${COOKIE_MAX_AGE}`;
 }
 
 export function clearSessionCookie(): string {
-  return `${COOKIE_NAME}=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`;
+  return `${COOKIE_NAME}=; HttpOnly;${SECURE_FLAG} SameSite=Lax; Path=/; Max-Age=0`;
 }
