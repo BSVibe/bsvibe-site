@@ -58,7 +58,6 @@ export default function DashboardShell({ user, locale, children }: Props) {
             textDecoration: 'none',
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/bsvibe-logo.png"
             alt="BSVibe"

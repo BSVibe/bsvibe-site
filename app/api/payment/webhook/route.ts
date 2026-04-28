@@ -10,13 +10,17 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const stripeSignature = req.headers.get('stripe-signature');
-  const tossSignature = req.headers.get('toss-signature');
+  const tossSignature =
+    req.headers.get('tosspayments-webhook-signature') ??
+    req.headers.get('x-toss-signature') ??
+    req.headers.get('toss-signature');
+  const tossTimestamp = req.headers.get('x-toss-timestamp');
 
   try {
     if (stripeSignature) {
       await handleStripeWebhook(body, stripeSignature);
     } else if (tossSignature) {
-      await handleTossWebhook(body, tossSignature);
+      await handleTossWebhook(body, tossSignature, tossTimestamp);
     } else {
       return NextResponse.json(
         { error: 'Missing signature header' },

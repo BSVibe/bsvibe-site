@@ -24,12 +24,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['nextra-theme-docs', 'nextra'],
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 };
 
 export default withNextra(nextConfig);

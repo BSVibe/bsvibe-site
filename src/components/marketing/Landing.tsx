@@ -248,7 +248,6 @@ export default function BSVibeLanding({ locale = 'ko' }: { locale?: Locale }) {
                 letterSpacing: '-0.01em',
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/bsvibe-logo.png"
                 alt=""

@@ -20,7 +20,6 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [loaded, setLoaded] = useState(false);
 
   const checkAuth = useCallback(async () => {
     try {
@@ -35,8 +34,11 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   }, []);
 
   useEffect(() => {
-    setLoaded(true);
-    checkAuth();
+    const timer = window.setTimeout(() => {
+      void checkAuth();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [checkAuth]);
 
   const handleLogout = useCallback(async () => {
@@ -48,7 +50,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   return (
     <>
       <nav
-        className={loaded ? 'fade-in' : ''}
+        className="fade-in"
         style={{
           position: 'fixed',
           top: 0,
@@ -74,7 +76,6 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
             textDecoration: 'none',
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/bsvibe-logo.png"
             alt="BSVibe"

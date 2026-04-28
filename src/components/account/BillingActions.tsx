@@ -23,7 +23,7 @@ export default function BillingActions({
   cancelLabel,
   cancelConfirm,
   cancelFailed,
-  startCheckoutLabel: _startCheckoutLabel,
+  startCheckoutLabel,
   checkoutFailed,
   locale,
   plans,
@@ -112,6 +112,16 @@ export default function BillingActions({
             {plan.name}
           </div>
           <div style={{ color: '#8187a8', fontSize: '0.75rem' }}>{plan.tier}</div>
+          <div
+            style={{
+              color: '#f2f3f7',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              marginTop: 12,
+            }}
+          >
+            {startCheckoutLabel}
+          </div>
         </button>
       ))}
     </div>

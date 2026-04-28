@@ -20,7 +20,6 @@ export default function Footer({ locale = 'ko' }: { locale?: Locale }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/bsvibe-logo.png"
           alt="BSVibe"

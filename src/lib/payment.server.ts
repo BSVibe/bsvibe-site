@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { upsertSubscription, recordPayment } from './subscription.repository';
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY ?? '';
@@ -17,11 +18,82 @@ function getStripe(): Stripe {
     throw new Error('STRIPE_SECRET_KEY is not configured');
   }
   if (!_stripe) {
-    _stripe = new Stripe(STRIPE_SECRET_KEY, {
-      apiVersion: '2025-02-24.acacia' as Stripe.LatestApiVersion,
-    });
+    _stripe = new Stripe(STRIPE_SECRET_KEY);
   }
   return _stripe;
+}
+
+type StripeSubscriptionPeriod = {
+  current_period_start?: number;
+  current_period_end?: number;
+};
+
+function getSubscriptionPeriod(subscription: Stripe.Subscription): {
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
+} {
+  const period = subscription as Stripe.Subscription & StripeSubscriptionPeriod;
+
+  if (!period.current_period_start || !period.current_period_end) {
+    throw new Error(`Stripe subscription ${subscription.id} is missing period dates`);
+  }
+
+  return {
+    currentPeriodStart: new Date(period.current_period_start * 1000),
+    currentPeriodEnd: new Date(period.current_period_end * 1000),
+  };
+}
+
+function timingSafeEqualString(actual: string, expected: string): boolean {
+  const actualBuffer = Buffer.from(actual);
+  const expectedBuffer = Buffer.from(expected);
+
+  return (
+    actualBuffer.length === expectedBuffer.length &&
+    timingSafeEqual(actualBuffer, expectedBuffer)
+  );
+}
+
+function hmacSha256(message: string, encoding: 'base64' | 'hex'): string {
+  return createHmac('sha256', TOSS_WEBHOOK_SECRET)
+    .update(message, 'utf8')
+    .digest(encoding);
+}
+
+function verifyTossWebhookSignature(
+  body: string,
+  signature: string,
+  timestamp: string | null,
+): void {
+  if (timestamp) {
+    const timestampMs = /^\d+$/.test(timestamp)
+      ? Number(timestamp) * (timestamp.length === 10 ? 1000 : 1)
+      : Date.parse(timestamp);
+
+    if (!Number.isFinite(timestampMs) || Math.abs(Date.now() - timestampMs) > 300_000) {
+      throw new Error('Expired Toss webhook signature timestamp');
+    }
+  }
+
+  const signatures = signature
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const expected = [
+    timestamp ? `v1=${hmacSha256(`${timestamp}.${body}`, 'hex')}` : null,
+    `v1:${hmacSha256(body, 'base64')}`,
+    hmacSha256(body, 'base64'),
+    hmacSha256(body, 'hex'),
+  ].filter((value): value is string => Boolean(value));
+
+  const isValid = signatures.some((received) =>
+    expected.some((candidate) => timingSafeEqualString(received, candidate)),
+  );
+
+  if (!isValid) {
+    throw new Error('Invalid Toss webhook signature');
+  }
 }
 
 export function getProvider(locale: string): PaymentProvider {
@@ -166,6 +238,7 @@ export async function handleStripeWebhook(
       if (userId && priceId && subscriptionId) {
         const subscription =
           await stripe.subscriptions.retrieve(subscriptionId);
+        const period = getSubscriptionPeriod(subscription);
         await upsertSubscription({
           userId,
           priceId,
@@ -178,10 +251,8 @@ export async function handleStripeWebhook(
             | 'canceled'
             | 'past_due'
             | 'incomplete',
-          currentPeriodStart: new Date(
-            subscription.current_period_start * 1000,
-          ),
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          currentPeriodStart: period.currentPeriodStart,
+          currentPeriodEnd: period.currentPeriodEnd,
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
           canceledAt: null,
         });
@@ -236,6 +307,7 @@ export async function handleStripeWebhook(
       const priceId = subscription.metadata?.bsvibe_price_id;
 
       if (userId && priceId) {
+        const period = getSubscriptionPeriod(subscription);
         await upsertSubscription({
           userId,
           priceId,
@@ -248,10 +320,8 @@ export async function handleStripeWebhook(
             | 'canceled'
             | 'past_due'
             | 'incomplete',
-          currentPeriodStart: new Date(
-            subscription.current_period_start * 1000,
-          ),
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          currentPeriodStart: period.currentPeriodStart,
+          currentPeriodEnd: period.currentPeriodEnd,
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
           canceledAt: subscription.canceled_at
             ? new Date(subscription.canceled_at * 1000)
@@ -267,11 +337,14 @@ export async function handleStripeWebhook(
 
 export async function handleTossWebhook(
   body: string,
-  _signature: string,
+  signature: string,
+  timestamp: string | null = null,
 ): Promise<void> {
   if (!TOSS_WEBHOOK_SECRET) {
     throw new Error('TOSS_WEBHOOK_SECRET is not configured');
   }
+
+  verifyTossWebhookSignature(body, signature, timestamp);
 
   const event = JSON.parse(body) as TossWebhookEvent;
 
