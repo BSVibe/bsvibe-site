@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 type Locale = 'ko' | 'en';
 
@@ -248,7 +249,7 @@ export default function BSVibeLanding({ locale = 'ko' }: { locale?: Locale }) {
                 letterSpacing: '-0.01em',
               }}
             >
-              <img
+              <Image
                 src="/images/bsvibe-logo.png"
                 alt=""
                 width={14}

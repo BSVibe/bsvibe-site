@@ -1,4 +1,5 @@
 import nextra from 'nextra';
+import { cwd } from 'node:process';
 
 const withNextra = nextra({
   // Nextra 4 App Router config — docs theme is wired via app/[lang]/(docs)/layout.tsx
@@ -24,6 +25,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['nextra-theme-docs', 'nextra'],
   },
+  outputFileTracingRoot: cwd(),
 };
 
 export default withNextra(nextConfig);

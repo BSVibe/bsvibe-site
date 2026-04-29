@@ -1,6 +1,7 @@
 import { Layout, Navbar } from 'nextra-theme-docs';
 import { Search } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
+import Image from 'next/image';
 import 'nextra-theme-docs/style.css';
 
 interface Props {
@@ -16,7 +17,7 @@ export default async function DocsLayout({ children, params }: Props) {
     <Navbar
       logo={
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <img
+          <Image
             src="/images/bsvibe-logo.png"
             alt="BSVibe"
             width={20}

@@ -11,7 +11,7 @@ html,
 body {
   background-color: #0a0b0f;
   color: #e4e6ee;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-plus-jakarta-sans), system-ui, -apple-system, sans-serif;
 }
 
 /* ─── Animations ──────────────────────────────────────────────────── */
@@ -104,7 +104,7 @@ body {
   text-decoration: underline;
 }
 .prose-body code {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-jetbrains-mono), monospace;
   background-color: rgba(99, 102, 241, 0.08);
   padding: 2px 6px;
   border-radius: 4px;

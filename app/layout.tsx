@@ -1,6 +1,18 @@
 import type { Metadata } from 'next';
-import { Head } from 'nextra/components';
+import { JetBrains_Mono, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta-sans',
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-jetbrains-mono',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bsvibe.dev'),
@@ -37,17 +49,9 @@ export default function RootLayout({
   const lang = params?.lang === 'en' ? 'en' : 'ko';
   return (
     <html lang={lang} dir="ltr" suppressHydrationWarning>
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-      <body>{children}</body>
+      <body className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }

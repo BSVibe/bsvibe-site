@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Locale } from '@/lib/i18n';
 import { getTranslations } from '@/lib/i18n';
 
@@ -20,7 +21,7 @@ export default function Footer({ locale = 'ko' }: { locale?: Locale }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-        <img
+        <Image
           src="/images/bsvibe-logo.png"
           alt="BSVibe"
           width={16}
