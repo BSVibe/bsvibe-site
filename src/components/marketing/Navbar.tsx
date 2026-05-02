@@ -19,7 +19,6 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   const l = getTranslations(locale);
   const prefix = `/${locale}`;
   const [menuOpen, setMenuOpen] = useState(false);
-  const [langOpen, setLangOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
 
   const checkAuth = useCallback(async () => {
@@ -130,72 +129,61 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
             {l.nav.pricing}
           </Link>
 
-          {/* Language switcher */}
-          <div style={{ position: 'relative' }}>
-            <button
-              onClick={() => setLangOpen(!langOpen)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                padding: '4px 10px',
-                borderRadius: 6,
-                border: '1px solid #2a2d42',
-                background: 'none',
-                color: '#8187a8',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              {locales.find((loc) => loc.code === locale)?.label}
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M2.5 4L5 6.5L7.5 4" />
-              </svg>
-            </button>
-            {langOpen && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  marginTop: 4,
-                  borderRadius: 8,
-                  border: '1px solid #2a2d42',
-                  backgroundColor: '#111218',
-                  padding: 4,
-                  minWidth: 80,
-                  zIndex: 100,
-                }}
-              >
-                {locales
-                  .filter((loc) => loc.code !== locale)
-                  .map((loc) => (
-                    <Link
-                      key={loc.code}
-                      href={loc.path}
-                      style={{
-                        display: 'block',
-                        padding: '6px 12px',
-                        borderRadius: 4,
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        color: '#8187a8',
-                        textDecoration: 'none',
-                      }}
-                    >
-                      {loc.label}
-                    </Link>
-                  ))}
-              </div>
-            )}
+          {/* Language toggle — mirrors @bsvibe/layout LanguageToggle visual */}
+          <div
+            role="group"
+            aria-label="Language"
+            data-testid="lang-switcher"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              padding: 4,
+              borderRadius: 999,
+              backgroundColor: 'rgba(17,18,24,0.9)',
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+            }}
+          >
+            {locales.map((loc) => {
+              const active = loc.code === locale;
+              const cell = (
+                <span
+                  data-testid={`lang-switcher-${loc.code}`}
+                  aria-pressed={active}
+                  style={{
+                    minHeight: 32,
+                    minWidth: 32,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px 10px',
+                    borderRadius: 999,
+                    transition: 'color 150ms, background-color 150ms',
+                    backgroundColor: active
+                      ? 'rgba(129,140,248,0.15)'
+                      : 'transparent',
+                    color: active ? '#818cf8' : '#8187a8',
+                    cursor: active ? 'default' : 'pointer',
+                  }}
+                >
+                  {loc.label}
+                </span>
+              );
+              return active ? (
+                <span key={loc.code}>{cell}</span>
+              ) : (
+                <Link
+                  key={loc.code}
+                  href={loc.path}
+                  style={{ textDecoration: 'none' }}
+                >
+                  {cell}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Auth */}
@@ -322,22 +310,57 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
           >
             {l.nav.pricing}
           </Link>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ fontSize: '0.875rem', color: '#5a5f7d' }}>
-              {locales.find((loc) => loc.code === locale)?.label}
-            </span>
-            {locales
-              .filter((loc) => loc.code !== locale)
-              .map((loc) => (
+          <div
+            role="group"
+            aria-label="Language"
+            style={{
+              display: 'inline-flex',
+              alignSelf: 'flex-start',
+              gap: 4,
+              padding: 4,
+              borderRadius: 999,
+              backgroundColor: 'rgba(17,18,24,0.9)',
+              fontSize: 12,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+            }}
+          >
+            {locales.map((loc) => {
+              const active = loc.code === locale;
+              const cell = (
+                <span
+                  aria-pressed={active}
+                  style={{
+                    minHeight: 36,
+                    minWidth: 36,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '6px 12px',
+                    borderRadius: 999,
+                    backgroundColor: active
+                      ? 'rgba(129,140,248,0.15)'
+                      : 'transparent',
+                    color: active ? '#818cf8' : '#8187a8',
+                    cursor: active ? 'default' : 'pointer',
+                  }}
+                >
+                  {loc.label}
+                </span>
+              );
+              return active ? (
+                <span key={loc.code}>{cell}</span>
+              ) : (
                 <Link
                   key={loc.code}
                   href={loc.path}
-                  className="nav-link"
-                  style={{ fontSize: '0.875rem' }}
+                  style={{ textDecoration: 'none' }}
                 >
-                  {loc.label}
+                  {cell}
                 </Link>
-              ))}
+              );
+            })}
           </div>
           {user ? (
             <Link
