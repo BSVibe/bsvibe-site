@@ -6,23 +6,16 @@ Official site for the BSVibe AI software ecosystem. Includes landing page, produ
 
 ```
 src/
-├── components/Landing.tsx    # Landing page (React island)
-├── content/docs/             # Starlight docs (MDX)
-│   ├── bsgateway/            # BSGateway user guide
-│   ├── bsnexus/              # BSNexus user guide
-│   ├── bsupervisor/          # BSupervisor user guide
-│   ├── bsage/                # BSage user guide
-│   └── en/                   # English translations
-├── pages/
-│   ├── index.astro           # Landing page
-│   ├── privacy.astro         # Privacy policy
-│   └── terms.astro           # Terms of service
-└── styles/custom.css         # BSVibe dark theme overrides
+├── app/                      # Next.js App Router pages and API routes
+├── components/               # Shared React UI
+├── content/                  # Product docs and blog content
+├── i18n/                     # Locale dictionaries and routing helpers
+└── lib/                      # Auth, billing, content, and Supabase helpers
 ```
 
 ## Tech Stack
 
-- [Astro](https://astro.build) + [Starlight](https://starlight.astro.build) for docs
+- [Next.js](https://nextjs.org) + [Nextra](https://nextra.site) for docs
 - React 19 (interactive islands)
 - Tailwind CSS 4
 - i18n: Korean (default), English (`/en/` prefix)
@@ -30,9 +23,10 @@ src/
 ## Development
 
 ```bash
-npm install
-npm run dev      # localhost:4321
-npm run build    # dist/
+pnpm install
+pnpm run dev      # localhost:3000
+pnpm run lint
+pnpm run build    # .next/
 ```
 
 ## Deployment
@@ -40,7 +34,7 @@ npm run build    # dist/
 Connected to Vercel — auto-deploys on push to `main`.
 
 - **Production**: https://bsvibe.dev
-- **Docs**: https://bsvibe.dev/bsgateway/getting-started
+- **Docs**: https://bsvibe.dev/ko/bsgateway/getting-started
 
 ## Routes
 

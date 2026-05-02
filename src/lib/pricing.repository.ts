@@ -1,5 +1,5 @@
 import { getSupabaseAnon, isSupabaseConfigured } from './supabase.server';
-import type { Locale } from '@/i18n';
+import type { Locale } from './i18n';
 
 export interface Product {
   id: string;

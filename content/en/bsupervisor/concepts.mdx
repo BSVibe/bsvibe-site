@@ -1,0 +1,133 @@
+---
+title: Core Concepts
+description: Understand BSupervisor's event collection, rule engine, and cost tracking.
+---
+
+BSupervisor is composed of four core systems: **Event Collection**, **Rule Engine**, **Cost Tracking**, and **Daily Reports**.
+
+## Event Collection
+
+BSupervisor collects all AI agent actions as **events**. Events are the fundamental unit of auditing and serve as input for all rule evaluation and cost tracking.
+
+### Collected Event Types
+
+| Category | Event Types | Collected Data |
+|----------|-------------|----------------|
+| **API calls** | LLM API request/response | Model name, token count, prompt/response content, latency |
+| **File system** | File read/write/delete | File path, operation type, file size |
+| **External communication** | HTTP requests, Webhook calls | URL, method, status code, payload size |
+| **Code execution** | Command execution, script runs | Command, execution time, exit code, output summary |
+| **Authentication** | Token usage, key access | Auth credential type, access context |
+
+### Event Structure
+
+Every event includes these common fields:
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| `event_id` | Unique identifier | `evt_a1b2c3d4` |
+| `timestamp` | Event time (UTC) | `2026-04-03T09:15:32Z` |
+| `agent_id` | Agent that triggered the event | `nexus-executor-01` |
+| `category` | Event category | `api_call`, `file_access` |
+| `action` | Specific action | `llm_request`, `file_write` |
+| `metadata` | Category-specific data | Model name, token count, etc. |
+| `risk_score` | Risk score from the rule engine (0-100) | `75` |
+
+### Collection Performance
+
+- **Target latency**: p99 < 50ms (from event occurrence to collection)
+- **Throughput**: 10,000+ events per second
+- **Retention**: Event data retained for 90 days (varies by plan)
+
+## Rule Engine
+
+The rule engine evaluates collected events against predefined rules **in real time**.
+
+### Built-in Rules (8)
+
+Details on the 8 built-in rules:
+
+| # | Rule | Severity | Detection Method | Example |
+|---|------|----------|------------------|---------|
+| 1 | **SQL Injection** | Critical | Dangerous pattern matching in SQL queries | `'; DROP TABLE users; --` |
+| 2 | **Prompt Injection** | Critical | Meta-instruction detection in prompts | `Ignore previous instructions and...` |
+| 3 | **PII leak** | Critical | Regex + NER-based personal information detection | SSN, credit card numbers, email patterns |
+| 4 | **Excessive resources** | Warning | Resource usage threshold comparison | CPU > 90%, memory > 2GB |
+| 5 | **Unauthorized API calls** | Warning | Allowlist-based URL filtering | Calls to unregistered external URLs |
+| 6 | **Sensitive file access** | Critical | File path pattern matching | `.env`, `*.pem`, `*credentials*` |
+| 7 | **Abnormal token usage** | Warning | Moving average anomaly detection | Average 1,000 tokens -> sudden 50,000 tokens |
+| 8 | **Repetitive errors** | Info | Same-error frequency within time window | Same error 10+ times in 5 minutes |
+
+### Custom Rules
+
+Create rules tailored to your organization's security policies from the dashboard. See the [Rule Management](/en/bsupervisor/features/rules) guide for details.
+
+### Severity Levels
+
+| Severity | Meaning | Default Alert Behavior |
+|----------|---------|------------------------|
+| **Critical** | Security threat requiring immediate response | Sent to all alert channels immediately |
+| **Warning** | Anomaly requiring attention | Alert sent to configured channels |
+| **Info** | Informational, pattern tracking | Dashboard record only (no alert) |
+
+### Rule Evaluation Order
+
+1. All active rules are evaluated when an event is collected.
+2. Rules are evaluated in **priority order** (Critical > Warning > Info).
+3. Actions (alerts, blocks, etc.) for matched rules are executed.
+4. A single event can match multiple rules simultaneously.
+
+## Cost Tracking
+
+BSupervisor extracts token usage from LLM API call events to calculate **real-time costs**.
+
+![Cost Tracking](/images/screenshots/bsupervisor-costs.png)
+
+### Tracking Dimensions
+
+| Dimension | Description | Use |
+|-----------|-------------|-----|
+| **Per agent** | Total LLM cost per agent | Identify high-cost agents |
+| **Per model** | Cost per LLM model used | Optimize model selection |
+| **Per project** | Aggregated cost per project | Manage project budgets |
+| **Over time** | Daily/weekly/monthly cost trends | Analyze cost trends |
+
+### Anomaly Detection
+
+The cost tracking system automatically detects:
+
+- **Sudden cost spikes**: Alert when cost increases 200%+ over the previous day
+- **Abnormal token usage**: Single request token count exceeds threshold
+- **Off-hours usage**: Abnormal API calls during non-business hours
+- **Budget warnings**: Alerts at 80%, 90%, and 100% of the configured monthly budget
+
+### Cost Calculation
+
+| Item | Formula |
+|------|---------|
+| **Input token cost** | Input tokens x per-model input rate |
+| **Output token cost** | Output tokens x per-model output rate |
+| **Total cost** | Input cost + Output cost |
+| **Model rates** | Based on each LLM provider's published pricing (auto-updated) |
+
+## Daily Reports
+
+Automatically generated daily audit reports provide a comprehensive view of your AI agent operations.
+
+![Daily Reports](/images/screenshots/bsupervisor-reports.png)
+
+### Report Sections
+
+| Section | Content |
+|---------|---------|
+| **Summary** | Total events, violation count, total cost at a glance |
+| **Violation details** | Violation count by severity, top 5 most frequent rules |
+| **Cost analysis** | Per-agent and per-model cost charts, day-over-day changes |
+| **Anomaly detection** | List of abnormal patterns with detailed analysis |
+| **Recommendations** | AI-generated improvement suggestions (rule tuning, cost reduction, etc.) |
+
+### Report Delivery
+
+- **Dashboard**: View daily reports on the Reports page
+- **Email**: Automatically sent every morning to configured email addresses
+- **Slack**: Summary message sent to the configured Slack channel

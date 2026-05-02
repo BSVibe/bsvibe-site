@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* ─── Base ────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: #0a0b0f;
+  color: #e4e6ee;
+  font-family: var(--font-plus-jakarta-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Animations ──────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ─── Utility classes preserved from Astro ────────────────────────── */
+.nav-link {
+  transition: color 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: #8187a8;
+}
+.nav-link:hover {
+  color: #f2f3f7;
+}
+
+/* Markdown / blog body styling (Tailwind 4 — no @layer needed) */
+.prose-body {
+  color: #a8adc6;
+  line-height: 1.8;
+  font-size: 0.9375rem;
+}
+.prose-body h1,
+.prose-body h2,
+.prose-body h3 {
+  color: #f2f3f7;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.02em;
+}
+.prose-body h2 {
+  font-size: 1.5rem;
+}
+.prose-body h3 {
+  font-size: 1.25rem;
+}
+.prose-body p {
+  margin-bottom: 1em;
+}
+.prose-body ul,
+.prose-body ol {
+  padding-left: 20px;
+  margin-bottom: 1em;
+}
+.prose-body li {
+  margin-bottom: 0.5em;
+}
+.prose-body strong {
+  color: #e4e6ee;
+}
+.prose-body a {
+  color: #818cf8;
+  text-decoration: none;
+}
+.prose-body a:hover {
+  text-decoration: underline;
+}
+.prose-body code {
+  font-family: var(--font-jetbrains-mono), monospace;
+  background-color: rgba(99, 102, 241, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+.prose-body pre {
+  background-color: #111218;
+  border: 1px solid #2a2d42;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin-bottom: 1em;
+}
+.prose-body pre code {
+  background: none;
+  padding: 0;
+}
