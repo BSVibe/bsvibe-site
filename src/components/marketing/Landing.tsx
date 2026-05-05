@@ -311,7 +311,7 @@ export default function BSVibeLanding({ locale = 'ko' }: { locale?: Locale }) {
             }}
           >
             <a
-              href="#products"
+              href={`/${locale}/demo`}
               style={{
                 display: 'inline-block',
                 padding: '13px 28px',
