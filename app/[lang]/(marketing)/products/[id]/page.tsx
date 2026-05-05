@@ -18,10 +18,14 @@ interface ProductCopy {
   cases: { name: string; detail: string }[];
 }
 
-const productCopy: Record<ProductId, { ko: ProductCopy; en: ProductCopy; accent: string; appUrl: string }> = {
+const productCopy: Record<
+  ProductId,
+  { ko: ProductCopy; en: ProductCopy; accent: string; appUrl: string; demoUrl: string }
+> = {
   bsgateway: {
     accent: '#f59e0b',
     appUrl: 'https://gateway.bsvibe.dev',
+    demoUrl: 'https://demo-gateway.bsvibe.dev',
     ko: {
       title: 'BSGateway',
       tagline:
@@ -60,6 +64,7 @@ const productCopy: Record<ProductId, { ko: ProductCopy; en: ProductCopy; accent:
   bsnexus: {
     accent: '#3b82f6',
     appUrl: 'https://nexus.bsvibe.dev',
+    demoUrl: 'https://demo-nexus.bsvibe.dev',
     ko: {
       title: 'BSNexus',
       tagline: '아이디어만 던지면, 알아서 만들어집니다. AI 에이전트가 협력해 작업을 완수합니다.',
@@ -96,6 +101,7 @@ const productCopy: Record<ProductId, { ko: ProductCopy; en: ProductCopy; accent:
   bsupervisor: {
     accent: '#f43f5e',
     appUrl: 'https://supervisor.bsvibe.dev',
+    demoUrl: 'https://demo-supervisor.bsvibe.dev',
     ko: {
       title: 'BSupervisor',
       tagline: '잠든 사이에도, 묵묵히 지켜보고 있습니다. AI의 모든 행동을 추적하고 검증합니다.',
@@ -132,6 +138,7 @@ const productCopy: Record<ProductId, { ko: ProductCopy; en: ProductCopy; accent:
   bsage: {
     accent: '#10b981',
     appUrl: 'https://sage.bsvibe.dev',
+    demoUrl: 'https://demo-sage.bsvibe.dev',
     ko: {
       title: 'BSage',
       tagline: '정리하지 않아도, 기억하고 연결해 줍니다. 온톨로지 기반의 지식 비서.',
@@ -230,7 +237,9 @@ export default async function ProductPage({
           {c.tagline}
         </p>
         <a
-          href={data.appUrl}
+          href={data.demoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
             display: 'inline-block',
             padding: '10px 20px',
@@ -238,6 +247,22 @@ export default async function ProductPage({
             backgroundColor: data.accent,
             color: '#fff',
             fontWeight: 600,
+            fontSize: '0.875rem',
+            textDecoration: 'none',
+          }}
+        >
+          {locale === 'en' ? 'Try the demo →' : '데모 체험하기 →'}
+        </a>
+        <a
+          href={data.appUrl}
+          style={{
+            display: 'inline-block',
+            marginLeft: 12,
+            padding: '10px 20px',
+            borderRadius: 10,
+            border: '1px solid #2a2d42',
+            color: '#8187a8',
+            fontWeight: 500,
             fontSize: '0.875rem',
             textDecoration: 'none',
           }}
