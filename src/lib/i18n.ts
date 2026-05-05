@@ -6,6 +6,7 @@ export type Locale = 'ko' | 'en';
 export interface Translations {
   nav: {
     products: string;
+    demo: string;
     docs: string;
     blog: string;
     pricing: string;
@@ -31,6 +32,7 @@ export interface Translations {
 export const ko: Translations = {
   nav: {
     products: '제품',
+    demo: '데모',
     docs: '문서',
     blog: '블로그',
     pricing: '가격',
@@ -60,6 +62,7 @@ export const ko: Translations = {
 export const en: Translations = {
   nav: {
     products: 'Products',
+    demo: 'Demo',
     docs: 'Docs',
     blog: 'Blog',
     pricing: 'Pricing',

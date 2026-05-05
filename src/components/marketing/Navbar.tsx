@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
 import { getTranslations } from '@/lib/i18n';
 
@@ -10,14 +11,26 @@ interface UserInfo {
   email: string;
 }
 
-const locales: { code: Locale; label: string; path: string }[] = [
-  { code: 'ko', label: 'KO', path: '/ko' },
-  { code: 'en', label: 'EN', path: '/en' },
+const locales: { code: Locale; label: string }[] = [
+  { code: 'ko', label: 'KO' },
+  { code: 'en', label: 'EN' },
 ];
+
+/**
+ * Replace the locale prefix in the current pathname so the language
+ * switcher preserves the page (e.g. ``/ko/demo`` → ``/en/demo`` instead
+ * of falling back to ``/en``).
+ */
+function pathForLocale(pathname: string, target: Locale): string {
+  // Strip leading "/ko" or "/en" if present, then re-prefix.
+  const stripped = pathname.replace(/^\/(ko|en)(?=\/|$)/, '') || '/';
+  return `/${target}${stripped === '/' ? '' : stripped}`;
+}
 
 export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   const l = getTranslations(locale);
   const prefix = `/${locale}`;
+  const pathname = usePathname() ?? prefix;
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
 
@@ -108,6 +121,13 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
             {l.nav.products}
           </Link>
           <Link
+            href={`${prefix}/demo`}
+            className="nav-link"
+            style={{ fontSize: '0.8125rem', fontWeight: 500 }}
+          >
+            {l.nav.demo}
+          </Link>
+          <Link
             href={`${prefix}/bsgateway/getting-started`}
             className="nav-link"
             style={{ fontSize: '0.8125rem', fontWeight: 500 }}
@@ -177,7 +197,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
               ) : (
                 <Link
                   key={loc.code}
-                  href={loc.path}
+                  href={pathForLocale(pathname, loc.code)}
                   style={{ textDecoration: 'none' }}
                 >
                   {cell}
@@ -290,6 +310,14 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
             {l.nav.products}
           </Link>
           <Link
+            href={`${prefix}/demo`}
+            className="nav-link"
+            onClick={() => setMenuOpen(false)}
+            style={{ fontSize: '0.875rem' }}
+          >
+            {l.nav.demo}
+          </Link>
+          <Link
             href={`${prefix}/bsgateway/getting-started`}
             className="nav-link"
             style={{ fontSize: '0.875rem' }}
@@ -354,7 +382,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
               ) : (
                 <Link
                   key={loc.code}
-                  href={loc.path}
+                  href={pathForLocale(pathname, loc.code)}
                   style={{ textDecoration: 'none' }}
                 >
                   {cell}
