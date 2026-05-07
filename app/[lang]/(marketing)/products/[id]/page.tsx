@@ -67,34 +67,80 @@ const productCopy: Record<
     demoUrl: 'https://demo-nexus.bsvibe.dev',
     ko: {
       title: 'BSNexus',
-      tagline: '아이디어만 던지면, 알아서 만들어집니다. AI 에이전트가 협력해 작업을 완수합니다.',
+      tagline:
+        'AI가 일하고, 당신은 결정합니다. BSNexus는 AI-native company의 지휘 레이어로, 첫 vertical slice는 AI-native software company입니다.',
       features: [
-        { h: '에이전트 오케스트레이션', p: '여러 AI 에이전트가 역할을 나누고, 협업하고, 결과를 만들어냅니다.' },
-        { h: 'No-code 워크플로우', p: '코딩 없이 복잡한 자동화를 설계하고 실행합니다.' },
-        { h: '실시간 협업', p: '팀원과 함께 같은 보드에서 작업하며 진행을 추적합니다.' },
-        { h: '확장 가능한 도구', p: 'API, 스크립트, 외부 통합으로 무한 확장.' },
+        {
+          h: 'Direction',
+          p: '프로젝트당 단일 대화. 한 줄 지시가 Request가 되고, 내부 execution run으로 분해되어 작업이 시작됩니다. 에이전트 배정 없음.',
+        },
+        {
+          h: 'Decision Inbox',
+          p: '취향 / 범위 / 위험 / 예산 / 배포 승인처럼 founder 판단이 필요한 fork만 inbox에 올라옵니다. 합리적 디폴트는 조용히 처리.',
+        },
+        {
+          h: '검증된 Deliverable',
+          p: 'verification 명령, exit code, PR / preview / screenshot / 테스트 결과가 붙은 결과물. proof가 없으면 shipped라고 주장하지 않습니다.',
+        },
+        {
+          h: '컴퓨터에 묶이지 않는 운영',
+          p: '모바일 웹/PWA가 첫 computer-independent interface. Slack, 이메일, CLI, 음성은 그 다음 단계로 같은 primitive에 매핑됩니다.',
+        },
       ],
-      description: 'BSNexus는 아이디어를 작업으로, 작업을 결과물로 자동 변환합니다.',
+      description:
+        'BSNexus는 prompt-to-app 빌더가 아니고, Kanban 도구도 아니고, 에이전트 조직도 대시보드도 아닙니다. founder가 회사 일을 낮은 touch time으로 굴릴 수 있게 하는 지휘 레이어입니다.',
       cases: [
-        { name: '제품팀', detail: 'Spec → 디자인 → 구현 → 테스트, 한 흐름으로 자동화' },
-        { name: '리서처', detail: '문헌 수집, 요약, 분석을 동시에 진행' },
-        { name: '운영팀', detail: '반복 업무를 에이전트에게 맡기고 본업에 집중' },
+        {
+          name: '1인 기술 창업자',
+          detail: 'IDE에 묶여 모든 prompt를 직접 몰지 않아도, 폰에서 결정만 내리면 회사 일이 흘러갑니다.',
+        },
+        {
+          name: 'BSVibe 내부 도그푸딩',
+          detail: 'BSNexus 자체 개발과 시블링 제품 작업이 BSNexus 위에서 돌아갑니다.',
+        },
+        {
+          name: 'AI-native software company',
+          detail: 'proof가 붙은 deliverable로 유지보수 가능한 소프트웨어를 운영합니다.',
+        },
       ],
     },
     en: {
       title: 'BSNexus',
-      tagline: 'Throw an idea in; AI agents collaborate to deliver. Project management for AI-native work.',
+      tagline:
+        'AI handles the work. You make the decisions. BSNexus is the command layer for AI-native companies, starting with the AI-native software company.',
       features: [
-        { h: 'Agent Orchestration', p: 'Multiple agents split roles, collaborate, and ship results.' },
-        { h: 'No-code Workflows', p: 'Design complex automation without writing code.' },
-        { h: 'Real-time Collaboration', p: 'Work alongside teammates on the same board.' },
-        { h: 'Extensible Tools', p: 'APIs, scripts, integrations — extend without limits.' },
+        {
+          h: 'Direction',
+          p: 'One conversation per project. A short instruction becomes a Request, decomposes into internal execution runs, and starts work. No agent assignment.',
+        },
+        {
+          h: 'Decision Inbox',
+          p: 'Only forks that need founder judgment — taste, scope, risk, budget, deploy approval — surface as decisions. Sensible defaults stay silent.',
+        },
+        {
+          h: 'Verified Deliverables',
+          p: 'Outputs ship with verification command, exit code, and proof refs (PR, preview, screenshot, test result). No proof, no "shipped".',
+        },
+        {
+          h: 'Computer-independent',
+          p: 'Mobile web/PWA is the first computer-independent interface. Slack, email, CLI, and voice follow, all mapped to the same primitives.',
+        },
       ],
-      description: 'BSNexus turns ideas into tasks, tasks into deliverables — automatically.',
+      description:
+        'BSNexus is not a prompt-to-app builder, not a Kanban tool, not an agent org-chart dashboard. It is the command layer that lets founders run company work with low touch time.',
       cases: [
-        { name: 'Product teams', detail: 'Spec → design → build → test in one continuous flow.' },
-        { name: 'Researchers', detail: 'Run literature collection, summarization, and analysis in parallel.' },
-        { name: 'Ops teams', detail: 'Hand recurring work to agents; focus on what only humans do.' },
+        {
+          name: 'Technical solo founder',
+          detail: 'Resolve decisions from your phone instead of driving every prompt from an IDE.',
+        },
+        {
+          name: 'BSVibe internal dogfooding',
+          detail: 'BSNexus development itself and sibling product work runs on BSNexus.',
+        },
+        {
+          name: 'AI-native software company',
+          detail: 'Operate maintainable software with proof-attached deliverables, not chat summaries.',
+        },
       ],
     },
   },
