@@ -30,8 +30,8 @@ const t = {
         detail: '스마트 라우팅',
       },
       BSNexus: {
-        desc: '아이디어만 던지면, 알아서 만들어집니다.',
-        detail: '프로젝트 매니저',
+        desc: 'AI가 일하고, 당신은 결정합니다.',
+        detail: '지휘 레이어',
       },
       BSupervisor: {
         desc: '잠든 사이에도, 묵묵히 지켜보고 있습니다.',
@@ -67,8 +67,8 @@ const t = {
         detail: 'Smart Routing',
       },
       BSNexus: {
-        desc: 'Throw an idea in, and it builds itself.',
-        detail: 'Project Manager',
+        desc: 'AI handles the work. You make the decisions.',
+        detail: 'Command Layer',
       },
       BSupervisor: {
         desc: 'Watching quietly, even while you sleep.',

@@ -1,107 +1,66 @@
 ---
 title: 핵심 개념
-description: BSNexus의 아키텍처와 핵심 구성 요소를 이해합니다.
+description: BSNexus의 vocabulary, 4 surfaces, 그리고 proof before done.
 ---
 
-BSNexus는 **Architect**, **Task State Machine**, **Executor**, **Kanban Board** 네 가지 핵심 구성 요소로 이루어져 있습니다. 이 페이지에서는 각 구성 요소의 역할과 작동 방식을 설명합니다.
+BSNexus는 작은 vocabulary와 4 surfaces 위에 만들어집니다. 내부 아키텍처(execution run, composition snapshot, tool call, worker)는 **Inside** surface 뒤에 있습니다 — 원할 때만 보이고, 그 외에는 보이지 않습니다.
 
-## Architect
+## Vocabulary
 
-Architect는 사용자의 아이디어를 **구조화된 프로젝트**로 변환하는 AI 대화 인터페이스입니다.
+| 용어 | 정의 |
+|------|------|
+| **Direction** | 당신의 지시. 짧은 자연어 입력으로 BSNexus에 무엇을 할지, 또는 기존 작업을 어떻게 바꿀지 알려줍니다. |
+| **Request** | direction에서 도출된, 사용자에게 보이는 작업 단위. 의도 / 상태 / 관련 decision / 관련 deliverable / 다음 step을 담습니다. |
+| **Decision** | AI가 혼자 정하면 안 되는 판단 — 취향, 범위, 위험, 예산, 배포 승인, 파괴적 행동, 외부 커뮤니케이션. |
+| **Brief** | 한 눈에 읽히는 상태 요약: 무엇이 출시됐는지, 무엇이 결정 대기인지, 무엇이 막혔는지, 무엇이 진행 중인지, 다음에 무엇을 추천하는지. |
+| **Deliverable** | 검수 가능한 작업 결과물 — 코드, PR, preview URL, 디자인, 문서, 마케팅 카피, 보고서. |
+| **Proof** | deliverable에 붙는 typed evidence — 테스트, exit code, 스크린샷, PR diff, source link. 로그는 proof가 아닙니다. LLM의 자신감도 proof가 아닙니다. |
+| **Inside** | 고급 검사용 surface. execution run / composition snapshot / tool call이 여기 있습니다. 기본 화면이 아닙니다. |
 
-![Architect 대화 화면](/images/screenshots/bsnexus-architect.png)
+## 4 Surfaces
 
-### Architect의 작동 방식
+프로젝트는 4개 surface로 구성되며, 모두 같은 primitive 위에 있습니다:
 
-자연어로 만들고 싶은 것을 설명하면, Architect가 다음 단계를 순차적으로 수행합니다:
+### Direction
 
-| 단계 | 내용 | 예시 |
-|------|------|------|
-| **1. 요구사항 분석** | 사용자 입력에서 핵심 기능, 기술 스택, 제약 조건을 추출 | "React + FastAPI" → 프론트엔드/백엔드 분리 구조 |
-| **2. 명확화 질문** | 모호한 부분을 구체화하기 위한 추가 질문 | "인증은 JWT vs 세션 중 어떤 방식을 원하시나요?" |
-| **3. 프로젝트 구조 설계** | 디렉토리 구조, 모듈 구성, 기술 스택 확정 | `src/api/`, `src/components/`, `src/models/` |
-| **4. 태스크 분해** | 프로젝트를 독립적인 작업 단위로 분할 | "DB 스키마 설계", "사용자 인증 API", "대시보드 UI" |
-| **5. 의존성 설정** | 태스크 간 선후관계를 분석하여 실행 순서 결정 | "DB 스키마 → 인증 API → 대시보드 UI" |
-| **6. Executor 배정** | 각 태스크에 적합한 실행 에이전트를 자동 배정 | Claude Code Executor → 코드 생성 태스크 |
+프로젝트당 단일 대화. 당신이 원하는 것을 적으면 BSNexus가 메시지를 분류(chit-chat / 질문 / 요청 / 수정)하고 그에 맞춰 Request를 생성하거나 수정합니다.
 
-### Architect 대화 패턴
+에이전트를 고르거나 템플릿을 채우거나 작업을 직접 분할하지 않습니다. Direction은 BSNexus 안의 유일한 채팅입니다.
 
-Architect와 효과적으로 대화하려면 다음 패턴을 활용하세요:
+### Progress
 
-- **초기 설명**: 전체 프로젝트의 목적과 핵심 기능을 설명합니다.
-- **반복 정제**: Architect의 질문에 답하며 요구사항을 구체화합니다.
-- **태스크 수정**: 생성된 태스크를 검토하고 필요시 수정을 요청합니다.
-- **추가 기능**: 프로젝트 진행 중에도 새로운 요구사항을 추가할 수 있습니다.
+작업 timeline과 trust card 3개 — 지식 레이어(BSage) / gateway(BSGateway) / 감사 레이어(BSupervisor)의 연결 상태 — 가 보입니다. 제품이 성숙하면 이 surface는 Brief로 진화합니다 — shipped / needs decision / blocked / running / next.
 
-## Task State Machine
+### Decisions
 
-모든 태스크는 정해진 상태 흐름(State Machine)을 따릅니다. 각 상태는 태스크의 현재 진행 단계를 나타냅니다.
+승인 inbox, blocking 항목 우선. 각 Decision 카드에는 질문, 추천안, 선택지, 영향, 관련 request, 재개 메모가 들어 있습니다. 한 번의 탭으로 해소하면 막혀 있던 작업이 다시 흐릅니다.
 
-### 상태 전이 다이어그램
+### Inside
 
-```
-PENDING → ASSIGNED → IN_PROGRESS → IN_REVIEW → COMPLETED
-                         ↓
-                      FAILED → PENDING (자동 재시도)
-```
+선택. execution run 트리, 각 run의 composition snapshot, tool call 감사 로그가 들어 있습니다. 디버그하거나 BSNexus가 무엇을 했는지 학습할 때 엽니다. 기본 워크플로우에서는 열 필요가 없습니다.
 
-### 상태별 상세 설명
+## Proof before done
 
-| 상태 | 의미 | 트리거 조건 | Kanban 칼럼 |
-|------|------|-------------|-------------|
-| **PENDING** | 대기 중. 의존성이 해소되면 실행 대기열에 진입 | 태스크 생성 시 / 재시도 시 | Backlog |
-| **ASSIGNED** | Executor가 배정됨. 실행 준비 완료 | 의존 태스크 완료 + Executor 가용 | Backlog |
-| **IN_PROGRESS** | Executor가 작업 수행 중 | Executor가 작업 시작 | In Progress |
-| **IN_REVIEW** | 작업 결과물 검토 대기 | Executor가 작업 완료 보고 | Review |
-| **COMPLETED** | 작업 완료 | 검토 통과 | Done |
-| **FAILED** | 작업 실패. 자동 재시도 정책에 따라 PENDING으로 복귀 가능 | 오류 발생 / 타임아웃 | - |
+BSNexus는 proof를 보일 수 있을 때만 "done"이라고 말합니다.
 
-### 자동 재시도 정책
+소프트웨어 작업의 최소 proof:
 
-태스크가 FAILED 상태가 되면:
-1. 실패 원인을 로그에 기록합니다.
-2. 재시도 횟수가 최대값(기본 3회) 미만이면 자동으로 PENDING 상태로 복귀합니다.
-3. 최대 재시도 횟수를 초과하면 FAILED 상태로 유지되며, 사용자에게 알림이 전송됩니다.
-4. 사용자가 수동으로 태스크를 수정한 후 재시도할 수도 있습니다.
+- 변경된 파일 또는 PR 링크
+- 실제 돌린 verification 명령
+- exit code와 짧은 요약
+- 알려진 위험 / 한계
 
-### 의존성 관리
+선호되는 proof는 추가로 테스트, typecheck / lint, preview URL, UI 스크린샷, CI 상태를 포함합니다. 듣기 좋은 요약은 proof가 아닙니다. `verification_failed` 또는 `verification_missing`인 deliverable은 shipped로 표시되지 않습니다.
 
-태스크 간 의존성은 **DAG(Directed Acyclic Graph)** 구조로 관리됩니다:
-- 의존하는 태스크가 모두 COMPLETED 상태가 되어야 ASSIGNED로 전이됩니다.
-- 순환 의존성은 Architect 단계에서 자동으로 감지 및 방지됩니다.
-- 의존성 그래프는 Kanban 보드에서 시각적으로 확인할 수 있습니다.
+디자인 / 문서 / 마케팅에도 동일하게 적용됩니다. 모든 deliverable 타입에 proof 모델이 있습니다 — 디자인은 rendered preview + rationale, 문서는 source link + validation, 마케팅 카피는 target audience + channel checklist.
 
-## Executor
+## BSNexus가 아닌 것
 
-Executor는 **실제 작업을 수행하는 AI 에이전트**입니다. 태스크를 할당받으면 코드 생성, 파일 수정, 테스트 실행 등의 작업을 자율적으로 수행합니다.
+- prompt-to-app 빌더가 아닙니다. 당신이 자리를 떠도 일이 계속되고, 결과물은 유지보수를 전제로 합니다.
+- 보드 / task 관리 도구가 아닙니다. surface는 Direction, Decisions, proof입니다 — 옮길 보드가 없습니다.
+- 에이전트 / 조직도 대시보드가 아닙니다. 기본 워크플로우에서 worker / persona / routing을 설정하지 않습니다.
+- LLM 출력을 요약해 보여주는 채팅 UI가 아닙니다. done은 proof를 의미합니다.
 
-### 기본 제공 Executor
+## Interfaces
 
-| Executor | 역할 | 특징 |
-|----------|------|------|
-| **Claude Code Executor** | 코드 생성, 수정, 리팩토링, 테스트 작성 | Claude Code CLI 기반, 멀티파일 동시 수정 가능 |
-
-### Executor의 작업 흐름
-
-1. **태스크 수신**: ASSIGNED 상태의 태스크를 수신합니다.
-2. **컨텍스트 파악**: 프로젝트 구조, 의존 태스크 결과물, 요구사항을 분석합니다.
-3. **작업 수행**: 코드 작성, 파일 생성/수정 등 실제 작업을 수행합니다.
-4. **결과 보고**: 작업 결과물과 함께 상태를 IN_REVIEW로 전이합니다.
-5. **실패 처리**: 오류 발생 시 상세 에러 로그와 함께 FAILED 상태로 전이합니다.
-
-### ExecutorProtocol
-
-BSNexus는 ExecutorProtocol 인터페이스를 통해 다양한 실행 환경을 연결할 수 있도록 설계되어 있습니다. 향후 추가 Executor가 지원될 예정입니다.
-
-## Kanban Board
-
-실시간 WebSocket 기반 Kanban 보드에서 프로젝트의 모든 태스크 진행 상황을 시각적으로 확인하고 관리합니다.
-
-### 핵심 특징
-
-- **실시간 업데이트**: 태스크 상태 변경이 WebSocket을 통해 즉시 반영됩니다.
-- **의존성 시각화**: 태스크 간 의존 관계를 선으로 연결하여 표시합니다.
-- **필터링**: Executor별, 상태별, 태그별로 태스크를 필터링할 수 있습니다.
-- **수동 조작**: 필요시 태스크를 드래그앤드롭으로 상태를 변경할 수 있습니다.
-
-자세한 사용법은 [Kanban 보드 가이드](/ko/bsnexus/features/kanban)를 참고하세요.
+BSNexus는 interface에 종속되지 않습니다. 웹은 한 클라이언트일 뿐입니다. 모바일 웹/PWA가 첫 computer-independent interface라서, 폰에서 decision을 해소하고 deliverable을 검토할 수 있습니다. Slack, 이메일, CLI, 음성은 그 다음 단계로, 모두 같은 primitive — Direction, Decision, Brief, Deliverable, Proof — 에 매핑됩니다.

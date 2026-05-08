@@ -1,89 +1,67 @@
 ---
 title: Getting Started
-description: Sign up for BSNexus and create your first AI orchestration project.
+description: BSNexus is the command layer for AI-native companies. Give direction, resolve decisions, review verified deliverables.
 ---
 
-BSNexus is an **orchestration platform** where AI agents collaborate to build software. Describe your idea in natural language, and the AI Architect designs the project while multiple Executors work on tasks in parallel.
+**AI handles the work. You make the decisions.**
 
-## What BSNexus Does
+BSNexus is the command layer for AI-native companies. The first vertical slice is the AI-native software company: you give product direction, AI handles planning, design, implementation, testing, and reporting, and BSNexus returns decisions, briefs, and verified deliverables.
 
-| Feature | Description |
-|---------|-------------|
-| **AI Architect** | Transforms your natural language ideas into structured projects |
-| **Automatic task breakdown** | Splits projects into independent work units (Tasks) |
-| **Dependency analysis** | Determines execution order based on inter-task dependencies |
-| **Parallel execution** | Multiple AI agents (Executors) work on independent tasks simultaneously |
-| **Real-time Kanban** | Track all task progress on a WebSocket-based board |
+You should not need to sit at a computer to keep company work moving. You direct, decide, and review.
+
+## The Loop
+
+| Step | What you do | What BSNexus returns |
+|------|-------------|----------------------|
+| **Direct** | Give a short direction in natural language. | A request, scoped to a project, with the next concrete step. |
+| **Decide** | Resolve only the choices AI should not make alone — taste, scope, risk, budget, deploy approval. | Resumed work and an updated brief. |
+| **Review** | Inspect what shipped. | A deliverable with proof you can verify. |
+
+Tactical choices (frameworks, file paths, default conventions) are decided by AI. You only see the questions that actually need founder judgment.
 
 ## Quick Start
 
-### Step 1: Create an Account and Sign In
+### Step 1 — Sign in
 
-1. Go to [nexus.bsvibe.dev](https://nexus.bsvibe.dev) in your browser.
-2. Click the **Sign in with BSVibe** button.
-   - If you don't have a BSVibe account yet, sign up at [auth.bsvibe.dev](https://auth.bsvibe.dev).
-3. After signing in, you'll see the dashboard.
+1. Go to [nexus.bsvibe.dev](https://nexus.bsvibe.dev).
+2. Click **Sign in with BSVibe**. If you don't have a BSVibe account yet, sign up at [auth.bsvibe.dev](https://auth.bsvibe.dev).
+3. After signing in, you land on the dashboard: decisions that need you, the latest brief, shipped work, and active projects.
 
-![BSNexus Dashboard — View your project list and status summary at a glance.](/images/screenshots/bsnexus-dashboard.png)
+### Step 2 — Create a project
 
-The dashboard displays:
-- **My Projects**: List of projects you've created
-- **Recent Activity**: Recent task changes
-- **Active Executors**: Number of agents currently working
-- **Quick Stats**: Completion rate, in-progress tasks, and total projects
+1. Click **+ New Project** in the top right of the dashboard.
+2. Enter a project name (e.g. `todo-app`, `blog-platform`).
+3. Optionally describe what the project is about. This becomes the founder context for every direction you give later.
 
-### Step 2: Create a Project
+### Step 3 — Give direction
 
-1. Click the **+ New Project** button in the top right of the dashboard.
-2. Enter a project name (e.g., `todo-app`, `blog-platform`).
-3. Optionally add a description.
-4. Click **Create** to create the project and navigate to the Architect conversation.
+Open the project and write what you want next, in one or two sentences:
 
-### Step 3: Talk to the Architect
+> "Build a small to-do API in FastAPI with JWT-based auth and Postgres. Add a smoke test and confirm it boots."
 
-On the Architect page, describe what you want to build in natural language. The more specific you are, the better the generated tasks will be.
+> "Update the marketing page so the headline matches our new positioning. Keep the tone short and operator-like."
 
-![Architect conversation — Design your project through AI-powered dialogue.](/images/screenshots/bsnexus-architect.png)
+> "Investigate why the deploy preview is failing and fix the underlying cause."
 
-**Effective prompt examples:**
+BSNexus turns each direction into a Request, decomposes it into internal execution runs, and starts work. You do not assign agents, draft prompts, or design a board.
 
-> "Build a to-do web app. React + TypeScript frontend, FastAPI backend, PostgreSQL database. Use JWT-based authentication."
+### Step 4 — Resolve decisions
 
-> "Build a blog platform with a markdown editor, category/tag management, and SEO optimization. Use Next.js."
+When AI hits a fork that should not be decided alone, it raises a Decision in your inbox: a short title, the question, the recommendation, the options, and what each option costs. Resolve it from anywhere — web or mobile.
 
-> "Build a real-time chat app using WebSocket, with channel creation/join and message search. Python + Redis pub/sub architecture."
+Decisions are the only place BSNexus interrupts you. Anything that has a sensible default is handled silently.
 
-The Architect goes through the following steps:
+### Step 5 — Review verified deliverables
 
-1. **Requirement analysis**: Parses your description to extract key features.
-2. **Clarifying questions**: Asks follow-up questions if anything is ambiguous (e.g., "Which authentication method would you prefer?").
-3. **Project structure generation**: Designs the directory structure, tech stack, and module layout.
-4. **Task breakdown**: Splits the project into independent tasks and sets up dependencies.
-5. **Executor assignment**: Automatically assigns a suitable Executor to each task.
+When the work is done, BSNexus returns a deliverable with **proof**:
 
-:::tip[Prompt Tips]
-- Specifying the tech stack produces more accurate results.
-- List the core features explicitly.
-- The more detail you provide when answering the Architect's questions, the better the outcome.
-:::
+- the verification command that was run
+- the exit code and a short summary
+- artifact links — PR, preview URL, screenshot, or test result
+- known risks and limitations
 
-### Step 4: Review and Execute Tasks
+If proof is missing or verification failed, BSNexus does not claim the work is shipped. You can reject, redirect, or approve.
 
-Once the Architect generates tasks, a Kanban board is automatically set up on the **Board** tab:
+## What's next
 
-1. Review the generated task list.
-2. Modify, add, or remove tasks if needed.
-3. Click **Start Execution** to have the Executors begin working.
-4. Monitor each task's progress in real time on the Kanban board.
-
-### Step 5: Review Results
-
-When all tasks are complete:
-- Review each task's output (code, files, etc.).
-- Request additional changes from the Architect if needed.
-- Download the project results or push them to a connected repository.
-
-## Next Steps
-
-- [Core Concepts](/en/bsnexus/concepts) — Understand Architect, Task State Machine, Executor, and Kanban architecture
-- [Kanban Board](/en/bsnexus/features/kanban) — Detailed guide to the real-time board
+- [Core Concepts](/en/bsnexus/concepts) — Direction, Request, Decision, Brief, Deliverable, Proof, Inside, and the four surfaces.
