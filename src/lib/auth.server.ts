@@ -85,3 +85,46 @@ export function createSessionCookie(refreshToken: string): string {
 export function clearSessionCookie(): string {
   return `${COOKIE_NAME}=; HttpOnly;${SECURE_FLAG} SameSite=Lax; Path=/; Max-Age=0`;
 }
+
+/**
+ * Server-only helper for proxy routes that need to forward the user's
+ * access_token to auth.bsvibe.dev. We keep the access_token off the
+ * client (no `NEXT_PUBLIC_*` exposure) — proxy routes validate the
+ * session cookie, fetch the JWT, and forward with `Authorization:
+ * Bearer ...`. Same auth surface as `validateSession` but returns the
+ * raw token + a rotated cookie if the refresh path fired.
+ */
+export async function getSessionAccessToken(
+  cookieHeader: string | null,
+): Promise<{ accessToken: string | null; newCookie?: string }> {
+  if (!cookieHeader) return { accessToken: null };
+
+  const cookies = Object.fromEntries(
+    cookieHeader.split(';').map((c) => {
+      const [k, ...v] = c.trim().split('=');
+      return [k, v.join('=')];
+    }),
+  );
+  const refreshToken = cookies[COOKIE_NAME];
+  if (!refreshToken) return { accessToken: null };
+
+  try {
+    const res = await fetch(`${AUTH_URL}/api/session`, {
+      method: 'GET',
+      headers: { Cookie: `${COOKIE_NAME}=${refreshToken}` },
+    });
+    if (!res.ok) return { accessToken: null };
+    const data = (await res.json()) as {
+      access_token: string;
+      refresh_token?: string;
+    };
+    const newCookie = data.refresh_token
+      ? `${COOKIE_NAME}=${data.refresh_token}; HttpOnly;${SECURE_FLAG} SameSite=Lax; Path=/; Max-Age=${COOKIE_MAX_AGE}`
+      : undefined;
+    return { accessToken: data.access_token, newCookie };
+  } catch {
+    return { accessToken: null };
+  }
+}
+
+export const AUTH_API_URL = AUTH_URL;

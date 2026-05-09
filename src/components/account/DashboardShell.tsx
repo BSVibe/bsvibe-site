@@ -19,12 +19,14 @@ export default function DashboardShell({ user, locale, children }: Props) {
       ? [
           { href: `${prefix}/account`, label: 'Overview' },
           { href: `${prefix}/account/profile`, label: 'Profile' },
+          { href: `${prefix}/account/tokens`, label: 'Tokens' },
           { href: `${prefix}/account/billing`, label: 'Billing' },
           { href: `${prefix}/account/team`, label: 'Team' },
         ]
       : [
           { href: `${prefix}/account`, label: '개요' },
           { href: `${prefix}/account/profile`, label: '프로필' },
+          { href: `${prefix}/account/tokens`, label: '토큰' },
           { href: `${prefix}/account/billing`, label: '결제' },
           { href: `${prefix}/account/team`, label: '팀' },
         ];
