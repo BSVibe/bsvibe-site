@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { validateSession } from '@/lib/auth.server';
 import { isLocale } from '@/lib/i18n';
+import { getAccountCardItems } from '@/lib/account-nav';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,18 +18,7 @@ export default async function AccountIndex({
   // Layout already redirected if no user; this is just for type safety.
   if (!user) return null;
 
-  const cards =
-    locale === 'en'
-      ? [
-          { href: `/${locale}/account/profile`, h: 'Profile', p: 'Manage your account information.' },
-          { href: `/${locale}/account/billing`, h: 'Billing', p: 'Manage subscription and payment methods.' },
-          { href: `/${locale}/account/team`, h: 'Team', p: 'Invite teammates and manage roles.' },
-        ]
-      : [
-          { href: `/${locale}/account/profile`, h: '프로필', p: '계정 정보를 관리합니다' },
-          { href: `/${locale}/account/billing`, h: '결제', p: '구독과 결제 수단을 관리합니다' },
-          { href: `/${locale}/account/team`, h: '팀', p: '팀원을 초대하고 권한을 관리합니다' },
-        ];
+  const cards = getAccountCardItems(locale);
 
   return (
     <>
@@ -76,10 +66,10 @@ export default async function AccountIndex({
                 margin: '0 0 4px',
               }}
             >
-              {card.h}
+              {card.label}
             </h3>
             <p style={{ color: '#5a5f7d', fontSize: '0.8125rem', margin: 0 }}>
-              {card.p}
+              {card.description}
             </p>
           </Link>
         ))}

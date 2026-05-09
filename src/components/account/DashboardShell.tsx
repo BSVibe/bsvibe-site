@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
+import { getAccountNavItems } from '@/lib/account-nav';
 
 interface Props {
   user: { email: string };
@@ -14,22 +15,7 @@ interface Props {
 export default function DashboardShell({ user, locale, children }: Props) {
   const pathname = usePathname() ?? '';
   const prefix = `/${locale}`;
-  const items =
-    locale === 'en'
-      ? [
-          { href: `${prefix}/account`, label: 'Overview' },
-          { href: `${prefix}/account/profile`, label: 'Profile' },
-          { href: `${prefix}/account/tokens`, label: 'Tokens' },
-          { href: `${prefix}/account/billing`, label: 'Billing' },
-          { href: `${prefix}/account/team`, label: 'Team' },
-        ]
-      : [
-          { href: `${prefix}/account`, label: '개요' },
-          { href: `${prefix}/account/profile`, label: '프로필' },
-          { href: `${prefix}/account/tokens`, label: '토큰' },
-          { href: `${prefix}/account/billing`, label: '결제' },
-          { href: `${prefix}/account/team`, label: '팀' },
-        ];
+  const items = getAccountNavItems(locale);
 
   async function handleLogout() {
     await fetch('/api/auth/session', { method: 'DELETE' });
