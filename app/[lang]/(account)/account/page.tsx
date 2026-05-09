@@ -21,11 +21,13 @@ export default async function AccountIndex({
     locale === 'en'
       ? [
           { href: `/${locale}/account/profile`, h: 'Profile', p: 'Manage your account information.' },
+          { href: `/${locale}/account/tokens`, h: 'Tokens', p: 'Issue and revoke Personal Access Tokens for the CLI and API.' },
           { href: `/${locale}/account/billing`, h: 'Billing', p: 'Manage subscription and payment methods.' },
           { href: `/${locale}/account/team`, h: 'Team', p: 'Invite teammates and manage roles.' },
         ]
       : [
           { href: `/${locale}/account/profile`, h: '프로필', p: '계정 정보를 관리합니다' },
+          { href: `/${locale}/account/tokens`, h: '토큰', p: 'CLI · API 용 PAT 를 발급/취소합니다' },
           { href: `/${locale}/account/billing`, h: '결제', p: '구독과 결제 수단을 관리합니다' },
           { href: `/${locale}/account/team`, h: '팀', p: '팀원을 초대하고 권한을 관리합니다' },
         ];
