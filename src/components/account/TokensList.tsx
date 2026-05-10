@@ -35,6 +35,17 @@ interface Strings {
   cols: { name: string; created: string; lastUsed: string; status: string };
   statusActive: string;
   statusRevoked: string;
+  expiresPresets: ExpiresPresetStrings;
+}
+
+export interface ExpiresPresetStrings {
+  oneHour: string;
+  oneDay: string;
+  sevenDays: string;
+  thirtyDays: string;
+  ninetyDays: string;
+  custom: string;
+  customPlaceholder: string;
 }
 
 const SCOPE_DEFAULTS = 'gateway:* sage:* nexus:* supervisor:*';
@@ -221,15 +232,7 @@ export default function TokensList({ initial, initialError, strings }: Props) {
           <Field
             label={strings.formExpiresLabel}
             help={strings.formExpiresHelp}
-            input={
-              <input
-                name="expires_in_s"
-                type="number"
-                min={1}
-                placeholder="2592000"
-                style={inputStyle}
-              />
-            }
+            input={<ExpiresInPicker presets={strings.expiresPresets} />}
           />
           <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
             <button type="submit" disabled={submitting} style={btnPrimary}>
@@ -430,6 +433,103 @@ function IssuedTokenBanner({
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Token expiry picker — preset radio buttons + a custom-seconds input
+ * that reveals when the user picks "Custom".
+ *
+ * Why preset-first: Phase 8 dogfood (2026-05-11) caught an empty
+ * `expires_in_s` defaulting to 1 hour on the auth-app side. A typed
+ * 4-digit number ("3600") gave no signal that the resulting PAT
+ * would die in an hour. Surface the duration in human terms ("1 hour",
+ * "30 days"), default to 30 days, and let advanced users still drop
+ * to a raw seconds value via "Custom".
+ *
+ * The form remains driven by a single `<input name="expires_in_s">`
+ * — a hidden field whose value is the resolved seconds. The token
+ * create handler (`onSubmit`) keeps reading `fd.get('expires_in_s')`
+ * unchanged, which means the auth-app contract is unaffected.
+ */
+function ExpiresInPicker({ presets }: { presets: ExpiresPresetStrings }) {
+  const PRESETS: { id: string; label: string; seconds: number }[] = [
+    { id: '1h', label: presets.oneHour, seconds: 3600 },
+    { id: '1d', label: presets.oneDay, seconds: 86_400 },
+    { id: '7d', label: presets.sevenDays, seconds: 604_800 },
+    { id: '30d', label: presets.thirtyDays, seconds: 2_592_000 },
+    { id: '90d', label: presets.ninetyDays, seconds: 7_776_000 },
+  ];
+  const DEFAULT_ID = '30d';
+
+  const [selectedId, setSelectedId] = useState<string>(DEFAULT_ID);
+  const [customValue, setCustomValue] = useState<string>('');
+
+  const resolvedSeconds =
+    selectedId === 'custom'
+      ? customValue.trim()
+      : String(PRESETS.find((p) => p.id === selectedId)?.seconds ?? '');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {PRESETS.map((p) => (
+          <PresetChip
+            key={p.id}
+            active={selectedId === p.id}
+            label={p.label}
+            onClick={() => setSelectedId(p.id)}
+          />
+        ))}
+        <PresetChip
+          active={selectedId === 'custom'}
+          label={presets.custom}
+          onClick={() => setSelectedId('custom')}
+        />
+      </div>
+      {selectedId === 'custom' && (
+        <input
+          type="number"
+          min={1}
+          placeholder={presets.customPlaceholder}
+          value={customValue}
+          onChange={(e) => setCustomValue(e.target.value)}
+          style={inputStyle}
+        />
+      )}
+      {/* Hidden field — keeps the form payload contract unchanged so the
+          create handler still reads expires_in_s without knowing about
+          the picker. */}
+      <input type="hidden" name="expires_in_s" value={resolvedSeconds} />
+    </div>
+  );
+}
+
+function PresetChip({
+  active,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        padding: '6px 12px',
+        borderRadius: 6,
+        border: active ? '1px solid #6366f1' : '1px solid #2a2d42',
+        background: active ? 'rgba(99,102,241,0.1)' : 'transparent',
+        color: active ? '#a5b4fc' : '#a8adc6',
+        fontSize: '0.8125rem',
+        cursor: 'pointer',
+      }}
+    >
+      {label}
+    </button>
   );
 }
 
