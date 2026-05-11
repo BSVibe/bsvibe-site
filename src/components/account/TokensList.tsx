@@ -35,6 +35,19 @@ interface Strings {
   cols: { name: string; created: string; lastUsed: string; status: string };
   statusActive: string;
   statusRevoked: string;
+  expiresPresets: ExpiresPresetStrings;
+}
+
+export interface ExpiresPresetStrings {
+  oneHour: string;
+  oneDay: string;
+  sevenDays: string;
+  thirtyDays: string;
+  ninetyDays: string;
+  custom: string;
+  customDateLabel: string;
+  noExpiry: string;
+  noExpiryWarning: string;
 }
 
 const SCOPE_DEFAULTS = 'gateway:* sage:* nexus:* supervisor:*';
@@ -76,6 +89,7 @@ export default function TokensList({ initial, initialError, strings }: Props) {
         const scopeRaw = String(fd.get('scopes') ?? '').trim();
         const audienceRaw = String(fd.get('audience') ?? '').trim();
         const expiresIn = String(fd.get('expires_in_s') ?? '').trim();
+        const neverExpires = fd.get('never_expires') === 'true';
         const body: Record<string, unknown> = {
           type: 'pat',
           name: name || `cli-${new Date().toISOString().slice(0, 10)}`,
@@ -87,7 +101,9 @@ export default function TokensList({ initial, initialError, strings }: Props) {
             .map((s) => s.trim())
             .filter(Boolean);
         }
-        if (expiresIn) {
+        if (neverExpires) {
+          body.never_expires = true;
+        } else if (expiresIn) {
           const n = Number.parseInt(expiresIn, 10);
           if (Number.isFinite(n) && n > 0) body.expires_in_s = n;
         }
@@ -221,15 +237,7 @@ export default function TokensList({ initial, initialError, strings }: Props) {
           <Field
             label={strings.formExpiresLabel}
             help={strings.formExpiresHelp}
-            input={
-              <input
-                name="expires_in_s"
-                type="number"
-                min={1}
-                placeholder="2592000"
-                style={inputStyle}
-              />
-            }
+            input={<ExpiresInPicker presets={strings.expiresPresets} />}
           />
           <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
             <button type="submit" disabled={submitting} style={btnPrimary}>
@@ -430,6 +438,160 @@ function IssuedTokenBanner({
         </button>
       </div>
     </div>
+  );
+}
+
+/**
+ * Token expiry picker — preset radio buttons + a custom-seconds input
+ * that reveals when the user picks "Custom".
+ *
+ * Why preset-first: Phase 8 dogfood (2026-05-11) caught an empty
+ * `expires_in_s` defaulting to 1 hour on the auth-app side. A typed
+ * 4-digit number ("3600") gave no signal that the resulting PAT
+ * would die in an hour. Surface the duration in human terms ("1 hour",
+ * "30 days"), default to 30 days, and let advanced users still drop
+ * to a raw seconds value via "Custom".
+ *
+ * The form remains driven by a single `<input name="expires_in_s">`
+ * — a hidden field whose value is the resolved seconds. The token
+ * create handler (`onSubmit`) keeps reading `fd.get('expires_in_s')`
+ * unchanged, which means the auth-app contract is unaffected.
+ */
+function ExpiresInPicker({ presets }: { presets: ExpiresPresetStrings }) {
+  const PRESETS: { id: string; label: string; seconds: number }[] = [
+    { id: '1h', label: presets.oneHour, seconds: 3600 },
+    { id: '1d', label: presets.oneDay, seconds: 86_400 },
+    { id: '7d', label: presets.sevenDays, seconds: 604_800 },
+    { id: '30d', label: presets.thirtyDays, seconds: 2_592_000 },
+    { id: '90d', label: presets.ninetyDays, seconds: 7_776_000 },
+  ];
+  const DEFAULT_ID = '30d';
+
+  // Reasonable date-input bounds: tomorrow (so the API's MIN_TTL_S=60 is
+  // satisfied even at 23:59 picks) through 1 year (matches the auth-app
+  // MAX_TTL_S=365d cap; longer-than-1-year intent is "No expiry").
+  const today = new Date();
+  const minDate = new Date(today.getTime() + 24 * 3600 * 1000)
+    .toISOString()
+    .slice(0, 10);
+  const maxDate = new Date(today.getTime() + 365 * 24 * 3600 * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  const [selectedId, setSelectedId] = useState<string>(DEFAULT_ID);
+  const [customDate, setCustomDate] = useState<string>('');
+
+  // Convert a YYYY-MM-DD date into seconds-from-now, anchored to local
+  // end-of-day so the user's mental model ("expires on this date") holds
+  // regardless of submit time. Clamped at >= 60s to satisfy MIN_TTL_S.
+  let customSeconds = '';
+  if (selectedId === 'custom' && customDate) {
+    const target = new Date(`${customDate}T23:59:59`);
+    const delta = Math.floor((target.getTime() - Date.now()) / 1000);
+    if (Number.isFinite(delta) && delta >= 60) customSeconds = String(delta);
+  }
+
+  const resolvedSeconds =
+    selectedId === 'never'
+      ? ''
+      : selectedId === 'custom'
+        ? customSeconds
+        : String(PRESETS.find((p) => p.id === selectedId)?.seconds ?? '');
+  const neverExpires = selectedId === 'never' ? 'true' : '';
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {PRESETS.map((p) => (
+          <PresetChip
+            key={p.id}
+            active={selectedId === p.id}
+            label={p.label}
+            onClick={() => setSelectedId(p.id)}
+          />
+        ))}
+        <PresetChip
+          active={selectedId === 'custom'}
+          label={presets.custom}
+          onClick={() => setSelectedId('custom')}
+        />
+        <PresetChip
+          active={selectedId === 'never'}
+          label={presets.noExpiry}
+          onClick={() => setSelectedId('never')}
+          danger
+        />
+      </div>
+      {selectedId === 'custom' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <span style={{ fontSize: '0.6875rem', color: '#8187a8' }}>
+            {presets.customDateLabel}
+          </span>
+          <input
+            type="date"
+            min={minDate}
+            max={maxDate}
+            value={customDate}
+            onChange={(e) => setCustomDate(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+      )}
+      {selectedId === 'never' && (
+        <div
+          style={{
+            padding: '10px 12px',
+            borderRadius: 6,
+            border: '1px solid rgba(244,63,94,0.3)',
+            backgroundColor: 'rgba(244,63,94,0.06)',
+            color: '#fb7185',
+            fontSize: '0.75rem',
+            lineHeight: 1.5,
+            whiteSpace: 'pre-line',
+          }}
+        >
+          {presets.noExpiryWarning}
+        </div>
+      )}
+      {/* Hidden fields — keep the form payload contract centralized.
+          The create handler reads `expires_in_s` for preset/custom and
+          `never_expires` for the never-expiring branch. */}
+      <input type="hidden" name="expires_in_s" value={resolvedSeconds} />
+      <input type="hidden" name="never_expires" value={neverExpires} />
+    </div>
+  );
+}
+
+function PresetChip({
+  active,
+  label,
+  onClick,
+  danger = false,
+}: {
+  active: boolean;
+  label: string;
+  onClick: () => void;
+  danger?: boolean;
+}) {
+  const accent = danger ? '#f43f5e' : '#6366f1';
+  const accentBg = danger ? 'rgba(244,63,94,0.1)' : 'rgba(99,102,241,0.1)';
+  const accentFg = danger ? '#fb7185' : '#a5b4fc';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        padding: '6px 12px',
+        borderRadius: 6,
+        border: active ? `1px solid ${accent}` : '1px solid #2a2d42',
+        background: active ? accentBg : 'transparent',
+        color: active ? accentFg : '#a8adc6',
+        fontSize: '0.8125rem',
+        cursor: 'pointer',
+      }}
+    >
+      {label}
+    </button>
   );
 }
 
