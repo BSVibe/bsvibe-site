@@ -8,7 +8,13 @@
 
 import type { Locale } from '@/lib/i18n';
 
-export type AccountNavKey = 'overview' | 'profile' | 'tokens' | 'billing' | 'team';
+export type AccountNavKey =
+  | 'overview'
+  | 'profile'
+  | 'tokens'
+  | 'service-accounts'
+  | 'billing'
+  | 'team';
 
 export interface AccountNavItem {
   key: AccountNavKey;
@@ -21,6 +27,11 @@ const KO: Omit<AccountNavItem, 'href'>[] = [
   { key: 'overview', label: '개요', description: '계정 개요와 빠른 액세스' },
   { key: 'profile', label: '프로필', description: '계정 정보를 관리합니다' },
   { key: 'tokens', label: '토큰', description: 'CLI · API 용 PAT 를 발급/취소합니다' },
+  {
+    key: 'service-accounts',
+    label: '서비스 계정',
+    description: 'CI/CD 용 OAuth client_credentials 자격 증명을 발급/회수합니다',
+  },
   { key: 'billing', label: '결제', description: '구독과 결제 수단을 관리합니다' },
   { key: 'team', label: '팀', description: '팀원을 초대하고 권한을 관리합니다' },
 ];
@@ -29,6 +40,11 @@ const EN: Omit<AccountNavItem, 'href'>[] = [
   { key: 'overview', label: 'Overview', description: 'Account summary and quick access.' },
   { key: 'profile', label: 'Profile', description: 'Manage your account information.' },
   { key: 'tokens', label: 'Tokens', description: 'Issue and revoke Personal Access Tokens for the CLI and API.' },
+  {
+    key: 'service-accounts',
+    label: 'Service accounts',
+    description: 'Issue and revoke OAuth client_credentials credentials for CI/CD.',
+  },
   { key: 'billing', label: 'Billing', description: 'Manage subscription and payment methods.' },
   { key: 'team', label: 'Team', description: 'Invite teammates and manage roles.' },
 ];
