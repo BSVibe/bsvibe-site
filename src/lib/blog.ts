@@ -81,6 +81,34 @@ export function getPost(slug: string): BlogPost | null {
   };
 }
 
+export function getRelatedPosts(slug: string, limit: number = 3): BlogPostMeta[] {
+  const post = getPost(slug);
+  if (!post) return [];
+  
+  const posts = listPostsByLocale(post.locale);
+  const relatedPosts = posts
+    .filter(p => p.slug !== slug)
+    .map(p => {
+      // Calculate shared tags count
+      const sharedTags = p.tags.filter(tag => post.tags.includes(tag)).length;
+      return {
+        ...p,
+        sharedTags
+      };
+    })
+    .filter(p => p.sharedTags > 0)
+    .sort((a, b) => {
+      // First sort by shared tags count (descending)
+      if (b.sharedTags !== a.sharedTags) {
+        return b.sharedTags - a.sharedTags;
+      }
+      // Then sort by date (descending)
+      return b.date.valueOf() - a.date.valueOf();
+    });
+  
+  return relatedPosts.slice(0, limit);
+}
+
 export function listAllTags(locale: Locale): string[] {
   const tagSet = new Set<string>();
   for (const p of listPostsByLocale(locale)) {
