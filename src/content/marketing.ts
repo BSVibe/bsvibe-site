@@ -45,8 +45,8 @@ export const hero = {
     en: 'AI builds it and verifies it, then answers with proof. Teach it once, and the same mistake never happens twice.',
   },
   ctaCaption: {
-    ko: '신용카드 없이 시작 · 1분이면 충분합니다',
-    en: 'No credit card · under a minute',
+    ko: '지금 바로 시작 · 1분이면 충분합니다',
+    en: 'Start now · ready in a minute',
   },
 } satisfies Record<string, L>;
 

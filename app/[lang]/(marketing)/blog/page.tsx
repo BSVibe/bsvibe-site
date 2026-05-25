@@ -37,7 +37,10 @@ function TagChip({
   );
 }
 
+// Render a cover only when the post actually has one. No image → no empty box,
+// so cards stay clean and consistent (most posts have no cover).
 function Thumb({ post, height }: { post: BlogPostMeta; height: number }) {
+  if (!post.image) return null;
   return (
     <div
       style={{
@@ -46,7 +49,7 @@ function Thumb({ post, height }: { post: BlogPostMeta; height: number }) {
         borderRadius: 10,
         overflow: 'hidden',
         backgroundColor: 'var(--surface-2)',
-        backgroundImage: post.image ? `url(${post.image})` : undefined,
+        backgroundImage: `url(${post.image})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         flexShrink: 0,
@@ -151,10 +154,12 @@ export default async function BlogIndex({
             href={`/${locale}/blog/${featured.slug}`}
             style={{
               display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 1fr)',
+              gridTemplateColumns: featured.image
+                ? 'minmax(0, 1.1fr) minmax(0, 1fr)'
+                : '1fr',
               gap: 28,
               alignItems: 'center',
-              padding: 24,
+              padding: featured.image ? 24 : 28,
               borderRadius: 14,
               border: '1px solid var(--border)',
               backgroundColor: 'var(--surface)',

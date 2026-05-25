@@ -48,7 +48,9 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             color: 'var(--text)',
             lineHeight: 1.12,
             letterSpacing: '-0.04em',
-            margin: '24px 0 18px',
+            margin: '24px 0 28px',
+            wordBreak: 'keep-all',
+            textWrap: 'balance',
           }}
         >
           {hero.h1[locale]}
@@ -63,6 +65,8 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             lineHeight: 1.7,
             maxWidth: 560,
             margin: '0 auto 32px',
+            wordBreak: 'keep-all',
+            textWrap: 'balance',
           }}
         >
           {hero.subtitle[locale]}
@@ -122,15 +126,17 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
           ))}
         </div>
         <style>{`
-          .why-cols { display: grid; grid-template-columns: repeat(3, 1fr); }
-          .why-col { padding: 0 32px; }
-          .why-col:first-child { padding-left: 0; }
-          .why-col:last-child { padding-right: 0; }
-          .why-col + .why-col { border-left: 1px solid var(--border); }
-          @media (max-width: 760px) {
-            .why-cols { grid-template-columns: 1fr; }
-            .why-col, .why-col:first-child, .why-col:last-child { padding: 24px 0; }
-            .why-col + .why-col { border-left: none; border-top: 1px solid var(--border); }
+          /* Mobile-first: stacked, hairline only BETWEEN rows (top border,
+             first row none). Desktop overrides to 3 columns with left dividers.
+             Each breakpoint fully owns its borders so neither leaks. */
+          .why-cols { display: grid; grid-template-columns: 1fr; }
+          .why-col { padding: 24px 0; border-top: 1px solid var(--border); }
+          .why-col:first-child { border-top: none; padding-top: 4px; }
+          @media (min-width: 761px) {
+            .why-cols { grid-template-columns: repeat(3, 1fr); }
+            .why-col { padding: 0 32px; border-top: none; border-left: 1px solid var(--border); }
+            .why-col:first-child { padding-left: 0; padding-top: 0; border-left: none; }
+            .why-col:last-child { padding-right: 0; }
           }
         `}</style>
         </Reveal>

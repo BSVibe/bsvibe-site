@@ -4,42 +4,45 @@
 /* Light is the base; dark mode is supported via system preference and a   */
 /* manual override (data-theme on <html>). Color is reserved for status:   */
 /* green = verified, amber = needs you / action.                           */
+/* Palette is the exact bsvibe-app theme (apps/pwa globals.css): warm neutrals,
+   not cool/near-black. Token names are the site's; values mirror the app's
+   --bg/--surface/--ink/--hair/--green/--amber sets, light + dark. */
 :root {
-  --bg: #fbfbfa;          /* warm near-white base */
-  --surface: #ffffff;     /* cards / containers   */
-  --surface-2: #f4f4f3;   /* subtle tonal band    */
-  --hover: #f1f1f0;       /* active/hover sweep    */
-  --border: #eaeae8;      /* hairline             */
-  --border-strong: #d9d9d6;
-  --text: #111111;        /* primary text         */
-  --text-muted: #6b6b72;  /* secondary text       */
-  --text-faint: #9a9aa0;  /* captions / meta      */
-  --primary: #111111;     /* solid button bg      */
+  --bg: #fbfbfa;            /* app --bg */
+  --surface: #ffffff;       /* app --surface */
+  --surface-2: #efefee;     /* app --accent-bg */
+  --hover: #efefee;         /* app --accent-bg */
+  --border: #eae8e3;        /* app --hair */
+  --border-strong: #e3e1db; /* app --hair-strong */
+  --text: #37352f;          /* app --ink (warm) */
+  --text-muted: #6b6a66;    /* app --ink-2 */
+  --text-faint: #9b9a97;    /* app --ink-3 */
+  --primary: #1f1d1a;       /* app primary button bg (light) */
   --on-primary: #ffffff;
-  --verified: #10b981;    /* green — verified     */
-  --verified-soft: rgba(16, 185, 129, 0.10);
-  --action: #f59e0b;      /* amber — needs you    */
-  --action-soft: rgba(245, 158, 11, 0.12);
-  --shadow-pop: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --verified: #4f8a5b;      /* app --green-ink */
+  --verified-soft: #eef4ee; /* app --green-pill-bg */
+  --action: #b25e09;        /* app --amber-ink */
+  --action-soft: rgba(224, 146, 46, 0.12); /* amber tint (app --amber-dot) */
+  --shadow-pop: 0 4px 12px rgba(55, 53, 47, 0.06);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --bg: #111114;
-  --surface: #17181c;
-  --surface-2: #1c1d22;
-  --hover: #22232a;
-  --border: #2a2b31;
-  --border-strong: #3a3b43;
-  --text: #ececef;
-  --text-muted: #a2a2ab;
-  --text-faint: #6e6f77;
-  --primary: #ffffff;
-  --on-primary: #111114;
-  --verified: #34d399;
-  --verified-soft: rgba(52, 211, 153, 0.12);
-  --action: #fbbf24;
-  --action-soft: rgba(251, 191, 36, 0.14);
+  --bg: #1c1b19;            /* app dark --bg (warm near-black) */
+  --surface: #262522;       /* app dark --surface */
+  --surface-2: #34322e;     /* app dark --accent-bg */
+  --hover: #34322e;
+  --border: #34322e;        /* app dark --hair */
+  --border-strong: #403d38; /* app dark --hair-strong */
+  --text: #ebe9e4;          /* app dark --ink */
+  --text-muted: #b3b0a8;    /* app dark --ink-2 */
+  --text-faint: #807d76;    /* app dark --ink-3 */
+  --primary: #ebe9e4;       /* app dark primary button bg (= --ink) */
+  --on-primary: #1c1b19;    /* = --bg */
+  --verified: #7cc08c;      /* app dark --green-ink */
+  --verified-soft: #243027; /* app dark --green-pill-bg */
+  --action: #e0a458;        /* app dark --amber-ink */
+  --action-soft: rgba(224, 164, 88, 0.14);
   --shadow-pop: 0 4px 16px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
@@ -47,21 +50,21 @@
 /* Follow the OS only when the user hasn't explicitly chosen light. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111114;
-    --surface: #17181c;
-    --surface-2: #1c1d22;
-    --hover: #22232a;
-    --border: #2a2b31;
-    --border-strong: #3a3b43;
-    --text: #ececef;
-    --text-muted: #a2a2ab;
-    --text-faint: #6e6f77;
-    --primary: #ffffff;
-    --on-primary: #111114;
-    --verified: #34d399;
-    --verified-soft: rgba(52, 211, 153, 0.12);
-    --action: #fbbf24;
-    --action-soft: rgba(251, 191, 36, 0.14);
+    --bg: #1c1b19;
+    --surface: #262522;
+    --surface-2: #34322e;
+    --hover: #34322e;
+    --border: #34322e;
+    --border-strong: #403d38;
+    --text: #ebe9e4;
+    --text-muted: #b3b0a8;
+    --text-faint: #807d76;
+    --primary: #ebe9e4;
+    --on-primary: #1c1b19;
+    --verified: #7cc08c;
+    --verified-soft: #243027;
+    --action: #e0a458;
+    --action-soft: rgba(224, 164, 88, 0.14);
     --shadow-pop: 0 4px 16px rgba(0, 0, 0, 0.4);
     color-scheme: dark;
   }
