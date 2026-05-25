@@ -117,14 +117,14 @@ export default async function DemoPortalPage({
             fontWeight: 800,
             letterSpacing: '-0.035em',
             marginBottom: 12,
-            color: '#f2f3f7',
+            color: 'var(--text)',
           }}
         >
           {c.h1}
         </h1>
         <p
           style={{
-            color: '#a8adc6',
+            color: 'var(--text-muted)',
             fontSize: '1.25rem',
             lineHeight: 1.6,
             marginBottom: 8,
@@ -134,7 +134,7 @@ export default async function DemoPortalPage({
         </p>
         <p
           style={{
-            color: '#8187a8',
+            color: 'var(--text-faint)',
             fontSize: '0.95rem',
             lineHeight: 1.7,
             margin: 0,
@@ -162,8 +162,8 @@ export default async function DemoPortalPage({
             style={{
               padding: 28,
               borderRadius: 14,
-              border: '1px solid #2a2d42',
-              backgroundColor: '#111218',
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--surface)',
               textDecoration: 'none',
               display: 'flex',
               flexDirection: 'column',
@@ -184,7 +184,7 @@ export default async function DemoPortalPage({
             </h2>
             <p
               style={{
-                color: '#a8adc6',
+                color: 'var(--text-muted)',
                 fontSize: '0.95rem',
                 lineHeight: 1.6,
                 margin: 0,
@@ -210,13 +210,13 @@ export default async function DemoPortalPage({
         style={{
           padding: '32px 28px',
           borderRadius: 14,
-          border: '1px solid #1e2033',
-          backgroundColor: '#0d0e14',
+          border: '1px solid var(--border)',
+          backgroundColor: 'var(--surface-2)',
         }}
       >
         <h3
           style={{
-            color: '#f2f3f7',
+            color: 'var(--text)',
             fontSize: '1.25rem',
             fontWeight: 700,
             marginTop: 0,
@@ -230,7 +230,7 @@ export default async function DemoPortalPage({
             <li
               key={i}
               style={{
-                color: '#a8adc6',
+                color: 'var(--text-muted)',
                 fontSize: '0.95rem',
                 lineHeight: 1.7,
                 marginBottom: i === c.bullets.length - 1 ? 0 : 10,
@@ -242,7 +242,7 @@ export default async function DemoPortalPage({
                 style={{
                   position: 'absolute',
                   left: 0,
-                  color: '#3b82f6',
+                  color: 'var(--text-faint)',
                   fontWeight: 700,
                 }}
               >
@@ -259,8 +259,8 @@ export default async function DemoPortalPage({
               display: 'inline-block',
               padding: '12px 24px',
               borderRadius: 10,
-              backgroundColor: '#3b82f6',
-              color: '#fff',
+              backgroundColor: 'var(--primary)',
+              color: 'var(--on-primary)',
               fontWeight: 600,
               fontSize: '0.95rem',
               textDecoration: 'none',

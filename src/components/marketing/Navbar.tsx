@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
 import { getTranslations } from '@/lib/i18n';
+import { navItems, authLinks, buttons } from '@/content/marketing';
 
 interface UserInfo {
   email: string;
@@ -16,15 +17,16 @@ const locales: { code: Locale; label: string }[] = [
   { code: 'en', label: 'EN' },
 ];
 
-/**
- * Replace the locale prefix in the current pathname so the language
- * switcher preserves the page (e.g. ``/ko/demo`` → ``/en/demo`` instead
- * of falling back to ``/en``).
- */
+/** Swap the locale prefix while preserving the current page. */
 function pathForLocale(pathname: string, target: Locale): string {
-  // Strip leading "/ko" or "/en" if present, then re-prefix.
   const stripped = pathname.replace(/^\/(ko|en)(?=\/|$)/, '') || '/';
   return `/${target}${stripped === '/' ? '' : stripped}`;
+}
+
+function resolveTheme(): 'light' | 'dark' {
+  const attr = document.documentElement.getAttribute('data-theme');
+  if (attr === 'dark' || attr === 'light') return attr;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
@@ -33,8 +35,12 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   const pathname = usePathname() ?? prefix;
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [mounted, setMounted] = useState(false);
 
-  const checkAuth = useCallback(async () => {
+  const init = useCallback(async () => {
+    setMounted(true);
+    setTheme(resolveTheme());
     try {
       const res = await fetch('/api/auth/session');
       if (res.ok) {
@@ -47,18 +53,114 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   }, []);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void checkAuth();
-    }, 0);
-
+    const timer = window.setTimeout(() => void init(), 0);
     return () => window.clearTimeout(timer);
-  }, [checkAuth]);
+  }, [init]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('bsvibe-theme', next);
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }, []);
 
   const handleLogout = useCallback(async () => {
     await fetch('/api/auth/session', { method: 'DELETE' });
     setUser(null);
-    window.location.href = `${prefix}`;
+    window.location.href = prefix;
   }, [prefix]);
+
+  const linkStyle: React.CSSProperties = { fontSize: '0.8125rem', fontWeight: 500 };
+
+  const langToggle = (size: number) => (
+    <div
+      role="group"
+      aria-label="Language"
+      data-testid="lang-switcher"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 4,
+        padding: 4,
+        borderRadius: 999,
+        backgroundColor: 'var(--surface-2)',
+        fontSize: 10,
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+      }}
+    >
+      {locales.map((loc) => {
+        const active = loc.code === locale;
+        const cell = (
+          <span
+            data-testid={`lang-switcher-${loc.code}`}
+            aria-pressed={active}
+            style={{
+              minHeight: size,
+              minWidth: size,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4px 10px',
+              borderRadius: 999,
+              transition: 'color 150ms, background-color 150ms',
+              backgroundColor: active ? 'var(--verified-soft)' : 'transparent',
+              color: active ? 'var(--text)' : 'var(--text-muted)',
+              cursor: active ? 'default' : 'pointer',
+            }}
+          >
+            {loc.label}
+          </span>
+        );
+        return active ? (
+          <span key={loc.code}>{cell}</span>
+        ) : (
+          <Link key={loc.code} href={pathForLocale(pathname, loc.code)} style={{ textDecoration: 'none' }}>
+            {cell}
+          </Link>
+        );
+      })}
+    </div>
+  );
+
+  const themeButton = (
+    <button
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 34,
+        height: 34,
+        borderRadius: 999,
+        border: '1px solid var(--border)',
+        background: 'none',
+        color: 'var(--text-muted)',
+        cursor: 'pointer',
+      }}
+    >
+      {mounted && theme === 'dark' ? (
+        // sun
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
+        </svg>
+      ) : (
+        // moon
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+        </svg>
+      )}
+    </button>
+  );
 
   return (
     <>
@@ -75,181 +177,62 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          backgroundColor: 'rgba(10,11,15,0.8)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(42,45,66,0.5)',
+          backgroundColor: 'var(--bg)',
+          borderBottom: '1px solid var(--border)',
         }}
       >
-        <Link
-          href={prefix}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            textDecoration: 'none',
-          }}
-        >
-          <Image
-            src="/images/bsvibe-logo.png"
-            alt="BSVibe"
-            width={22}
-            height={22}
-            style={{ borderRadius: 4 }}
-          />
-          <span
-            style={{
-              fontSize: '1rem',
-              fontWeight: 700,
-              color: '#f2f3f7',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            BSVibe
-          </span>
+        <Link href={prefix} style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+          <Image src="/images/bsvibe-symbol.svg" alt="BSVibe" width={22} height={22} style={{ borderRadius: 4 }} />
+          <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>BSVibe</span>
         </Link>
 
         {/* Desktop nav */}
-        <div
-          className="desktop-nav"
-          style={{ display: 'flex', alignItems: 'center', gap: 28 }}
-        >
-          <Link
-            href={`${prefix}#products`}
-            className="nav-link"
-            style={{ fontSize: '0.8125rem', fontWeight: 500 }}
-          >
-            {l.nav.products}
-          </Link>
-          <Link
-            href={`${prefix}/demo`}
-            className="nav-link"
-            style={{ fontSize: '0.8125rem', fontWeight: 500 }}
-          >
-            {l.nav.demo}
-          </Link>
-          <Link
-            href={`${prefix}/bsgateway/getting-started`}
-            className="nav-link"
-            style={{ fontSize: '0.8125rem', fontWeight: 500 }}
-          >
-            {l.nav.docs}
-          </Link>
-          <Link
-            href={`${prefix}/blog`}
-            className="nav-link"
-            style={{ fontSize: '0.8125rem', fontWeight: 500 }}
-          >
-            {l.nav.blog}
-          </Link>
-          <Link
-            href={`${prefix}/pricing`}
-            className="nav-link"
-            style={{ fontSize: '0.8125rem', fontWeight: 500 }}
-          >
-            {l.nav.pricing}
-          </Link>
+        <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+          {navItems.map((item) => (
+            <Link key={item.href} href={`${prefix}${item.href}`} className="nav-link" style={linkStyle}>
+              {item.label[locale]}
+            </Link>
+          ))}
 
-          {/* Language toggle — mirrors @bsvibe/layout LanguageToggle visual */}
-          <div
-            role="group"
-            aria-label="Language"
-            data-testid="lang-switcher"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
-              padding: 4,
-              borderRadius: 999,
-              backgroundColor: 'rgba(17,18,24,0.9)',
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-            }}
-          >
-            {locales.map((loc) => {
-              const active = loc.code === locale;
-              const cell = (
-                <span
-                  data-testid={`lang-switcher-${loc.code}`}
-                  aria-pressed={active}
-                  style={{
-                    minHeight: 32,
-                    minWidth: 32,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px 10px',
-                    borderRadius: 999,
-                    transition: 'color 150ms, background-color 150ms',
-                    backgroundColor: active
-                      ? 'rgba(129,140,248,0.15)'
-                      : 'transparent',
-                    color: active ? '#818cf8' : '#8187a8',
-                    cursor: active ? 'default' : 'pointer',
-                  }}
-                >
-                  {loc.label}
-                </span>
-              );
-              return active ? (
-                <span key={loc.code}>{cell}</span>
-              ) : (
-                <Link
-                  key={loc.code}
-                  href={pathForLocale(pathname, loc.code)}
-                  style={{ textDecoration: 'none' }}
-                >
-                  {cell}
-                </Link>
-              );
-            })}
-          </div>
+          {langToggle(32)}
+          {themeButton}
 
-          {/* Auth */}
           {user ? (
             <>
               <Link
                 href={`${prefix}/account`}
-                style={{
-                  fontSize: '0.8125rem',
-                  color: '#818cf8',
-                  fontWeight: 500,
-                  textDecoration: 'none',
-                }}
+                style={{ fontSize: '0.8125rem', color: 'var(--text)', fontWeight: 500, textDecoration: 'none' }}
               >
                 {user.email}
               </Link>
               <button
                 onClick={handleLogout}
                 className="nav-link"
-                style={{
-                  fontSize: '0.8125rem',
-                  fontWeight: 500,
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#8187a8',
-                }}
+                style={{ ...linkStyle, background: 'none', border: 'none', cursor: 'pointer' }}
               >
                 {l.nav.logout}
               </button>
             </>
           ) : (
-            <a
-              href="https://auth.bsvibe.dev/signup"
-              style={{
-                padding: '6px 16px',
-                borderRadius: 8,
-                backgroundColor: 'rgba(99,102,241,0.10)',
-                color: '#818cf8',
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-              }}
-            >
-              {l.nav.getStarted}
-            </a>
+            <>
+              <a href={authLinks.login} className="nav-link" style={linkStyle}>
+                {buttons.login[locale]}
+              </a>
+              <a
+                href={authLinks.signup}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  backgroundColor: 'var(--primary)',
+                  color: 'var(--on-primary)',
+                  fontSize: '0.8125rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                {buttons.start[locale]}
+              </a>
+            </>
           )}
         </div>
 
@@ -257,28 +240,11 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
         <button
           className="mobile-menu"
           onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: '#8187a8',
-            cursor: 'pointer',
-            padding: 8,
-          }}
+          style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 8 }}
           aria-label={l.menu}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            {menuOpen ? (
-              <path d="M6 6l12 12M6 18L18 6" />
-            ) : (
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            )}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {menuOpen ? <path d="M6 6l12 12M6 18L18 6" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
           </svg>
         </button>
       </nav>
@@ -292,122 +258,48 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
             left: 0,
             right: 0,
             zIndex: 49,
-            backgroundColor: 'rgba(10,11,15,0.95)',
-            backdropFilter: 'blur(12px)',
-            borderBottom: '1px solid #2a2d42',
+            backgroundColor: 'var(--bg)',
+            borderBottom: '1px solid var(--border)',
             padding: '16px 32px',
             display: 'flex',
             flexDirection: 'column',
             gap: 16,
           }}
         >
-          <Link
-            href={`${prefix}#products`}
-            className="nav-link"
-            onClick={() => setMenuOpen(false)}
-            style={{ fontSize: '0.875rem' }}
-          >
-            {l.nav.products}
-          </Link>
-          <Link
-            href={`${prefix}/demo`}
-            className="nav-link"
-            onClick={() => setMenuOpen(false)}
-            style={{ fontSize: '0.875rem' }}
-          >
-            {l.nav.demo}
-          </Link>
-          <Link
-            href={`${prefix}/bsgateway/getting-started`}
-            className="nav-link"
-            style={{ fontSize: '0.875rem' }}
-          >
-            {l.nav.docs}
-          </Link>
-          <Link
-            href={`${prefix}/blog`}
-            className="nav-link"
-            style={{ fontSize: '0.875rem' }}
-          >
-            {l.nav.blog}
-          </Link>
-          <Link
-            href={`${prefix}/pricing`}
-            className="nav-link"
-            style={{ fontSize: '0.875rem' }}
-          >
-            {l.nav.pricing}
-          </Link>
-          <div
-            role="group"
-            aria-label="Language"
-            style={{
-              display: 'inline-flex',
-              alignSelf: 'flex-start',
-              gap: 4,
-              padding: 4,
-              borderRadius: 999,
-              backgroundColor: 'rgba(17,18,24,0.9)',
-              fontSize: 12,
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-            }}
-          >
-            {locales.map((loc) => {
-              const active = loc.code === locale;
-              const cell = (
-                <span
-                  aria-pressed={active}
-                  style={{
-                    minHeight: 36,
-                    minWidth: 36,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '6px 12px',
-                    borderRadius: 999,
-                    backgroundColor: active
-                      ? 'rgba(129,140,248,0.15)'
-                      : 'transparent',
-                    color: active ? '#818cf8' : '#8187a8',
-                    cursor: active ? 'default' : 'pointer',
-                  }}
-                >
-                  {loc.label}
-                </span>
-              );
-              return active ? (
-                <span key={loc.code}>{cell}</span>
-              ) : (
-                <Link
-                  key={loc.code}
-                  href={pathForLocale(pathname, loc.code)}
-                  style={{ textDecoration: 'none' }}
-                >
-                  {cell}
-                </Link>
-              );
-            })}
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={`${prefix}${item.href}`}
+              className="nav-link"
+              onClick={() => setMenuOpen(false)}
+              style={{ fontSize: '0.875rem' }}
+            >
+              {item.label[locale]}
+            </Link>
+          ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {langToggle(36)}
+            {themeButton}
           </div>
           {user ? (
-            <Link
-              href={`${prefix}/account`}
-              style={{
-                fontSize: '0.875rem',
-                color: '#818cf8',
-                textDecoration: 'none',
-              }}
-            >
+            <Link href={`${prefix}/account`} style={{ fontSize: '0.875rem', color: 'var(--text)', textDecoration: 'none' }}>
               {user.email}
             </Link>
           ) : (
             <a
-              href="https://auth.bsvibe.dev/signup"
-              className="nav-link"
-              style={{ fontSize: '0.875rem' }}
+              href={authLinks.signup}
+              style={{
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                padding: '10px 16px',
+                borderRadius: 8,
+                backgroundColor: 'var(--primary)',
+                color: 'var(--on-primary)',
+                textDecoration: 'none',
+                alignSelf: 'flex-start',
+              }}
             >
-              {l.nav.getStarted}
+              {buttons.start[locale]}
             </a>
           )}
         </div>
@@ -417,7 +309,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
         .mobile-menu {
           display: none;
         }
-        @media (max-width: 640px) {
+        @media (max-width: 760px) {
           :global(.desktop-nav) {
             display: none !important;
           }

@@ -26,6 +26,14 @@ const nextConfig = {
     optimizePackageImports: ['nextra-theme-docs', 'nextra'],
   },
   outputFileTracingRoot: cwd(),
+  // Retired in the single-product redesign: the 4-product `/products/*` pages
+  // and the one-person-company `/about` page. Redirect gracefully.
+  async redirects() {
+    return [
+      { source: '/:lang(ko|en)/products/:path*', destination: '/:lang/how-it-works', permanent: false },
+      { source: '/:lang(ko|en)/about', destination: '/:lang', permanent: false },
+    ];
+  },
 };
 
 export default withNextra(nextConfig);

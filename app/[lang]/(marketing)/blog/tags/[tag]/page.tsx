@@ -44,7 +44,7 @@ export default async function TagPage({
         style={{
           display: 'inline-block',
           marginBottom: 32,
-          color: '#8187a8',
+          color: 'var(--text-muted)',
           fontSize: '0.875rem',
           textDecoration: 'none',
         }}
@@ -53,17 +53,17 @@ export default async function TagPage({
       </Link>
       <h1
         style={{
-          color: '#f2f3f7',
+          color: 'var(--text)',
           fontSize: '2rem',
           fontWeight: 700,
           letterSpacing: '-0.03em',
           marginBottom: 8,
         }}
       >
-        <span style={{ color: '#6366f1' }}>#</span>
+        <span style={{ color: 'var(--text-faint)' }}>#</span>
         {tag}
       </h1>
-      <p style={{ color: '#5a5f7d', fontSize: '0.875rem', marginBottom: 32 }}>
+      <p style={{ color: 'var(--text-faint)', fontSize: '0.875rem', marginBottom: 32 }}>
         {locale === 'en'
           ? `${posts.length} post${posts.length === 1 ? '' : 's'}`
           : `${posts.length}개의 포스트`}
@@ -77,18 +77,18 @@ export default async function TagPage({
             style={{
               padding: 24,
               borderRadius: 12,
-              border: '1px solid #2a2d42',
-              backgroundColor: '#111218',
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--surface)',
               textDecoration: 'none',
               color: 'inherit',
             }}
           >
-            <time style={{ color: '#5a5f7d', fontSize: '0.8125rem' }}>
+            <time style={{ color: 'var(--text-faint)', fontSize: '0.8125rem' }}>
               {dateFmt.format(post.date)}
             </time>
             <h2
               style={{
-                color: '#f2f3f7',
+                color: 'var(--text)',
                 fontSize: '1.25rem',
                 fontWeight: 600,
                 margin: '8px 0 6px',
@@ -99,7 +99,7 @@ export default async function TagPage({
             </h2>
             <p
               style={{
-                color: '#8187a8',
+                color: 'var(--text-muted)',
                 fontSize: '0.9375rem',
                 margin: 0,
                 lineHeight: 1.5,
