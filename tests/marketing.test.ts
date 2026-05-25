@@ -20,7 +20,7 @@ describe('BSVibe is a single product (4-product era retired)', () => {
 
   it('drops the old 4-product hero headline', () => {
     expect(M.hero.h1.ko).not.toContain('만들고, 지키고, 기억한다');
-    expect(M.hero.h1.ko).toBe('확인된 일만, 올라옵니다.');
+    expect(M.hero.h1.ko).toBe('믿으라 하지 않습니다. 보여줍니다.');
   });
 });
 

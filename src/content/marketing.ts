@@ -38,11 +38,11 @@ export const buttons = {
 } satisfies Record<string, L>;
 
 export const hero = {
-  badge: { ko: 'AI가 만들고, 검증까지', en: 'AI builds — and verifies' },
-  h1: { ko: '확인된 일만, 올라옵니다.', en: 'Only verified work surfaces.' },
+  badge: { ko: 'AI가 만들고, 검증까지', en: 'AI builds, and verifies' },
+  h1: { ko: '믿으라 하지 않습니다. 보여줍니다.', en: "We don't ask for trust. We show you." },
   subtitle: {
-    ko: 'AI가 직접 일하고, 스스로 검증하고, 증거와 함께 보여줍니다. 한 번 바로잡으면, 같은 실수는 두 번 하지 않습니다.',
-    en: 'AI does the work, verifies it, and shows you the proof. Correct it once — it never makes the same mistake twice.',
+    ko: 'AI가 만들고 스스로 검증해 증거로 답합니다. 한 번 가르치면, 같은 실수는 두 번 없습니다.',
+    en: 'AI builds it and verifies it, then answers with proof. Teach it once, and the same mistake never happens twice.',
   },
   ctaCaption: {
     ko: '신용카드 없이 시작 · 1분이면 충분합니다',
