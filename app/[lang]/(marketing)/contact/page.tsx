@@ -48,7 +48,7 @@ export default async function ContactPage({
       <header style={{ textAlign: 'center', marginBottom: 64 }}>
         <h1
           style={{
-            color: '#f2f3f7',
+            color: 'var(--text)',
             fontSize: 'clamp(2rem, 5vw, 2.75rem)',
             fontWeight: 800,
             letterSpacing: '-0.035em',
@@ -57,7 +57,7 @@ export default async function ContactPage({
         >
           {c.title}
         </h1>
-        <p style={{ fontSize: '1.125rem', color: '#8187a8' }}>{c.lead}</p>
+        <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)' }}>{c.lead}</p>
       </header>
 
       <div
@@ -74,14 +74,14 @@ export default async function ContactPage({
             style={{
               padding: 28,
               borderRadius: 14,
-              border: '1px solid #2a2d42',
-              backgroundColor: '#111218',
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--surface)',
             }}
           >
             <div style={{ fontSize: '2rem', marginBottom: 12 }}>{icon}</div>
             <h2
               style={{
-                color: '#f2f3f7',
+                color: 'var(--text)',
                 fontSize: '1.125rem',
                 fontWeight: 600,
                 marginBottom: 8,
@@ -91,7 +91,7 @@ export default async function ContactPage({
             </h2>
             <p
               style={{
-                color: '#8187a8',
+                color: 'var(--text-muted)',
                 fontSize: '0.875rem',
                 lineHeight: 1.6,
                 marginBottom: 16,
@@ -102,10 +102,11 @@ export default async function ContactPage({
             <a
               href={href}
               style={{
-                color: '#818cf8',
+                color: 'var(--text)',
                 fontSize: '0.875rem',
                 fontWeight: 500,
-                textDecoration: 'none',
+                textDecoration: 'underline',
+                textUnderlineOffset: 2,
               }}
             >
               {cta}
@@ -118,13 +119,13 @@ export default async function ContactPage({
         style={{
           padding: 32,
           borderRadius: 12,
-          border: '1px solid #1e2033',
-          backgroundColor: 'rgba(99,102,241,0.04)',
+          border: '1px solid var(--border)',
+          backgroundColor: 'var(--surface-2)',
         }}
       >
         <h2
           style={{
-            color: '#f2f3f7',
+            color: 'var(--text)',
             fontSize: '1rem',
             fontWeight: 600,
             marginBottom: 16,
@@ -133,19 +134,19 @@ export default async function ContactPage({
           {c.channels}
         </h2>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          <li style={{ color: '#a8adc6', fontSize: '0.875rem', marginBottom: 8 }}>
-            <strong style={{ color: '#e4e6ee', marginRight: 8 }}>GitHub</strong>:{' '}
+          <li style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: 8 }}>
+            <strong style={{ color: 'var(--text)', marginRight: 8 }}>GitHub</strong>:{' '}
             <a
               href="https://github.com/BSVibe"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: '#818cf8' }}
+              style={{ color: 'var(--text)', textDecoration: 'underline', textUnderlineOffset: 2 }}
             >
               github.com/BSVibe
             </a>
           </li>
-          <li style={{ color: '#a8adc6', fontSize: '0.875rem', marginBottom: 8 }}>
-            <strong style={{ color: '#e4e6ee', marginRight: 8 }}>{c.response}</strong>:{' '}
+          <li style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: 8 }}>
+            <strong style={{ color: 'var(--text)', marginRight: 8 }}>{c.response}</strong>:{' '}
             {c.responseV}
           </li>
         </ul>

@@ -49,7 +49,7 @@ export default async function BlogPost({
         style={{
           display: 'inline-block',
           marginBottom: 32,
-          color: '#8187a8',
+          color: 'var(--text-muted)',
           fontSize: '0.875rem',
           textDecoration: 'none',
         }}
@@ -60,7 +60,7 @@ export default async function BlogPost({
       <header style={{ marginBottom: 48 }}>
         <h1
           style={{
-            color: '#f2f3f7',
+            color: 'var(--text)',
             fontSize: '2rem',
             fontWeight: 700,
             letterSpacing: '-0.03em',
@@ -71,7 +71,7 @@ export default async function BlogPost({
         </h1>
         <div
           style={{
-            color: '#5a5f7d',
+            color: 'var(--text-faint)',
             fontSize: '0.875rem',
             marginBottom: 16,
             display: 'flex',
@@ -90,11 +90,11 @@ export default async function BlogPost({
                 style={{
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  color: '#818cf8',
+                  color: 'var(--text-muted)',
                   padding: '2px 10px',
                   borderRadius: 9999,
-                  backgroundColor: 'rgba(99,102,241,0.08)',
-                  border: '1px solid rgba(99,102,241,0.15)',
+                  backgroundColor: 'var(--surface-2)',
+                  border: '1px solid var(--border)',
                   textDecoration: 'none',
                 }}
               >
