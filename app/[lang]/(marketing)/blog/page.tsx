@@ -4,10 +4,20 @@ import { isLocale } from '@/lib/i18n';
 import { listAllTags, listPostsByLocale } from '@/lib/blog';
 import type { BlogPostMeta } from '@/lib/blog';
 
-export const metadata: Metadata = {
-  title: '블로그',
-  description: 'BSVibe의 기술, 제품, AI에 대한 이야기',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const en = lang === 'en';
+  return {
+    title: en ? 'Blog' : '블로그',
+    description: en
+      ? 'Stories about engineering, products, and AI.'
+      : 'BSVibe의 기술, 제품, AI에 대한 이야기',
+  };
+}
 
 function TagChip({
   tag,
