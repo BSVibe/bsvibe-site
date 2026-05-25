@@ -82,13 +82,13 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
       </section>
 
       {/* HERO PROOF — real Delivery Report screen */}
-      <section style={{ maxWidth: 500, margin: '0 auto', padding: '24px 24px 104px' }} className="fade-up">
+      <section style={{ maxWidth: 880, margin: '0 auto', padding: '24px 24px 104px' }} className="fade-up">
         <BrowserFrame
           src={screenshots.deliveryReport.src}
           alt={screenshots.deliveryReport.alt[locale]}
           caption={screenshots.deliveryReport.caption[locale]}
-          width={355}
-          height={512}
+          width={1440}
+          height={900}
           priority
         />
       </section>
@@ -146,8 +146,8 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             src={screenshots.brief.src}
             alt={screenshots.brief.alt[locale]}
             caption={screenshots.brief.caption[locale]}
-            width={512}
-            height={472}
+            width={1440}
+            height={900}
           />
         </div>
       </section>

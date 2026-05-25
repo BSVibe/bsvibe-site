@@ -75,9 +75,8 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
         body={H.glassBox.body[locale]}
         shot={screenshots.deliveryReport}
         locale={locale}
-        w={355}
-        h={512}
-        maxFrame={560}
+        w={1440}
+        h={900}
       />
 
       {/* DECIDE */}
@@ -86,8 +85,8 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
         body={H.decide.body[locale]}
         shot={screenshots.decide}
         locale={locale}
-        w={512}
-        h={462}
+        w={1440}
+        h={900}
       />
 
       {/* SAFE MODE — Triggered */}
@@ -96,8 +95,8 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
         body={H.safeMode.body[locale]}
         shot={screenshots.triggered}
         locale={locale}
-        w={512}
-        h={497}
+        w={1440}
+        h={900}
       />
 
       {/* UNDER THE HOOD */}
