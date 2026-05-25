@@ -24,3 +24,6 @@ pnpm-debug.log*
 .turbo
 *.tsbuildinfo
 next-env.d.ts
+
+# impeccable skill install (not part of the site)
+.agents/

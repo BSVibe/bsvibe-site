@@ -1,5 +1,6 @@
 import type { Locale } from '@/lib/i18n';
 import BrowserFrame from './BrowserFrame';
+import Reveal from './Reveal';
 import { howItWorks as H, screenshots, authLinks } from '@/content/marketing';
 
 export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
@@ -127,6 +128,7 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
           </h2>
           <a
             href={authLinks.signup}
+            className="cta-press"
             style={{
               display: 'inline-block',
               padding: '13px 26px',
@@ -165,15 +167,17 @@ function FeatureBlock({
 }) {
   return (
     <section style={{ maxWidth: 1080, margin: '0 auto', padding: '0 24px 80px' }}>
-      <div style={{ textAlign: 'center', maxWidth: 620, margin: '0 auto 32px' }}>
-        <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 12px' }}>
-          {heading}
-        </h2>
-        <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{body}</p>
-      </div>
-      <div style={{ maxWidth: maxFrame ?? 880, margin: '0 auto' }}>
-        <BrowserFrame src={shot.src} alt={shot.alt[locale]} caption={shot.caption[locale]} width={w} height={h} />
-      </div>
+      <Reveal>
+        <div style={{ textAlign: 'center', maxWidth: 620, margin: '0 auto 32px' }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 12px' }}>
+            {heading}
+          </h2>
+          <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{body}</p>
+        </div>
+        <div style={{ maxWidth: maxFrame ?? 880, margin: '0 auto' }}>
+          <BrowserFrame src={shot.src} alt={shot.alt[locale]} caption={shot.caption[locale]} width={w} height={h} />
+        </div>
+      </Reveal>
     </section>
   );
 }

@@ -6,7 +6,7 @@ import nextPlugin from '@next/eslint-plugin-next';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['.next', 'node_modules', 'dist', 'next-env.d.ts']),
+  globalIgnores(['.next', 'node_modules', 'dist', 'next-env.d.ts', '.agents']),
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     extends: [

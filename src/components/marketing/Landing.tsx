@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
 import BrowserFrame from './BrowserFrame';
+import Reveal from './Reveal';
 import {
   hero,
   buttons,
@@ -71,10 +72,10 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
           className="fade-up"
           style={{ animationDelay: '0.3s', display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}
         >
-          <a href={authLinks.signup} style={primaryBtn}>
+          <a href={authLinks.signup} className="cta-press" style={primaryBtn}>
             {buttons.ctaPrimary[locale]}
           </a>
-          <Link href={howItWorksHref} style={secondaryBtn}>
+          <Link href={howItWorksHref} className="cta-press" style={secondaryBtn}>
             {buttons.ctaSecondary[locale]}
           </Link>
         </div>
@@ -82,19 +83,22 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
       </section>
 
       {/* HERO PROOF — real Delivery Report screen */}
-      <section style={{ maxWidth: 880, margin: '0 auto', padding: '24px 24px 104px' }} className="fade-up">
-        <BrowserFrame
-          src={screenshots.deliveryReport.src}
-          alt={screenshots.deliveryReport.alt[locale]}
-          caption={screenshots.deliveryReport.caption[locale]}
-          width={1440}
-          height={900}
-          priority
-        />
+      <section style={{ maxWidth: 880, margin: '0 auto', padding: '24px 24px 104px' }}>
+        <Reveal>
+          <BrowserFrame
+            src={screenshots.deliveryReport.src}
+            alt={screenshots.deliveryReport.alt[locale]}
+            caption={screenshots.deliveryReport.caption[locale]}
+            width={1440}
+            height={900}
+            priority
+          />
+        </Reveal>
       </section>
 
       {/* WHY DIFFERENT */}
       <section style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px 104px' }}>
+        <Reveal>
         <h2
           style={{
             fontSize: 'clamp(1.5rem, 3vw, 2rem)',
@@ -129,10 +133,12 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             .why-col + .why-col { border-left: none; border-top: 1px solid var(--border); }
           }
         `}</style>
+        </Reveal>
       </section>
 
       {/* BRIEF — real Brief screen */}
       <section style={{ maxWidth: 1080, margin: '0 auto', padding: '0 24px 96px' }}>
+        <Reveal>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 48, alignItems: 'center' }}>
           <div>
             <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 16px' }}>
@@ -150,10 +156,12 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             height={900}
           />
         </div>
+        </Reveal>
       </section>
 
       {/* LEARNING LOOP */}
       <section style={{ maxWidth: 820, margin: '0 auto', padding: '0 24px 96px', textAlign: 'center' }}>
+        <Reveal>
         <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 36px' }}>
           {learningLoop.heading[locale]}
         </h2>
@@ -184,18 +192,21 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
         <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.7, maxWidth: 520, margin: '28px auto 0' }}>
           {learningLoop.caption[locale]}
         </p>
+        </Reveal>
       </section>
 
       {/* FINAL CTA */}
       <section style={{ backgroundColor: 'var(--surface-2)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <Reveal>
         <div style={{ maxWidth: 720, margin: '0 auto', padding: '80px 24px', textAlign: 'center' }}>
           <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 28px' }}>
             {finalCta.heading[locale]}
           </h2>
-          <a href={authLinks.signup} style={primaryBtn}>
+          <a href={authLinks.signup} className="cta-press" style={primaryBtn}>
             {finalCta.button[locale]}
           </a>
         </div>
+        </Reveal>
       </section>
     </div>
   );
