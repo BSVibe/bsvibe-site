@@ -5,6 +5,7 @@ import {
   hero,
   buttons,
   whyDifferent,
+  whyDifferentHeading,
   briefSection,
   learningLoop,
   finalCta,
@@ -81,7 +82,7 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
       </section>
 
       {/* HERO PROOF — real Delivery Report screen */}
-      <section style={{ maxWidth: 620, margin: '0 auto', padding: '24px 24px 96px' }} className="fade-up">
+      <section style={{ maxWidth: 500, margin: '0 auto', padding: '24px 24px 104px' }} className="fade-up">
         <BrowserFrame
           src={screenshots.deliveryReport.src}
           alt={screenshots.deliveryReport.alt[locale]}
@@ -93,35 +94,41 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
       </section>
 
       {/* WHY DIFFERENT */}
-      <section style={{ maxWidth: 1080, margin: '0 auto', padding: '0 24px 96px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20 }}>
-          {whyDifferent.map((p, i) => (
-            <div
-              key={p.title.en}
-              style={{ border: '1px solid var(--border)', backgroundColor: 'var(--surface)', borderRadius: 12, padding: 28 }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  backgroundColor: 'var(--surface-2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--verified)',
-                  marginBottom: 16,
-                }}
-              >
-                {ICONS[i]}
-              </div>
-              <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 8px', letterSpacing: '-0.02em' }}>
+      <section style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px 104px' }}>
+        <h2
+          style={{
+            fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+            fontWeight: 700,
+            color: 'var(--text)',
+            letterSpacing: '-0.03em',
+            textAlign: 'center',
+            margin: '0 0 48px',
+          }}
+        >
+          {whyDifferentHeading[locale]}
+        </h2>
+        <div className="why-cols">
+          {whyDifferent.map((p) => (
+            <div className="why-col" key={p.title.en}>
+              <h3 style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 10px', letterSpacing: '-0.02em' }}>
                 {p.title[locale]}
               </h3>
-              <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{p.body[locale]}</p>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>{p.body[locale]}</p>
             </div>
           ))}
         </div>
+        <style>{`
+          .why-cols { display: grid; grid-template-columns: repeat(3, 1fr); }
+          .why-col { padding: 0 32px; }
+          .why-col:first-child { padding-left: 0; }
+          .why-col:last-child { padding-right: 0; }
+          .why-col + .why-col { border-left: 1px solid var(--border); }
+          @media (max-width: 760px) {
+            .why-cols { grid-template-columns: 1fr; }
+            .why-col, .why-col:first-child, .why-col:last-child { padding: 24px 0; }
+            .why-col + .why-col { border-left: none; border-top: 1px solid var(--border); }
+          }
+        `}</style>
       </section>
 
       {/* BRIEF — real Brief screen */}
@@ -217,29 +224,3 @@ const secondaryBtn: React.CSSProperties = {
   letterSpacing: '-0.01em',
   textDecoration: 'none',
 };
-
-const stroke = {
-  fill: 'none',
-  stroke: 'currentColor',
-  strokeWidth: 2,
-  strokeLinecap: 'round' as const,
-  strokeLinejoin: 'round' as const,
-};
-const ICONS = [
-  <svg key="0" width="20" height="20" viewBox="0 0 24 24" {...stroke}>
-    <path d="m9 12 2 2 4-4" />
-    <path d="M12 3l2.5 1.5L17 4l1 2.8L20.5 8 20 11l.5 3-2.5 1.2L17 18l-2.8-.5L12 19l-2.2-1.5L7 18l-1-2.8L3.5 14 4 11l-.5-3L6 6.8 7 4l2.5.5z" />
-  </svg>,
-  <svg key="1" width="20" height="20" viewBox="0 0 24 24" {...stroke}>
-    <path d="M17 2l4 4-4 4" />
-    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-    <path d="M7 22l-4-4 4-4" />
-    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-  </svg>,
-  <svg key="2" width="20" height="20" viewBox="0 0 24 24" {...stroke}>
-    <rect x="3" y="3" width="7" height="7" rx="1" />
-    <rect x="14" y="3" width="7" height="7" rx="1" />
-    <rect x="3" y="14" width="7" height="7" rx="1" />
-    <rect x="14" y="14" width="7" height="7" rx="1" />
-  </svg>,
-];

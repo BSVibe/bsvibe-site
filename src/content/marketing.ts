@@ -54,6 +54,7 @@ export interface ValueProp {
   title: L;
   body: L;
 }
+export const whyDifferentHeading: L = { ko: '왜 다른가', en: 'Why BSVibe' };
 export const whyDifferent: ValueProp[] = [
   {
     title: { ko: '검증된 결과', en: 'Verified work' },
