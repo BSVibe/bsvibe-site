@@ -46,7 +46,10 @@ describe('BSVibe is a single product (4-product era retired)', () => {
 
   it('drops the old 4-product hero headline', () => {
     expect(M.hero.h1.ko).not.toContain('만들고, 지키고, 기억한다');
-    expect(M.hero.h1.ko).toBe('믿으라 하지 않습니다. 보여줍니다.');
+    // Hero KO: tight nominal contrast paralleling EN 'Proof, not promises.'
+    // (was the longer verbal '믿으라 하지 않습니다. 보여줍니다.' — kept the
+    //  semantic, dropped the implied subject + extra syllables).
+    expect(M.hero.h1.ko).toBe('믿음이 아닌, 증명.');
   });
 });
 
