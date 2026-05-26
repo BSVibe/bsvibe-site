@@ -187,14 +187,13 @@ export interface FooterColumn {
   title: L;
   links: { label: L; href: string; external?: boolean }[];
 }
-/** No 회사/About column (one-person company). Docs points at the legacy
- *  (4-product) nextra docs hub, which is the only documentation that exists. */
+/** No 회사/About column (one-person company). No Docs link — the legacy
+ *  4-product docs were removed; new docs ship with the product later. */
 export const footerColumns: FooterColumn[] = [
   {
     title: { ko: '제품', en: 'Product' },
     links: [
       { label: { ko: '작동 방식', en: 'How it works' }, href: '/how-it-works' },
-      { label: { ko: '문서', en: 'Docs' }, href: '/docs' },
     ],
   },
   {

@@ -23,11 +23,66 @@ function pathForLocale(pathname: string, target: Locale): string {
   return `/${target}${stripped === '/' ? '' : stripped}`;
 }
 
-function resolveTheme(): 'light' | 'dark' {
-  const attr = document.documentElement.getAttribute('data-theme');
-  if (attr === 'dark' || attr === 'light') return attr;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+// Theme is a 3-state PREFERENCE (light / dark / system), kept separate from the
+// site's default look (light). Stored under a fresh key so the old binary
+// 'bsvibe-theme'='dark' values are ignored — everyone resets to the light
+// default and can opt into dark or system. Mirrors the bsvibe-app model.
+type ThemePref = 'light' | 'dark' | 'system';
+const THEME_KEY = 'bsvibe-theme2';
+
+function readThemePref(): ThemePref {
+  try {
+    const p = localStorage.getItem(THEME_KEY);
+    if (p === 'light' || p === 'dark' || p === 'system') return p;
+  } catch {
+    /* ignore */
+  }
+  return 'light';
 }
+
+function resolvePref(p: ThemePref): 'light' | 'dark' {
+  if (p === 'system') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return p;
+}
+
+function applyThemePref(p: ThemePref): void {
+  document.documentElement.setAttribute('data-theme', resolvePref(p));
+}
+
+const sw = { width: 15, height: 15, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+const THEME_OPTIONS: { value: ThemePref; label: string; icon: React.ReactNode }[] = [
+  {
+    value: 'light',
+    label: 'Light',
+    icon: (
+      <svg {...sw}>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
+      </svg>
+    ),
+  },
+  {
+    value: 'dark',
+    label: 'Dark',
+    icon: (
+      <svg {...sw}>
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+    ),
+  },
+  {
+    value: 'system',
+    label: 'System',
+    icon: (
+      <svg {...sw}>
+        <rect x="3" y="4" width="18" height="12" rx="1" />
+        <path d="M8 20h8M12 16v4" />
+      </svg>
+    ),
+  },
+];
 
 export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   const l = getTranslations(locale);
@@ -35,12 +90,12 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
   const pathname = usePathname() ?? prefix;
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [themePref, setThemePref] = useState<ThemePref>('light');
   const [mounted, setMounted] = useState(false);
 
   const init = useCallback(async () => {
     setMounted(true);
-    setTheme(resolveTheme());
+    setThemePref(readThemePref());
     try {
       const res = await fetch('/api/auth/session');
       if (res.ok) {
@@ -57,18 +112,26 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
     return () => window.clearTimeout(timer);
   }, [init]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      try {
-        localStorage.setItem('bsvibe-theme', next);
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
+  const setPref = useCallback((p: ThemePref) => {
+    setThemePref(p);
+    applyThemePref(p);
+    try {
+      localStorage.setItem(THEME_KEY, p);
+    } catch {
+      /* ignore */
+    }
   }, []);
+
+  // When preference is "system", track OS changes live.
+  useEffect(() => {
+    if (themePref !== 'system') return;
+    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = () => {
+      document.documentElement.setAttribute('data-theme', mql.matches ? 'dark' : 'light');
+    };
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, [themePref]);
 
   const handleLogout = useCallback(async () => {
     await fetch('/api/auth/session', { method: 'DELETE' });
@@ -130,36 +193,47 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
     </div>
   );
 
-  const themeButton = (
-    <button
-      onClick={toggleTheme}
-      aria-label="Toggle theme"
+  const themeControl = (
+    <div
+      role="group"
+      aria-label="Theme"
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        width: 34,
-        height: 34,
+        gap: 2,
+        padding: 3,
         borderRadius: 999,
         border: '1px solid var(--border)',
-        background: 'none',
-        color: 'var(--text-muted)',
-        cursor: 'pointer',
+        backgroundColor: 'var(--surface-2)',
       }}
     >
-      {mounted && theme === 'dark' ? (
-        // sun
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
-        </svg>
-      ) : (
-        // moon
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-        </svg>
-      )}
-    </button>
+      {THEME_OPTIONS.map((opt) => {
+        const active = mounted && themePref === opt.value;
+        return (
+          <button
+            key={opt.value}
+            onClick={() => setPref(opt.value)}
+            aria-pressed={active}
+            aria-label={opt.label}
+            title={opt.label}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 28,
+              height: 28,
+              borderRadius: 999,
+              border: 'none',
+              cursor: active ? 'default' : 'pointer',
+              background: active ? 'var(--surface)' : 'transparent',
+              color: active ? 'var(--text)' : 'var(--text-muted)',
+            }}
+          >
+            {opt.icon}
+          </button>
+        );
+      })}
+    </div>
   );
 
   return (
@@ -195,7 +269,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
           ))}
 
           {langToggle(32)}
-          {themeButton}
+          {themeControl}
 
           {user ? (
             <>
@@ -279,7 +353,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             {langToggle(36)}
-            {themeButton}
+            {themeControl}
           </div>
           {user ? (
             <Link href={`${prefix}/account`} style={{ fontSize: '0.875rem', color: 'var(--text)', textDecoration: 'none' }}>

@@ -36,8 +36,10 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: TITLE, description: DESCRIPTION },
 };
 
-// Applies the saved theme before first paint to avoid a flash of the wrong theme.
-const themeScript = `(function(){try{var t=localStorage.getItem('bsvibe-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`;
+// Resolve the theme preference before first paint (no flash). 3-state pref
+// (light/dark/system) under a fresh key; default is LIGHT (the site's theme)
+// when unset, so dark-OS visitors and anyone with the old binary key get light.
+const themeScript = `(function(){try{var p=localStorage.getItem('bsvibe-theme2');if(p!=='light'&&p!=='dark'&&p!=='system'){p='light';}var d=p==='dark'||(p==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`;
 
 export default function RootLayout({
   children,
