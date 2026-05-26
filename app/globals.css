@@ -24,7 +24,11 @@
   --action: #b25e09;        /* app --amber-ink */
   --action-soft: rgba(224, 146, 46, 0.12); /* amber tint (app --amber-dot) */
   --shadow-pop: 0 4px 12px rgba(55, 53, 47, 0.06);
-  color-scheme: light;
+  /* `only light` is the strict form — tells the UA to NOT apply any
+     forced-dark (Brave/Chrome mobile "Force Dark" or "Night Mode" features
+     would otherwise repaint the page into a fake dark palette even when the
+     site theme is light, which the founder hit on Brave mobile). */
+  color-scheme: only light;
 }
 
 :root[data-theme="dark"] {
@@ -44,7 +48,7 @@
   --action: #e0a458;        /* app dark --amber-ink */
   --action-soft: rgba(224, 164, 88, 0.14);
   --shadow-pop: 0 4px 16px rgba(0, 0, 0, 0.4);
-  color-scheme: dark;
+  color-scheme: only dark;
 }
 
 /* Light/bright is the default for everyone — the marketing site does NOT

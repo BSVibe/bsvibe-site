@@ -52,6 +52,11 @@ export default function RootLayout({
   return (
     <html lang={lang} dir="ltr" suppressHydrationWarning>
       <head>
+        {/* Strict color-scheme signal at parse time — defeats UA "Force Dark"
+            (Brave mobile Night Mode, Chrome Android forced-dark) which would
+            otherwise repaint a light page into a fake dark palette. The CSS
+            `color-scheme: only light` in globals.css reinforces this. */}
+        <meta name="color-scheme" content="light" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={`${inter.variable} ${jetBrainsMono.variable}`}>
