@@ -35,6 +35,10 @@ export default async function DocsLayout({ children, params }: Props) {
     <Layout
       navbar={navbar}
       pageMap={pageMap}
+      // Lock the legacy docs to LIGHT (nextra's nextThemes only allows
+      // attribute/defaultTheme/forcedTheme/...; forcedTheme ignores the OS +
+      // storage, so dark-OS phones no longer render the docs dark).
+      nextThemes={{ forcedTheme: 'light' }}
       docsRepositoryBase="https://github.com/BSVibe/bsvibe-site/tree/main/content"
       i18n={[
         { locale: 'ko', name: '한국어' },
