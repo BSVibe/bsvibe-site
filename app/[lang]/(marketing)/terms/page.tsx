@@ -12,8 +12,8 @@ const ko = (
     <p>최종 수정일: 2026년 5월 26일</p>
     <h2>1. 서비스 개요</h2>
     <p>
-      BSVibe는 AI가 일을 수행하고 검증 가능한 증거와 함께 답하도록 설계된 단일 제품 서비스입니다.
-      본 약관은 BSVibe 서비스 이용 시 이용자와 회사 사이의 권리·의무를 규정합니다.
+      BSVibe는 회사가 제공하는 AI 기반 서비스 전반을 의미하며, 본 약관은 BSVibe 서비스
+      이용 시 이용자와 회사 사이의 권리·의무를 규정합니다.
     </p>
     <h2>2. 계정</h2>
     <p>
@@ -35,8 +35,8 @@ const ko = (
     </ul>
     <h2>5. 책임 제한</h2>
     <p>
-      BSVibe는 서비스의 안정적 제공을 위해 노력하지만, 외부 LLM API 장애나 천재지변 등 불가항력적
-      사유로 인한 손해에 대해서는 책임을 지지 않습니다.
+      BSVibe는 서비스의 안정적 제공을 위해 노력하지만, 외부 서비스·인프라 장애나 천재지변 등
+      불가항력적 사유로 인한 손해에 대해서는 책임을 지지 않습니다.
     </p>
     <h2>6. 약관 변경</h2>
     <p>본 약관은 사전 통지 후 변경될 수 있으며, 변경 후에도 서비스를 계속 이용하면 동의로 간주됩니다.</p>
@@ -54,8 +54,8 @@ const en = (
     <p>Last updated: May 26, 2026</p>
     <h2>1. Service Overview</h2>
     <p>
-      BSVibe is a single AI product that performs work on the user's behalf and returns answers
-      with verifiable proof. These terms govern the relationship between the user and the company.
+      BSVibe refers to the AI-based services provided by the company. These terms govern the
+      relationship between the user and the company in the use of BSVibe services.
     </p>
     <h2>2. Account</h2>
     <p>
@@ -77,8 +77,8 @@ const en = (
     </ul>
     <h2>5. Limitation of Liability</h2>
     <p>
-      BSVibe strives for reliable operation but is not liable for damages caused by upstream LLM
-      API outages or force majeure events.
+      BSVibe strives for reliable operation but is not liable for damages caused by third-party
+      service or infrastructure outages, or force majeure events.
     </p>
     <h2>6. Changes</h2>
     <p>These terms may change after prior notice; continued use constitutes acceptance.</p>

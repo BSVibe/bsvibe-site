@@ -28,6 +28,16 @@ describe('BSVibe is a single product (4-product era retired)', () => {
     }
   });
 
+  // Legal pages must stay product-agnostic — the company will keep shipping
+  // new products under the BSVibe umbrella, and we don't want to re-amend
+  // terms every time. So no '단일 제품' / 'single product' wording, no
+  // tech-stack enumeration ('LLM API') that ties us to today's shape.
+  it('keeps legal copy product-agnostic — no single-product or stack-specific claims', () => {
+    for (const banned of ['단일 제품', 'single product', 'single AI product', 'LLM API']) {
+      expect(legalSources).not.toContain(banned);
+    }
+  });
+
   it('does not pitch the "AI agent OS / company / control plane" category', () => {
     for (const banned of ['agent OS', 'AI company', 'control plane']) {
       expect(allCopy.toLowerCase()).not.toContain(banned.toLowerCase());
