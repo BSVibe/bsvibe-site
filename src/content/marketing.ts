@@ -43,7 +43,7 @@ export const buttons = {
 
 export const hero = {
   badge: { ko: 'AI가 만들고, 검증까지', en: 'AI builds, and verifies' },
-  h1: { ko: '믿으라 하지 않습니다. 보여줍니다.', en: 'Proof, not promises.' },
+  h1: { ko: '믿음이 아닌, 증명.', en: 'Proof, not promises.' },
   subtitle: {
     ko: 'AI가 만들고 스스로 검증해 증거로 답합니다. 한 번 가르치면, 같은 실수는 두 번 없습니다.',
     en: 'AI builds it, verifies it, and answers with proof. One correction sticks, and the same mistake never returns.',

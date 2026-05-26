@@ -14,7 +14,7 @@ const jetBrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
-const TITLE = 'BSVibe — 믿으라 하지 않습니다, 보여줍니다.';
+const TITLE = 'BSVibe — 믿음이 아닌, 증명.';
 const DESCRIPTION =
   'AI가 만들고 스스로 검증해 증거로 답합니다. 한 번 가르치면, 같은 실수는 두 번 없습니다.';
 
