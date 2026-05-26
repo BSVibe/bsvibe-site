@@ -1,14 +1,30 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import * as M from '../src/content/marketing';
 
 // Serialized view of every string in the content module — used to assert that
 // retired 4-product-era vocabulary never appears in external marketing copy.
 const allCopy = JSON.stringify(M);
 
+// Static legal pages (KO + EN inline JSX) — the marketing.ts banned-name guard
+// missed these once (terms §1 carried the 4-product enumeration through to
+// prod), so scan their raw source verbatim from now on.
+const ROOT = join(__dirname, '..');
+const legalSources = ['app/[lang]/(marketing)/terms/page.tsx', 'app/[lang]/(marketing)/privacy/page.tsx']
+  .map((p) => readFileSync(join(ROOT, p), 'utf8'))
+  .join('\n');
+
 describe('BSVibe is a single product (4-product era retired)', () => {
   it('never names the internal layers in marketing copy', () => {
     for (const banned of ['BSGateway', 'BSNexus', 'BSupervisor', 'BSage']) {
       expect(allCopy).not.toContain(banned);
+    }
+  });
+
+  it('never names the internal layers in /terms or /privacy either', () => {
+    for (const banned of ['BSGateway', 'BSNexus', 'BSupervisor', 'BSage']) {
+      expect(legalSources).not.toContain(banned);
     }
   });
 

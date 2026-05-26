@@ -212,8 +212,8 @@ export const footerColumns: FooterColumn[] = [
   },
 ];
 export const footerTagline: L = {
-  ko: '확인된 일만, 올라옵니다.',
-  en: 'Only verified work surfaces.',
+  ko: '증거로 답합니다.',
+  en: 'Answers come as proof.',
 };
 
 // ─── How it works page ──────────────────────────────────────────────

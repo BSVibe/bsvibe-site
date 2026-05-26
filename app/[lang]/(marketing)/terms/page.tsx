@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 const ko = (
   <>
     <h1>이용약관</h1>
-    <p>최종 수정일: 2026년 4월 2일</p>
+    <p>최종 수정일: 2026년 5월 26일</p>
     <h2>1. 서비스 개요</h2>
     <p>
-      BSVibe는 AI 소프트웨어 생태계로, BSGateway, BSNexus, BSupervisor, BSage 등 다양한 도구를
-      제공합니다. 본 약관은 BSVibe 서비스 이용 시 이용자와 회사 사이의 권리·의무를 규정합니다.
+      BSVibe는 AI가 일을 수행하고 검증 가능한 증거와 함께 답하도록 설계된 단일 제품 서비스입니다.
+      본 약관은 BSVibe 서비스 이용 시 이용자와 회사 사이의 권리·의무를 규정합니다.
     </p>
     <h2>2. 계정</h2>
     <p>
@@ -51,11 +51,11 @@ const ko = (
 const en = (
   <>
     <h1>Terms of Service</h1>
-    <p>Last updated: April 2, 2026</p>
+    <p>Last updated: May 26, 2026</p>
     <h2>1. Service Overview</h2>
     <p>
-      BSVibe is an AI software ecosystem with products including BSGateway, BSNexus, BSupervisor,
-      and BSage. These terms govern the relationship between the user and the company.
+      BSVibe is a single AI product that performs work on the user's behalf and returns answers
+      with verifiable proof. These terms govern the relationship between the user and the company.
     </p>
     <h2>2. Account</h2>
     <p>
