@@ -110,6 +110,12 @@ describe('footer', () => {
   it('keeps 제품 / 리소스 / 법적 고지 columns', () => {
     expect(titles).toEqual(expect.arrayContaining(['제품', '리소스', '법적 고지']));
   });
+  // Round 10 lockin — footer tagline is the hero slogan repeated as a brand
+  // seal. Founder decision; any future edit must move them as a pair.
+  it('tagline mirrors the hero slogan verbatim (KO + EN)', () => {
+    expect(M.footerTagline.ko).toBe(M.hero.h1.ko);
+    expect(M.footerTagline.en).toBe(M.hero.h1.en);
+  });
 });
 
 describe('how-it-works page', () => {

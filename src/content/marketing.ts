@@ -211,9 +211,12 @@ export const footerColumns: FooterColumn[] = [
     ],
   },
 ];
+// Footer = hero verbatim. Same slogan stamped at the bottom of every page as
+// a brand seal — repetition over re-statement. KO/EN both match the hero
+// nominal-contrast (Round 10 unification).
 export const footerTagline: L = {
-  ko: '증거로 답합니다.',
-  en: 'Answers come as proof.',
+  ko: '믿음이 아닌, 증명.',
+  en: 'Proof, not promises.',
 };
 
 // ─── How it works page ──────────────────────────────────────────────
