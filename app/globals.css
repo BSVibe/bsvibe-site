@@ -47,28 +47,10 @@
   color-scheme: dark;
 }
 
-/* Follow the OS only when the user hasn't explicitly chosen light. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1c1b19;
-    --surface: #262522;
-    --surface-2: #34322e;
-    --hover: #34322e;
-    --border: #34322e;
-    --border-strong: #403d38;
-    --text: #ebe9e4;
-    --text-muted: #b3b0a8;
-    --text-faint: #807d76;
-    --primary: #ebe9e4;
-    --on-primary: #1c1b19;
-    --verified: #7cc08c;
-    --verified-soft: #243027;
-    --action: #e0a458;
-    --action-soft: rgba(224, 164, 88, 0.14);
-    --shadow-pop: 0 4px 16px rgba(0, 0, 0, 0.4);
-    color-scheme: dark;
-  }
-}
+/* Light/bright is the default for everyone — the marketing site does NOT
+   auto-follow a dark OS (that made dark-mode phones see the dark palette as the
+   "default" look). Dark applies only when the user explicitly picks it via the
+   nav toggle (sets data-theme="dark"). */
 
 /* ─── Base ────────────────────────────────────────────────────────── */
 * {

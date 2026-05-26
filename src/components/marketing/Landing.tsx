@@ -8,6 +8,7 @@ import {
   whyDifferent,
   whyDifferentHeading,
   briefSection,
+  platform,
   learningLoop,
   finalCta,
   screenshots,
@@ -162,6 +163,50 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             height={900}
           />
         </div>
+        </Reveal>
+      </section>
+
+      {/* PLATFORM — web-based · connectors · model routing */}
+      <section style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px 96px' }}>
+        <Reveal>
+          <div style={{ textAlign: 'center', maxWidth: 620, margin: '0 auto 40px' }}>
+            <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 12px' }}>
+              {platform.heading[locale]}
+            </h2>
+            <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{platform.body[locale]}</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginBottom: 28 }}>
+            {platform.points.map((p) => (
+              <div
+                key={p.title.en}
+                className="hover-lift"
+                style={{ border: '1px solid var(--border)', backgroundColor: 'var(--surface)', borderRadius: 12, padding: 24 }}
+              >
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text)', margin: '0 0 8px', letterSpacing: '-0.02em' }}>
+                  {p.title[locale]}
+                </h3>
+                <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{p.body[locale]}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+            {platform.connectors.map((c) => (
+              <span
+                key={c}
+                style={{
+                  fontSize: '0.8125rem',
+                  fontWeight: 600,
+                  color: 'var(--text-muted)',
+                  padding: '6px 14px',
+                  borderRadius: 999,
+                  backgroundColor: 'var(--surface-2)',
+                  border: '1px solid var(--border)',
+                }}
+              >
+                {c}
+              </span>
+            ))}
+          </div>
         </Reveal>
       </section>
 
