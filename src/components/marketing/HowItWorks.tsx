@@ -127,7 +127,7 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
             {H.cta.heading[locale]}
           </h2>
           <a
-            href={authLinks.signup}
+            href={authLinks.start}
             className="cta-press"
             style={{
               display: 'inline-block',

@@ -288,25 +288,22 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
               </button>
             </>
           ) : (
-            <>
-              <a href={authLinks.login} className="nav-link" style={linkStyle}>
-                {buttons.login[locale]}
-              </a>
-              <a
-                href={authLinks.signup}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: 8,
-                  backgroundColor: 'var(--primary)',
-                  color: 'var(--on-primary)',
-                  fontSize: '0.8125rem',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                }}
-              >
-                {buttons.start[locale]}
-              </a>
-            </>
+            // Single CTA — there is no separate login flow, so we don't ship
+            // a "Log in" affordance alongside it. Same target either way.
+            <a
+              href={authLinks.start}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 8,
+                backgroundColor: 'var(--primary)',
+                color: 'var(--on-primary)',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              {buttons.start[locale]}
+            </a>
           )}
         </div>
 
@@ -361,7 +358,7 @@ export default function Navbar({ locale = 'ko' }: { locale?: Locale }) {
             </Link>
           ) : (
             <a
-              href={authLinks.signup}
+              href={authLinks.start}
               style={{
                 fontSize: '0.875rem',
                 fontWeight: 600,

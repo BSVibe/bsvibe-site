@@ -17,9 +17,14 @@ type L<T = string> = Record<Locale, T>;
 
 /** The product app lives on its own domain; the site only links to it. */
 export const APP_URL = 'https://app.bsvibe.dev';
+
+// Single auth entry. The product has no separate signup form — Supabase OAuth
+// auto-provisions accounts on first sign-in, email/pw users authenticate at
+// /login directly — so the marketing surface ships ONE CTA ("시작하기") that
+// lands everyone on the same page. (Previous shape had two affordances
+// 로그인 + 시작하기 hinting at separate flows, which never existed.)
 export const authLinks = {
-  login: `${APP_URL}/login`,
-  signup: `${APP_URL}/signup`,
+  start: `${APP_URL}/login`,
 } as const;
 
 export interface NavItem {
@@ -37,7 +42,6 @@ export const navItems: NavItem[] = [
 export const buttons = {
   ctaPrimary: { ko: '무료로 시작하기', en: 'Get started free' },
   ctaSecondary: { ko: '작동 방식 보기', en: 'See how it works' },
-  login: { ko: '로그인', en: 'Log in' },
   start: { ko: '시작하기', en: 'Start' },
 } satisfies Record<string, L>;
 

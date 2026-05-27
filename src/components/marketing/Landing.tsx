@@ -77,7 +77,7 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
           className="fade-up"
           style={{ animationDelay: '0.3s', display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}
         >
-          <a href={authLinks.signup} className="cta-press" style={primaryBtn}>
+          <a href={authLinks.start} className="cta-press" style={primaryBtn}>
             {buttons.ctaPrimary[locale]}
           </a>
           <Link href={howItWorksHref} className="cta-press" style={secondaryBtn}>
@@ -253,7 +253,7 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
           <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 28px' }}>
             {finalCta.heading[locale]}
           </h2>
-          <a href={authLinks.signup} className="cta-press" style={primaryBtn}>
+          <a href={authLinks.start} className="cta-press" style={primaryBtn}>
             {finalCta.button[locale]}
           </a>
         </div>
