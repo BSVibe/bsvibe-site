@@ -37,7 +37,7 @@ export default async function PricingPage({
         {P.body[locale]}
       </p>
       <a
-        href={authLinks.signup}
+        href={authLinks.start}
         style={{
           display: 'inline-block',
           padding: '13px 26px',

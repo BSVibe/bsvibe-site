@@ -73,9 +73,15 @@ describe('primary nav', () => {
 });
 
 describe('auth is off-site (CTAs only)', () => {
-  it('login + signup point to app.bsvibe.dev', () => {
-    expect(M.authLinks.login).toMatch(/^https:\/\/app\.bsvibe\.dev\//);
-    expect(M.authLinks.signup).toMatch(/^https:\/\/app\.bsvibe\.dev\//);
+  // Single CTA targeting /login — the product has no separate signup form,
+  // so the site doesn't pretend one exists. Pre-Round 11 carried a /signup
+  // link that 404'd in prod, which the PWA worked around with a redirect;
+  // unifying the site CTA is the right primitive.
+  it('start CTA points to https://app.bsvibe.dev/login', () => {
+    expect(M.authLinks.start).toBe('https://app.bsvibe.dev/login');
+  });
+  it('no /signup link is shipped (would 404 + misleads about a non-existent form)', () => {
+    expect(JSON.stringify(M.authLinks)).not.toContain('/signup');
   });
 });
 
