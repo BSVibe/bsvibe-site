@@ -2,9 +2,13 @@
 //
 // BSVibe is ONE product (the 4-product era — BSGateway/BSNexus/BSupervisor/
 // BSage — is retired; those are now invisible internal layers). The external
-// pitch leads with the wedge: verified work + agents that stop repeating
-// mistakes, for the solo founder running many products. The site is CTAs-only
-// (no login on the site itself) — auth links point to app.bsvibe.dev.
+// pitch leads with the wedge: *honestly* verified work (per-result proof with
+// an Evidence grade A–D, never a faked pass) + agents that stop repeating
+// mistakes (corrections accumulate in a browsable knowledge graph), for the
+// solo founder running many products. Knowledge (the graph) and Skills
+// (reusable capabilities) are first-class app surfaces, so the copy names
+// them. The site is CTAs-only (no login on the site itself) — auth links
+// point to app.bsvibe.dev.
 //
 // Copy voice: drop explicit subjects (we / you / 당신 / the brand name as a
 // sentence subject). Korean elides subjects naturally; English uses subjectless
@@ -65,10 +69,10 @@ export interface ValueProp {
 export const whyDifferentHeading: L = { ko: '왜 다른가', en: 'Why BSVibe' };
 export const whyDifferent: ValueProp[] = [
   {
-    title: { ko: '검증된 결과', en: 'Verified work' },
+    title: { ko: '정직하게 검증된 결과', en: 'Honestly verified work' },
     body: {
-      ko: '결과마다 사람이 읽을 수 있는 증명이 붙습니다. PR을 그냥 믿지 않습니다.',
-      en: 'Every result comes with proof a human can read. No PR is taken on faith.',
+      ko: '결과마다 무엇을 어떻게 확인했는지 증거가 붙습니다. 통과를 꾸며내지 않고, 확신의 정도를 등급으로 밝힙니다.',
+      en: 'Every result carries proof of what was checked and how. A pass is never faked, and how sure comes as a grade.',
     },
   },
   {
@@ -98,32 +102,36 @@ export const screenshots = {
     src: '/images/screens/delivery-report.png',
     alt: { ko: 'BSVibe Delivery Report 화면', en: 'BSVibe Delivery Report screen' },
     caption: {
-      ko: '실제 BSVibe 화면 — Delivery Report (검증된 결과)',
-      en: 'Actual BSVibe — Delivery Report (verified work)',
+      ko: '실제 BSVibe 화면 — Delivery Report (근거 등급까지 보이는 검증)',
+      en: 'Actual BSVibe — Delivery Report (verification, down to the grade)',
     },
   },
   brief: {
     src: '/images/screens/brief.png',
     alt: { ko: 'BSVibe Brief 현황 화면', en: 'BSVibe Brief overview screen' },
     caption: {
-      ko: '실제 BSVibe 화면 — Brief (현황 한눈에)',
-      en: 'Actual BSVibe — Brief (everything at a glance)',
+      ko: '실제 BSVibe 화면 — Brief (대기·진행·완료 한눈에)',
+      en: 'Actual BSVibe — Brief (waiting, running, done at a glance)',
     },
   },
-  decide: {
-    src: '/images/screens/decide.png',
-    alt: { ko: 'BSVibe 결정 화면', en: 'BSVibe Decide screen' },
-    caption: { ko: '실제 BSVibe 화면 — 결정(Decide)', en: 'Actual BSVibe — Decide' },
-  },
-  triggered: {
-    src: '/images/screens/triggered.png',
-    alt: {
-      ko: 'BSVibe 자동 트리거 & Safe Mode 화면',
-      en: 'BSVibe trigger & Safe Mode screen',
-    },
+  // The three live side-tabs are Brief / Knowledge / Skills (Decisions is a
+  // tab *inside* Brief — its 확인 필요 filter — not a nav surface, so it has no
+  // dedicated shot; Safe Mode is the 승인 mode under Settings, surfaced as a
+  // guardrails tile). The 4th shot is the Delivery Report proof detail.
+  knowledge: {
+    src: '/images/screens/knowledge.png',
+    alt: { ko: 'BSVibe 지식 그래프 화면', en: 'BSVibe knowledge graph screen' },
     caption: {
-      ko: '실제 BSVibe 화면 — 자동 트리거 & Safe Mode',
-      en: 'Actual BSVibe — Auto-trigger & Safe Mode',
+      ko: '실제 BSVibe 화면 — 지식 그래프 (쌓이는 지식)',
+      en: 'Actual BSVibe — Knowledge graph (what accumulates)',
+    },
+  },
+  skills: {
+    src: '/images/screens/skills.png',
+    alt: { ko: 'BSVibe 스킬 화면', en: 'BSVibe Skills screen' },
+    caption: {
+      ko: '실제 BSVibe 화면 — 스킬 (재사용 스킬)',
+      en: 'Actual BSVibe — Skills (reusable capabilities)',
     },
   },
 } satisfies Record<string, Screenshot>;
@@ -165,6 +173,13 @@ export const platform = {
         en: 'The right model per task, cost included, chosen automatically.',
       },
     },
+    {
+      title: { ko: '재사용 스킬', en: 'Reusable skills' },
+      body: {
+        ko: '자주 하는 일은 스킬로 저장해, 어느 제품에서든 다시 부릅니다.',
+        en: 'Recurring work saved as a skill, callable again on any product.',
+      },
+    },
   ] as ValueProp[],
   connectors: ['GitHub', 'Slack', 'Figma', 'Notion', 'Email'],
 };
@@ -177,8 +192,8 @@ export const learningLoop = {
     { ko: '다음엔 알아서', en: 'Next time, on its own' },
   ] as L[],
   caption: {
-    ko: '감독할 일이 시간이 지날수록 줄어듭니다. 이것이 단 하나의 약속입니다.',
-    en: 'Supervision shrinks over time. That is the one promise.',
+    ko: '한 번 바로잡은 것은 지식 그래프에 쌓여, 다음 작업이 알아서 참고합니다. 감독할 일은 시간이 지날수록 줄어듭니다.',
+    en: 'Each correction accumulates in a knowledge graph the next task draws on by itself. Supervision shrinks over time.',
   },
 };
 
@@ -255,37 +270,37 @@ export const howItWorks = {
     {
       title: { ko: '검증하고 증거를 냅니다', en: 'It verifies and shows proof' },
       body: {
-        ko: '끝났다고 그냥 믿지 않습니다. 무엇을 어떻게 확인했는지 증거와 판정을 함께 보여줍니다.',
-        en: '"Done" is never taken on faith. What was checked, how, and the verdict come with every result.',
+        ko: '끝났다고 그냥 믿지 않습니다. 별도 검증이 독립적으로 확인하고, 무엇을 확인했는지·얼마나 확신하는지 등급과 함께 보여줍니다. 통과를 꾸며내지 않습니다.',
+        en: '"Done" is never taken on faith. A separate check verifies independently and shows what was checked and how sure, as a grade. A pass is never faked.',
       },
     },
     {
       title: { ko: '기억합니다', en: 'It remembers' },
       body: {
-        ko: '한 번 바로잡은 것은 쌓입니다. 다음부터 같은 실수는 알아서 피합니다.',
-        en: 'Corrections accumulate. The same mistake is avoided from then on.',
+        ko: '한 번 바로잡은 것은 지식 그래프에 쌓입니다. 다음부터 같은 실수는 알아서 피하고, 쌓인 지식은 언제든 열어볼 수 있습니다.',
+        en: 'Each correction accumulates in a knowledge graph. The same mistake is avoided from then on, and the knowledge is there to browse anytime.',
       },
     },
   ] as FlowStep[],
   glassBox: {
     heading: { ko: '유리상자처럼 투명한 결과', en: 'Results, transparent as glass' },
     body: {
-      ko: '모든 결과는 의도·작업·검증·판정·산출물이 한 장에 담긴 Delivery Report로 옵니다.',
-      en: 'Every result arrives as one Delivery Report: intent, work, checks, verdict, artifact.',
+      ko: '모든 결과는 의도·작업·검증·판정·산출물이 한 장에 담긴 Delivery Report로 옵니다. 무엇을 확인했고 얼마나 확신하는지, 등급까지 정직하게 보여줍니다.',
+      en: 'Every result arrives as one Delivery Report: intent, work, checks, verdict, artifact. What was checked and how sure, shown honestly down to the grade.',
     },
   },
-  decide: {
-    heading: { ko: '결정이 필요할 때만 부릅니다', en: 'Calls only when a decision is needed' },
+  skills: {
+    heading: { ko: '재사용 스킬', en: 'Reusable skills' },
     body: {
-      ko: '취향·범위·방향처럼 혼자 정하면 안 되는 갈림길만 올라옵니다. 답하는 순간 그 자리에서 이어서 진행하고, 그 선택은 다음을 위한 기준으로 기억됩니다.',
-      en: 'Only genuine forks (taste, scope, direction) come up. The moment one is answered, the work resumes, and that choice becomes the standard next time.',
+      ko: '자주 하는 일은 스킬로 저장해 두면, 어느 제품에서든 같은 방식으로 다시 부릅니다. 주간 다이제스트·PR 리뷰·릴리스 노트처럼, 손에 익은 방식이 그대로 쌓입니다.',
+      en: 'Save recurring work as a skill and call it the same way on any product. A weekly digest, a PR review, release notes: the way that works keeps building up.',
     },
   },
-  safeMode: {
-    heading: { ko: '밖으로 나가는 건, 승인 후에', en: 'Nothing leaves until approved' },
+  knowledge: {
+    heading: { ko: '쌓이는 지식 그래프', en: 'A knowledge graph that grows' },
     body: {
-      ko: '푸시·머지·발송처럼 되돌리기 어려운 작업은 승인 전엔 밖으로 나가지 않습니다.',
-      en: 'Hard-to-undo actions (push, merge, send) never go out before approval.',
+      ko: '결정·선호·반려·회고가 지식 그래프에 노트로 쌓이고 서로 연결됩니다. 다음 작업은 여기서 알아서 참고하고, 무엇을 아는지 언제든 열어볼 수 있습니다.',
+      en: 'Decisions, preferences, rejections, and retrospectives accumulate as linked notes in a knowledge graph. The next task draws on it by itself, and what it knows is there to browse anytime.',
     },
   },
   underHood: {
@@ -304,8 +319,11 @@ export const howItWorks = {
         body: { ko: '작업에 맞는 모델을 알아서 고릅니다', en: 'Picks the right model for the job' },
       },
       {
-        title: { ko: '안전 가드레일', en: 'Safety guardrails' },
-        body: { ko: '위험을 막고 규칙을 지킵니다', en: 'Blocks risk and holds the rules' },
+        title: { ko: '안전 모드', en: 'Safe Mode' },
+        body: {
+          ko: '설정에서 켜 두면 되돌리기 어려운 일은 승인 전엔 안 나갑니다',
+          en: 'A settings toggle: hard-to-undo actions wait for approval',
+        },
       },
       {
         title: { ko: '기억·개인화', en: 'Memory & personalization' },

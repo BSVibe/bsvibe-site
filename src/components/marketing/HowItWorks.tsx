@@ -80,21 +80,21 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
         h={900}
       />
 
-      {/* DECIDE */}
+      {/* SKILLS — reusable capabilities (a live side-tab) */}
       <FeatureBlock
-        heading={H.decide.heading[locale]}
-        body={H.decide.body[locale]}
-        shot={screenshots.decide}
+        heading={H.skills.heading[locale]}
+        body={H.skills.body[locale]}
+        shot={screenshots.skills}
         locale={locale}
         w={1440}
         h={900}
       />
 
-      {/* SAFE MODE — Triggered */}
+      {/* KNOWLEDGE — the graph corrections accumulate into */}
       <FeatureBlock
-        heading={H.safeMode.heading[locale]}
-        body={H.safeMode.body[locale]}
-        shot={screenshots.triggered}
+        heading={H.knowledge.heading[locale]}
+        body={H.knowledge.body[locale]}
+        shot={screenshots.knowledge}
         locale={locale}
         w={1440}
         h={900}
