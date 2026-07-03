@@ -102,16 +102,16 @@ export const screenshots = {
     src: '/images/screens/delivery-report.png',
     alt: { ko: 'BSVibe Delivery Report 화면', en: 'BSVibe Delivery Report screen' },
     caption: {
-      ko: '실제 BSVibe 화면 — Delivery Report (검증된 결과)',
-      en: 'Actual BSVibe — Delivery Report (verified work)',
+      ko: '실제 BSVibe 화면 — Delivery Report (근거 등급까지 보이는 검증)',
+      en: 'Actual BSVibe — Delivery Report (verification, down to the grade)',
     },
   },
   brief: {
     src: '/images/screens/brief.png',
     alt: { ko: 'BSVibe Brief 현황 화면', en: 'BSVibe Brief overview screen' },
     caption: {
-      ko: '실제 BSVibe 화면 — Brief (현황 한눈에)',
-      en: 'Actual BSVibe — Brief (everything at a glance)',
+      ko: '실제 BSVibe 화면 — Brief (대기·진행·완료 한눈에)',
+      en: 'Actual BSVibe — Brief (waiting, running, done at a glance)',
     },
   },
   decide: {
@@ -119,15 +119,16 @@ export const screenshots = {
     alt: { ko: 'BSVibe 결정(Decisions) 화면', en: 'BSVibe Decisions screen' },
     caption: { ko: '실제 BSVibe 화면 — 결정(Decisions)', en: 'Actual BSVibe — Decisions' },
   },
-  triggered: {
-    src: '/images/screens/triggered.png',
-    alt: {
-      ko: 'BSVibe 자동 트리거 & Safe Mode 화면',
-      en: 'BSVibe trigger & Safe Mode screen',
-    },
+  // Knowledge is a first-class app surface now (the graph corrections
+  // accumulate into) — replaced the retired auto-trigger/Safe-Mode shot.
+  // Safe Mode lives on as the "안전 모드에 보류" gate visible in the Decisions
+  // (decide) screen + the under-the-hood guardrails tile.
+  knowledge: {
+    src: '/images/screens/knowledge.png',
+    alt: { ko: 'BSVibe 지식 그래프 화면', en: 'BSVibe knowledge graph screen' },
     caption: {
-      ko: '실제 BSVibe 화면 — 자동 트리거 & Safe Mode',
-      en: 'Actual BSVibe — Auto-trigger & Safe Mode',
+      ko: '실제 BSVibe 화면 — 지식 그래프 (쌓이는 지식)',
+      en: 'Actual BSVibe — Knowledge graph (what accumulates)',
     },
   },
 } satisfies Record<string, Screenshot>;
@@ -288,15 +289,15 @@ export const howItWorks = {
   decide: {
     heading: { ko: '결정이 필요할 때만 부릅니다', en: 'Calls only when a decision is needed' },
     body: {
-      ko: '취향·범위·방향처럼 혼자 정하면 안 되는 갈림길만 올라옵니다. 답하는 순간 그 자리에서 이어서 진행하고, 그 선택은 다음을 위한 기준으로 기억됩니다.',
-      en: 'Only genuine forks (taste, scope, direction) come up. The moment one is answered, the work resumes, and that choice becomes the standard next time.',
+      ko: '취향·범위·방향처럼 혼자 정하면 안 되는 갈림길만 올라옵니다. 푸시·머지·발송처럼 되돌리기 어려운 일은 안전 모드에 보류되어, 승인 전엔 밖으로 나가지 않습니다. 답하는 순간 그 자리에서 이어서 진행하고, 그 선택은 다음을 위한 기준으로 기억됩니다.',
+      en: 'Only genuine forks (taste, scope, direction) come up, and hard-to-undo actions (push, merge, send) sit in Safe Mode, never going out before approval. The moment one is answered, the work resumes, and that choice becomes the standard next time.',
     },
   },
-  safeMode: {
-    heading: { ko: '밖으로 나가는 건, 승인 후에', en: 'Nothing leaves until approved' },
+  knowledge: {
+    heading: { ko: '쌓이는 지식 그래프', en: 'A knowledge graph that grows' },
     body: {
-      ko: '푸시·머지·발송처럼 되돌리기 어려운 작업은 승인 전엔 밖으로 나가지 않습니다.',
-      en: 'Hard-to-undo actions (push, merge, send) never go out before approval.',
+      ko: '결정·선호·반려·회고가 지식 그래프에 노트로 쌓이고 서로 연결됩니다. 다음 작업은 여기서 알아서 참고하고, 무엇을 아는지 언제든 열어볼 수 있습니다.',
+      en: 'Decisions, preferences, rejections, and retrospectives accumulate as linked notes in a knowledge graph. The next task draws on it by itself, and what it knows is there to browse anytime.',
     },
   },
   underHood: {

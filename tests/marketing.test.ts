@@ -170,4 +170,12 @@ describe('current-app positioning (2026-07 refresh)', () => {
     expect(M.screenshots.decide.caption.en).toContain('Decisions');
     expect(M.screenshots.decide.caption.ko).not.toContain('Decide');
   });
+
+  it('ships a knowledge-graph screen and retires the legacy auto-trigger shot', () => {
+    expect(M.screenshots).toHaveProperty('knowledge');
+    expect(M.screenshots.knowledge.src).toBe('/images/screens/knowledge.png');
+    // the retired 4-product-adjacent "auto-trigger/Safe Mode" screen is gone
+    expect(M.screenshots).not.toHaveProperty('triggered');
+    expect(JSON.stringify(M.screenshots)).not.toContain('triggered.png');
+  });
 });
