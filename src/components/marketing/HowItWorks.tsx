@@ -80,11 +80,11 @@ export default function HowItWorks({ locale = 'ko' }: { locale?: Locale }) {
         h={900}
       />
 
-      {/* DECIDE */}
+      {/* SKILLS — reusable capabilities (a live side-tab) */}
       <FeatureBlock
-        heading={H.decide.heading[locale]}
-        body={H.decide.body[locale]}
-        shot={screenshots.decide}
+        heading={H.skills.heading[locale]}
+        body={H.skills.body[locale]}
+        shot={screenshots.skills}
         locale={locale}
         w={1440}
         h={900}

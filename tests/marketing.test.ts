@@ -166,16 +166,30 @@ describe('current-app positioning (2026-07 refresh)', () => {
     expect(M.platform.points.some((p) => p.title.ko.includes('스킬'))).toBe(true);
   });
 
-  it('screenshot captions match the shipped surface name (Decisions, not legacy Decide-only)', () => {
-    expect(M.screenshots.decide.caption.en).toContain('Decisions');
-    expect(M.screenshots.decide.caption.ko).not.toContain('Decide');
+  // The 4 shots mirror the live app: the three side-tabs (Brief / Knowledge /
+  // Skills) + the Delivery Report proof detail. Decisions is a filter tab inside
+  // Brief (no dedicated shot), and Safe Mode is the 승인 mode under Settings —
+  // both retired as standalone slots.
+  it('screenshot slots mirror the live side-tabs + proof detail', () => {
+    expect(Object.keys(M.screenshots).sort()).toEqual(['brief', 'deliveryReport', 'knowledge', 'skills']);
+    expect(M.screenshots.skills.src).toBe('/images/screens/skills.png');
+    expect(M.screenshots.knowledge.src).toBe('/images/screens/knowledge.png');
   });
 
-  it('ships a knowledge-graph screen and retires the legacy auto-trigger shot', () => {
-    expect(M.screenshots).toHaveProperty('knowledge');
-    expect(M.screenshots.knowledge.src).toBe('/images/screens/knowledge.png');
-    // the retired 4-product-adjacent "auto-trigger/Safe Mode" screen is gone
+  it('retires the legacy Decisions + auto-trigger/Safe-Mode standalone shots', () => {
+    expect(M.screenshots).not.toHaveProperty('decide');
     expect(M.screenshots).not.toHaveProperty('triggered');
-    expect(JSON.stringify(M.screenshots)).not.toContain('triggered.png');
+    const shots = JSON.stringify(M.screenshots);
+    expect(shots).not.toContain('decide.png');
+    expect(shots).not.toContain('triggered.png');
+  });
+
+  it('places Safe Mode as a Settings-configured guardrail, not a standalone surface', () => {
+    const safe = M.howItWorks.underHood.tiles.find((t) => t.title.ko.includes('안전'));
+    expect(safe).toBeTruthy();
+    expect(safe!.body.ko).toContain('설정');
+    // no dedicated how-it-works Safe-Mode / Decisions feature section anymore
+    expect(M.howItWorks).not.toHaveProperty('safeMode');
+    expect(M.howItWorks).not.toHaveProperty('decide');
   });
 });

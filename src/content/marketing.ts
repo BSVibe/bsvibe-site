@@ -114,21 +114,24 @@ export const screenshots = {
       en: 'Actual BSVibe — Brief (waiting, running, done at a glance)',
     },
   },
-  decide: {
-    src: '/images/screens/decide.png',
-    alt: { ko: 'BSVibe 결정(Decisions) 화면', en: 'BSVibe Decisions screen' },
-    caption: { ko: '실제 BSVibe 화면 — 결정(Decisions)', en: 'Actual BSVibe — Decisions' },
-  },
-  // Knowledge is a first-class app surface now (the graph corrections
-  // accumulate into) — replaced the retired auto-trigger/Safe-Mode shot.
-  // Safe Mode lives on as the "안전 모드에 보류" gate visible in the Decisions
-  // (decide) screen + the under-the-hood guardrails tile.
+  // The three live side-tabs are Brief / Knowledge / Skills (Decisions is a
+  // tab *inside* Brief — its 확인 필요 filter — not a nav surface, so it has no
+  // dedicated shot; Safe Mode is the 승인 mode under Settings, surfaced as a
+  // guardrails tile). The 4th shot is the Delivery Report proof detail.
   knowledge: {
     src: '/images/screens/knowledge.png',
     alt: { ko: 'BSVibe 지식 그래프 화면', en: 'BSVibe knowledge graph screen' },
     caption: {
       ko: '실제 BSVibe 화면 — 지식 그래프 (쌓이는 지식)',
       en: 'Actual BSVibe — Knowledge graph (what accumulates)',
+    },
+  },
+  skills: {
+    src: '/images/screens/skills.png',
+    alt: { ko: 'BSVibe 스킬 화면', en: 'BSVibe Skills screen' },
+    caption: {
+      ko: '실제 BSVibe 화면 — 스킬 (재사용 스킬)',
+      en: 'Actual BSVibe — Skills (reusable capabilities)',
     },
   },
 } satisfies Record<string, Screenshot>;
@@ -286,11 +289,11 @@ export const howItWorks = {
       en: 'Every result arrives as one Delivery Report: intent, work, checks, verdict, artifact. What was checked and how sure, shown honestly down to the grade.',
     },
   },
-  decide: {
-    heading: { ko: '결정이 필요할 때만 부릅니다', en: 'Calls only when a decision is needed' },
+  skills: {
+    heading: { ko: '재사용 스킬', en: 'Reusable skills' },
     body: {
-      ko: '취향·범위·방향처럼 혼자 정하면 안 되는 갈림길만 올라옵니다. 푸시·머지·발송처럼 되돌리기 어려운 일은 안전 모드에 보류되어, 승인 전엔 밖으로 나가지 않습니다. 답하는 순간 그 자리에서 이어서 진행하고, 그 선택은 다음을 위한 기준으로 기억됩니다.',
-      en: 'Only genuine forks (taste, scope, direction) come up, and hard-to-undo actions (push, merge, send) sit in Safe Mode, never going out before approval. The moment one is answered, the work resumes, and that choice becomes the standard next time.',
+      ko: '자주 하는 일은 스킬로 저장해 두면, 어느 제품에서든 같은 방식으로 다시 부릅니다. 주간 다이제스트·PR 리뷰·릴리스 노트처럼, 손에 익은 방식이 그대로 쌓입니다.',
+      en: 'Save recurring work as a skill and call it the same way on any product. A weekly digest, a PR review, release notes: the way that works keeps building up.',
     },
   },
   knowledge: {
@@ -316,8 +319,11 @@ export const howItWorks = {
         body: { ko: '작업에 맞는 모델을 알아서 고릅니다', en: 'Picks the right model for the job' },
       },
       {
-        title: { ko: '안전 가드레일', en: 'Safety guardrails' },
-        body: { ko: '위험을 막고 규칙을 지킵니다', en: 'Blocks risk and holds the rules' },
+        title: { ko: '안전 모드', en: 'Safe Mode' },
+        body: {
+          ko: '설정에서 켜 두면 되돌리기 어려운 일은 승인 전엔 안 나갑니다',
+          en: 'A settings toggle: hard-to-undo actions wait for approval',
+        },
       },
       {
         title: { ko: '기억·개인화', en: 'Memory & personalization' },
