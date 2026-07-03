@@ -2,9 +2,13 @@
 //
 // BSVibe is ONE product (the 4-product era — BSGateway/BSNexus/BSupervisor/
 // BSage — is retired; those are now invisible internal layers). The external
-// pitch leads with the wedge: verified work + agents that stop repeating
-// mistakes, for the solo founder running many products. The site is CTAs-only
-// (no login on the site itself) — auth links point to app.bsvibe.dev.
+// pitch leads with the wedge: *honestly* verified work (per-result proof with
+// an Evidence grade A–D, never a faked pass) + agents that stop repeating
+// mistakes (corrections accumulate in a browsable knowledge graph), for the
+// solo founder running many products. Knowledge (the graph) and Skills
+// (reusable capabilities) are first-class app surfaces, so the copy names
+// them. The site is CTAs-only (no login on the site itself) — auth links
+// point to app.bsvibe.dev.
 //
 // Copy voice: drop explicit subjects (we / you / 당신 / the brand name as a
 // sentence subject). Korean elides subjects naturally; English uses subjectless
@@ -65,10 +69,10 @@ export interface ValueProp {
 export const whyDifferentHeading: L = { ko: '왜 다른가', en: 'Why BSVibe' };
 export const whyDifferent: ValueProp[] = [
   {
-    title: { ko: '검증된 결과', en: 'Verified work' },
+    title: { ko: '정직하게 검증된 결과', en: 'Honestly verified work' },
     body: {
-      ko: '결과마다 사람이 읽을 수 있는 증명이 붙습니다. PR을 그냥 믿지 않습니다.',
-      en: 'Every result comes with proof a human can read. No PR is taken on faith.',
+      ko: '결과마다 무엇을 어떻게 확인했는지 증거가 붙습니다. 통과를 꾸며내지 않고, 확신의 정도를 등급으로 밝힙니다.',
+      en: 'Every result carries proof of what was checked and how. A pass is never faked, and how sure comes as a grade.',
     },
   },
   {
@@ -112,8 +116,8 @@ export const screenshots = {
   },
   decide: {
     src: '/images/screens/decide.png',
-    alt: { ko: 'BSVibe 결정 화면', en: 'BSVibe Decide screen' },
-    caption: { ko: '실제 BSVibe 화면 — 결정(Decide)', en: 'Actual BSVibe — Decide' },
+    alt: { ko: 'BSVibe 결정(Decisions) 화면', en: 'BSVibe Decisions screen' },
+    caption: { ko: '실제 BSVibe 화면 — 결정(Decisions)', en: 'Actual BSVibe — Decisions' },
   },
   triggered: {
     src: '/images/screens/triggered.png',
@@ -165,6 +169,13 @@ export const platform = {
         en: 'The right model per task, cost included, chosen automatically.',
       },
     },
+    {
+      title: { ko: '재사용 스킬', en: 'Reusable skills' },
+      body: {
+        ko: '자주 하는 일은 스킬로 저장해, 어느 제품에서든 다시 부릅니다.',
+        en: 'Recurring work saved as a skill, callable again on any product.',
+      },
+    },
   ] as ValueProp[],
   connectors: ['GitHub', 'Slack', 'Figma', 'Notion', 'Email'],
 };
@@ -177,8 +188,8 @@ export const learningLoop = {
     { ko: '다음엔 알아서', en: 'Next time, on its own' },
   ] as L[],
   caption: {
-    ko: '감독할 일이 시간이 지날수록 줄어듭니다. 이것이 단 하나의 약속입니다.',
-    en: 'Supervision shrinks over time. That is the one promise.',
+    ko: '한 번 바로잡은 것은 지식 그래프에 쌓여, 다음 작업이 알아서 참고합니다. 감독할 일은 시간이 지날수록 줄어듭니다.',
+    en: 'Each correction accumulates in a knowledge graph the next task draws on by itself. Supervision shrinks over time.',
   },
 };
 
@@ -255,23 +266,23 @@ export const howItWorks = {
     {
       title: { ko: '검증하고 증거를 냅니다', en: 'It verifies and shows proof' },
       body: {
-        ko: '끝났다고 그냥 믿지 않습니다. 무엇을 어떻게 확인했는지 증거와 판정을 함께 보여줍니다.',
-        en: '"Done" is never taken on faith. What was checked, how, and the verdict come with every result.',
+        ko: '끝났다고 그냥 믿지 않습니다. 별도 검증이 독립적으로 확인하고, 무엇을 확인했는지·얼마나 확신하는지 등급과 함께 보여줍니다. 통과를 꾸며내지 않습니다.',
+        en: '"Done" is never taken on faith. A separate check verifies independently and shows what was checked and how sure, as a grade. A pass is never faked.',
       },
     },
     {
       title: { ko: '기억합니다', en: 'It remembers' },
       body: {
-        ko: '한 번 바로잡은 것은 쌓입니다. 다음부터 같은 실수는 알아서 피합니다.',
-        en: 'Corrections accumulate. The same mistake is avoided from then on.',
+        ko: '한 번 바로잡은 것은 지식 그래프에 쌓입니다. 다음부터 같은 실수는 알아서 피하고, 쌓인 지식은 언제든 열어볼 수 있습니다.',
+        en: 'Each correction accumulates in a knowledge graph. The same mistake is avoided from then on, and the knowledge is there to browse anytime.',
       },
     },
   ] as FlowStep[],
   glassBox: {
     heading: { ko: '유리상자처럼 투명한 결과', en: 'Results, transparent as glass' },
     body: {
-      ko: '모든 결과는 의도·작업·검증·판정·산출물이 한 장에 담긴 Delivery Report로 옵니다.',
-      en: 'Every result arrives as one Delivery Report: intent, work, checks, verdict, artifact.',
+      ko: '모든 결과는 의도·작업·검증·판정·산출물이 한 장에 담긴 Delivery Report로 옵니다. 무엇을 확인했고 얼마나 확신하는지, 등급까지 정직하게 보여줍니다.',
+      en: 'Every result arrives as one Delivery Report: intent, work, checks, verdict, artifact. What was checked and how sure, shown honestly down to the grade.',
     },
   },
   decide: {

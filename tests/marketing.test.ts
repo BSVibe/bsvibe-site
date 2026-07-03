@@ -140,3 +140,34 @@ describe('how-it-works page', () => {
     }
   });
 });
+
+// The 2026-07 app refresh sharpened the wedge (SoT §1): per-result proof is now
+// an *honest, graded* verdict (Evidence grade A–D, independent acceptance gate,
+// no faked pass), and Knowledge (the graph corrections accumulate into) + Skills
+// (reusable capabilities) are first-class app surfaces. The marketing surface
+// must carry these or it under-sells the current product.
+describe('current-app positioning (2026-07 refresh)', () => {
+  it('the honesty-graded proof claim leads the wedge, not a bare "verified"', () => {
+    // Evidence grade A–D honesty ladder is the moat — copy must name the grade
+    // and the no-faked-pass promise somewhere, not just say "검증됨".
+    expect(allCopy).toContain('등급');
+    expect(allCopy).toMatch(/꾸며내지|위조|정직/);
+    expect(allCopy.toLowerCase()).toMatch(/grade|honest/);
+  });
+
+  it('surfaces the Knowledge graph as where corrections accumulate', () => {
+    expect(allCopy).toContain('지식 그래프');
+    expect(allCopy.toLowerCase()).toContain('knowledge graph');
+  });
+
+  it('surfaces Skills as a reusable-capability platform affordance', () => {
+    expect(allCopy).toContain('스킬');
+    expect(allCopy.toLowerCase()).toContain('skill');
+    expect(M.platform.points.some((p) => p.title.ko.includes('스킬'))).toBe(true);
+  });
+
+  it('screenshot captions match the shipped surface name (Decisions, not legacy Decide-only)', () => {
+    expect(M.screenshots.decide.caption.en).toContain('Decisions');
+    expect(M.screenshots.decide.caption.ko).not.toContain('Decide');
+  });
+});
