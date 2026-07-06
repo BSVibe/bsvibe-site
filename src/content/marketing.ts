@@ -92,14 +92,16 @@ export const whyDifferent: ValueProp[] = [
 ];
 
 export interface Screenshot {
-  src: string;
+  /** Locale-aware source — EN is the original screen, KO is the Korean-UI
+   *  capture under /images/screens/ko/ (both real, neither re-mocked). */
+  src: L;
   alt: L;
   caption: L;
 }
 /** Real BSVibe app screens, embedded as-is (not re-mocked). */
 export const screenshots = {
   deliveryReport: {
-    src: '/images/screens/delivery-report.png',
+    src: { ko: '/images/screens/ko/delivery-report.png', en: '/images/screens/delivery-report.png' },
     alt: { ko: 'BSVibe Delivery Report 화면', en: 'BSVibe Delivery Report screen' },
     caption: {
       ko: '실제 BSVibe 화면 — Delivery Report (근거 등급까지 보이는 검증)',
@@ -107,7 +109,7 @@ export const screenshots = {
     },
   },
   brief: {
-    src: '/images/screens/brief.png',
+    src: { ko: '/images/screens/ko/brief.png', en: '/images/screens/brief.png' },
     alt: { ko: 'BSVibe Brief 현황 화면', en: 'BSVibe Brief overview screen' },
     caption: {
       ko: '실제 BSVibe 화면 — Brief (대기·진행·완료 한눈에)',
@@ -119,7 +121,7 @@ export const screenshots = {
   // dedicated shot; Safe Mode is the 승인 mode under Settings, surfaced as a
   // guardrails tile). The 4th shot is the Delivery Report proof detail.
   knowledge: {
-    src: '/images/screens/knowledge.png',
+    src: { ko: '/images/screens/ko/knowledge.png', en: '/images/screens/knowledge.png' },
     alt: { ko: 'BSVibe 지식 그래프 화면', en: 'BSVibe knowledge graph screen' },
     caption: {
       ko: '실제 BSVibe 화면 — 지식 그래프 (쌓이는 지식)',
@@ -127,7 +129,7 @@ export const screenshots = {
     },
   },
   skills: {
-    src: '/images/screens/skills.png',
+    src: { ko: '/images/screens/ko/skills.png', en: '/images/screens/skills.png' },
     alt: { ko: 'BSVibe 스킬 화면', en: 'BSVibe Skills screen' },
     caption: {
       ko: '실제 BSVibe 화면 — 스킬 (재사용 스킬)',
