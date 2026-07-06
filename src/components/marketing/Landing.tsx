@@ -91,7 +91,7 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
       <section style={{ maxWidth: 880, margin: '0 auto', padding: '24px 24px 104px' }}>
         <Reveal>
           <BrowserFrame
-            src={screenshots.deliveryReport.src}
+            src={screenshots.deliveryReport.src[locale]}
             alt={screenshots.deliveryReport.alt[locale]}
             caption={screenshots.deliveryReport.caption[locale]}
             width={1440}
@@ -156,7 +156,7 @@ export default function Landing({ locale = 'ko' }: { locale?: Locale }) {
             </p>
           </div>
           <BrowserFrame
-            src={screenshots.brief.src}
+            src={screenshots.brief.src[locale]}
             alt={screenshots.brief.alt[locale]}
             caption={screenshots.brief.caption[locale]}
             width={1440}

@@ -100,7 +100,10 @@ describe('real app screenshots are embedded (not re-mocked)', () => {
     const shots = Object.values(M.screenshots);
     expect(shots).toHaveLength(4);
     for (const s of shots) {
-      expect(s.src).toMatch(/^\/images\/screens\/.+\.png$/);
+      // src is locale-aware: EN keeps the original path, KO points at the
+      // Korean-UI capture under /images/screens/ko/ (English screens preserved).
+      expect(s.src.en).toMatch(/^\/images\/screens\/[^/]+\.png$/);
+      expect(s.src.ko).toMatch(/^\/images\/screens\/ko\/[^/]+\.png$/);
       expect(s.alt.ko).toBeTruthy();
       expect(s.caption.ko).toContain('실제 BSVibe 화면');
     }
@@ -172,8 +175,10 @@ describe('current-app positioning (2026-07 refresh)', () => {
   // both retired as standalone slots.
   it('screenshot slots mirror the live side-tabs + proof detail', () => {
     expect(Object.keys(M.screenshots).sort()).toEqual(['brief', 'deliveryReport', 'knowledge', 'skills']);
-    expect(M.screenshots.skills.src).toBe('/images/screens/skills.png');
-    expect(M.screenshots.knowledge.src).toBe('/images/screens/knowledge.png');
+    expect(M.screenshots.skills.src.en).toBe('/images/screens/skills.png');
+    expect(M.screenshots.skills.src.ko).toBe('/images/screens/ko/skills.png');
+    expect(M.screenshots.knowledge.src.en).toBe('/images/screens/knowledge.png');
+    expect(M.screenshots.knowledge.src.ko).toBe('/images/screens/ko/knowledge.png');
   });
 
   it('retires the legacy Decisions + auto-trigger/Safe-Mode standalone shots', () => {

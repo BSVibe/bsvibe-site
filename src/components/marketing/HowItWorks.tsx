@@ -175,7 +175,7 @@ function FeatureBlock({
           <p style={{ fontSize: '1rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{body}</p>
         </div>
         <div style={{ maxWidth: maxFrame ?? 880, margin: '0 auto' }}>
-          <BrowserFrame src={shot.src} alt={shot.alt[locale]} caption={shot.caption[locale]} width={w} height={h} />
+          <BrowserFrame src={shot.src[locale]} alt={shot.alt[locale]} caption={shot.caption[locale]} width={w} height={h} />
         </div>
       </Reveal>
     </section>
