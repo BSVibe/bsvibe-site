@@ -164,15 +164,15 @@ export const platform = {
     {
       title: { ko: '다양한 커넥터', en: 'Connect your tools' },
       body: {
-        ko: 'GitHub · Slack · Figma · Notion · 이메일까지 연결합니다.',
-        en: 'GitHub, Slack, Figma, Notion, email, and more.',
+        ko: 'GitHub · Slack · Telegram · Notion · 이메일까지 연결합니다.',
+        en: 'GitHub, Slack, Telegram, Notion, email, and more.',
       },
     },
     {
-      title: { ko: '똑똑한 모델 라우팅', en: 'Smart model routing' },
+      title: { ko: '직접 정하는 모델 라우팅', en: 'Routing you author' },
       body: {
-        ko: '작업에 맞는 모델을 비용까지 고려해 자동으로 고릅니다.',
-        en: 'The right model per task, cost included, chosen automatically.',
+        ko: '어떤 일을 어떤 모델로 보낼지 자연어로 직접 정합니다. 몰래 고르는 일은 없습니다.',
+        en: 'Route each kind of work to the model you choose — in plain language, no silent picks.',
       },
     },
     {
@@ -183,7 +183,7 @@ export const platform = {
       },
     },
   ] as ValueProp[],
-  connectors: ['GitHub', 'Slack', 'Figma', 'Notion', 'Email'],
+  connectors: ['GitHub', 'Slack', 'Telegram', 'Notion', 'Email'],
 };
 
 export const learningLoop = {
@@ -258,8 +258,8 @@ export const howItWorks = {
     {
       title: { ko: '던지세요', en: 'Toss it in' },
       body: {
-        ko: '한 줄 지시면 충분합니다. 이메일이나 GitHub 이슈가 들어오면 자리에 없어도 알아서 일이 시작됩니다.',
-        en: 'One line is enough. An incoming email or GitHub issue starts the work, even while away.',
+        ko: '한 줄 지시면 충분합니다. GitHub 이슈가 들어오면 자리에 없어도 알아서 일이 시작됩니다.',
+        en: 'One line is enough. An incoming GitHub issue starts the work, even while away.',
       },
     },
     {
@@ -294,8 +294,8 @@ export const howItWorks = {
   skills: {
     heading: { ko: '재사용 스킬', en: 'Reusable skills' },
     body: {
-      ko: '자주 하는 일은 스킬로 저장해 두면, 어느 제품에서든 같은 방식으로 다시 부릅니다. 주간 다이제스트·PR 리뷰·릴리스 노트처럼, 손에 익은 방식이 그대로 쌓입니다.',
-      en: 'Save recurring work as a skill and call it the same way on any product. A weekly digest, a PR review, release notes: the way that works keeps building up.',
+      ko: '자주 하는 일은 스킬로 저장해 두면, 어느 제품에서든 같은 방식으로 다시 부릅니다. 다이제스트·PR 리뷰·릴리스 노트처럼, 손에 익은 방식이 그대로 쌓입니다.',
+      en: 'Save recurring work as a skill and call it the same way on any product. A digest, a PR review, release notes: the way that works keeps building up.',
     },
   },
   knowledge: {
@@ -317,8 +317,8 @@ export const howItWorks = {
         body: { ko: '일을 끝까지 해내는 엔진', en: 'The engine that carries work to done' },
       },
       {
-        title: { ko: '비용 최적 라우팅', en: 'Cost-aware routing' },
-        body: { ko: '작업에 맞는 모델을 알아서 고릅니다', en: 'Picks the right model for the job' },
+        title: { ko: '규칙 기반 라우팅', en: 'Rule-based routing' },
+        body: { ko: '정한 규칙대로 모델을 고릅니다', en: 'Routes to the model your rules name' },
       },
       {
         title: { ko: '안전 모드', en: 'Safe Mode' },
