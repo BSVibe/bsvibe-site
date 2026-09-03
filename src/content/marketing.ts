@@ -339,13 +339,21 @@ export const howItWorks = {
   },
 };
 
-/** Pricing page is held (보류) — a calm "preparing" placeholder. */
+/** Paid pricing is still held (보류), but the FREE plan's one real limit is
+ *  stated here — the app refuses an over-budget request and links to this page,
+ *  and this page used to answer "지금은 무료로 시작할 수 있습니다", contradicting
+ *  the refusal that sent the founder here.
+ *
+ *  ⚠ The number is BSVibe's `DEFAULT_MAX_CONCURRENT_RUNS`
+ *  (bsvibe-app: backend/identity/workspaces_db.py). Nothing here can read that
+ *  constant, so the two are moved together by hand; tests/marketing.test.ts
+ *  pins this side. */
 export const pricingPlaceholder = {
   badge: { ko: '준비 중', en: 'Coming soon' },
   h1: { ko: '가격은 곧 공개됩니다', en: 'Pricing is on the way' },
   body: {
-    ko: '한 사람이 여러 제품을 굴리는 데 맞는 단순한 가격을 다듬고 있습니다. 지금은 무료로 시작할 수 있습니다.',
-    en: 'Simple pricing for a solo founder running many products is on the way. Free to start for now.',
+    ko: '무료 플랜은 요청 3개를 동시에 진행할 수 있어요. 검토를 기다리는 결과물을 보내거나 정리하면 자리가 비고, 이어서 요청할 수 있습니다. 유료 플랜은 아직 준비 중이에요.',
+    en: 'The free plan runs 3 requests at a time. Send or clear one that is waiting for your review and the slot opens up again. Paid plans are still being worked out.',
   },
   cta: { ko: '무료로 시작하기', en: 'Get started free' },
 } satisfies Record<string, L>;

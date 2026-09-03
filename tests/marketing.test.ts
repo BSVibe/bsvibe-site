@@ -198,3 +198,35 @@ describe('current-app positioning (2026-07 refresh)', () => {
     expect(M.howItWorks).not.toHaveProperty('decide');
   });
 });
+
+describe('pricing page — the free plan has a stated ceiling', () => {
+  // The app refuses an over-budget submit and links here. Before this, the page
+  // answered "지금은 무료로 시작할 수 있습니다" — a founder who had just been told
+  // they were over their plan's limit arrived at a page saying there is no plan
+  // and it is all free. The link contradicted the refusal that sent them.
+  //
+  // ⚠ The number is BSVibe's `DEFAULT_MAX_CONCURRENT_RUNS`
+  // (bsvibe-app: backend/identity/workspaces_db.py). Nothing in this repo can
+  // see that constant, so the two move together by hand.
+  const FREE_CONCURRENT_RUNS = '3';
+
+  it('names how many requests a free workspace may run at once (KO + EN)', () => {
+    expect(M.pricingPlaceholder.body.ko).toContain(FREE_CONCURRENT_RUNS);
+    expect(M.pricingPlaceholder.body.en).toContain(FREE_CONCURRENT_RUNS);
+  });
+
+  it('does not claim unqualified free use', () => {
+    expect(M.pricingPlaceholder.body.ko).not.toContain('지금은 무료로 시작할 수 있습니다');
+    expect(M.pricingPlaceholder.body.en).not.toContain('Free to start for now');
+  });
+
+  it('still says paid pricing is not settled (it is not — do not invent one)', () => {
+    // Asserted on the BODY, not badge+body: the badge already reads
+    // "준비 중"/"Coming soon", so a combined assertion would pass no matter what
+    // the sentence beneath it said.
+    expect(M.pricingPlaceholder.body.ko).toContain('준비 중');
+    expect(M.pricingPlaceholder.body.en.toLowerCase()).toMatch(
+      /coming|on the way|being worked out|not yet/,
+    );
+  });
+});
